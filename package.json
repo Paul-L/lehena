@@ -1,0 +1,23 @@
+{
+  "name": "lehena",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Monorepo ecommerce Lehena (Medusa v2 + Next.js)",
+  "packageManager": "pnpm@10.12.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:backend": "pnpm --filter @lehena/backend dev",
+    "dev:storefront": "pnpm --filter @lehena/storefront dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "seed": "pnpm --filter @lehena/backend seed",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3"
+  }
+}
