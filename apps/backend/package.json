@@ -25,7 +25,18 @@
     "@medusajs/admin-sdk": "2.14.2",
     "@medusajs/cli": "2.14.2",
     "@medusajs/framework": "2.14.2",
-    "@medusajs/medusa": "2.14.2"
+    "@medusajs/js-sdk": "2.14.2",
+    "@medusajs/medusa": "2.14.2",
+    "@tanstack/react-query": "5.64.2",
+    "@tiptap/extension-character-count": "^3.23.1",
+    "@tiptap/extension-image": "^3.23.1",
+    "@tiptap/extension-link": "^3.23.1",
+    "@tiptap/extension-placeholder": "^3.23.1",
+    "@tiptap/extension-typography": "^3.23.1",
+    "@tiptap/pm": "^3.23.1",
+    "@tiptap/react": "^3.23.1",
+    "@tiptap/starter-kit": "^3.23.1",
+    "lucide-react": "^1.14.0"
   },
   "devDependencies": {
     "@medusajs/test-utils": "2.14.2",
