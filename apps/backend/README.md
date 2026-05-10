@@ -1,4 +1,40 @@
-> ⚠️ This repository is now deprecated. Use the [dtc-starter](https://github.com/medusajs/dtc-starter) instead.
+# Lehena Backend (Medusa v2)
+
+> Avertissement : le squelette ci-dessous reprend le starter Medusa upstream
+> (déprécié). Lehena s'appuie dessus mais ajoute des modules custom — voir
+> ci-dessous.
+
+## Modules custom
+
+| Module | Path | README | Description |
+|---|---|---|---|
+| **Pages** | `src/modules/pages/` | [README](./src/modules/pages/README.md) | Pages éditoriales (À propos, FAQ, etc.) avec éditeur TipTap, publication, soft-delete, preview signé JWT, revalidation ISR du storefront |
+
+## Variables d'environnement spécifiques aux modules custom
+
+À ajouter dans `apps/backend/.env` (voir `.env.template`) :
+
+```
+STOREFRONT_URL=http://localhost:8000
+REVALIDATE_SECRET=<un secret long, à dupliquer dans le .env du storefront>
+PREVIEW_SECRET=<un autre secret long, à dupliquer côté storefront>
+```
+
+## Lancement rapide
+
+```bash
+pnpm install
+npx medusa db:migrate
+npx medusa exec ./src/scripts/seed-pages.ts   # optionnel, pages d'exemple
+pnpm dev                                       # http://localhost:9000/app
+```
+
+⚠️ **Conflit php-fpm sur :9000** : si le port est occupé en local par un autre
+service (php-fpm écoute typiquement sur 9000 par défaut), démarrer sur un autre
+port avec `PORT=9100 pnpm dev` et ajuster `MEDUSA_BACKEND_URL=http://localhost:9100`
+dans `apps/storefront/.env.local`.
+
+---
 
 <p align="center">
   <a href="https://www.medusajs.com">

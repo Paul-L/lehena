@@ -1,4 +1,67 @@
-> ⚠️ This repository is now deprecated. Use the [dtc-starter](https://github.com/medusajs/dtc-starter) instead.
+# Lehena Storefront (Next.js 15)
+
+> Avertissement : le squelette ci-dessous reprend le starter Medusa Next.js
+> upstream (déprécié). Lehena s'appuie dessus mais ajoute des routes et
+> helpers spécifiques.
+
+## Pages éditoriales
+
+Le storefront consomme le **module `pages`** du backend
+([README backend](../backend/src/modules/pages/README.md)) pour rendre des
+pages éditoriales (À propos, FAQ, Livraison, etc.) à l'URL `/{locale}/{slug}`.
+
+### Pièces
+
+| Fichier | Rôle |
+|---|---|
+| `src/lib/data/pages.ts` | Fetch helpers (`getPageBySlug`, `getAllPublishedPages`) avec ISR (`next.tags`, `revalidate: 3600`) |
+| `src/lib/tiptap-renderer.tsx` | Renderer custom JSON TipTap → React, server-rendered, **zero deps TipTap** dans le bundle |
+| `src/app/[countryCode]/(main)/[slug]/page.tsx` | Route dynamique : `generateStaticParams`, `generateMetadata` (canonical, OG, Twitter, robots), notFound() si slug inconnu |
+| `src/components/preview-banner.tsx` | Bandeau jaune sticky quand `?preview=` est présent |
+| `src/app/api/revalidate/route.ts` | Webhook appelé par le subscriber backend après chaque mutation. Vérifie `x-revalidate-secret` et flush les tags/paths |
+| `src/app/sitemap.ts` | Sitemap App Router natif qui liste les pages publiées |
+
+### Variables d'environnement
+
+Dans `apps/storefront/.env.local` :
+
+```
+MEDUSA_BACKEND_URL=http://localhost:9100         # ou 9000 selon ton dev
+NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_…
+REVALIDATE_SECRET=<même valeur que backend>
+PREVIEW_SECRET=<même valeur que backend>
+```
+
+> Ces deux secrets **doivent être identiques** côté backend (`apps/backend/.env`)
+> et storefront (`apps/storefront/.env.local`). C'est l'erreur de config la plus
+> fréquente quand la revalidation ne marche pas.
+
+### Mode preview
+
+Quand on clique "Voir le site" depuis le Medusa Admin, l'admin appelle
+`GET /admin/pages/preview-token` (JWT 1 h, scope `preview`, signé avec
+`PREVIEW_SECRET`) puis ouvre un nouvel onglet sur
+`/{locale}/{slug}?preview=<jwt>`. Le storefront forwarde le token vers le
+backend en header `x-preview-token`, ce qui autorise l'accès aux drafts.
+
+Le bandeau jaune en haut de page indique le mode preview ; un clic sur
+"Quitter le preview" strip le query param.
+
+### Revalidation à la demande
+
+À chaque `page.published / updated / unpublished / deleted`, le subscriber
+backend (`src/subscribers/revalidate-page.ts`) POST `/api/revalidate` du
+storefront avec `{ slug, locale, paths }` + header `x-revalidate-secret`.
+La route flush `revalidateTag('pages')`, `revalidateTag('page-${slug}')` et
+`revalidatePath('/${locale}/${slug}')`.
+
+### Customiser le rendu
+
+Pour ajouter un nouveau type de node TipTap (ex : `productCard`), voir la
+section "Customiser le renderer storefront" du
+[README du module backend](../backend/src/modules/pages/README.md#customiser-le-renderer-storefront).
+
+---
 
 <p align="center">
   <a href="https://www.medusajs.com">
