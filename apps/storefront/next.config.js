@@ -9,6 +9,16 @@ const S3_HOSTNAME = process.env.MEDUSA_CLOUD_S3_HOSTNAME
 const S3_PATHNAME = process.env.MEDUSA_CLOUD_S3_PATHNAME
 
 /**
+ * Hostname of the Medusa backend serving uploaded files (`/static/...`).
+ * Set this in production (e.g. `MEDUSA_BACKEND_HOSTNAME=cms.lehena.com`).
+ * Localhost is already permitted by the `localhost` entry below regardless
+ * of the port (so dev on 9000/9100/etc. works without further config).
+ */
+const MEDUSA_BACKEND_HOSTNAME = process.env.MEDUSA_BACKEND_HOSTNAME
+const MEDUSA_BACKEND_PROTOCOL =
+  process.env.MEDUSA_BACKEND_PROTOCOL || "https"
+
+/**
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
@@ -48,6 +58,15 @@ const nextConfig = {
               protocol: "https",
               hostname: S3_HOSTNAME,
               pathname: S3_PATHNAME,
+            },
+          ]
+        : []),
+      ...(MEDUSA_BACKEND_HOSTNAME
+        ? [
+            {
+              protocol: MEDUSA_BACKEND_PROTOCOL,
+              hostname: MEDUSA_BACKEND_HOSTNAME,
+              pathname: "/static/**",
             },
           ]
         : []),

@@ -48,6 +48,7 @@ export default async function revalidatePageHandler({
       },
       body: JSON.stringify({
         slug: data.slug,
+        locale: data.locale,
         paths: REVALIDATE_PATHS,
       }),
       signal: controller.signal,
