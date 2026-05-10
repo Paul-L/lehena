@@ -7,6 +7,12 @@
   "engines": {
     "node": ">=20"
   },
+  "pnpm": {
+    "overrides": {
+      "react": "19.0.5",
+      "react-dom": "19.0.5"
+    }
+  },
   "scripts": {
     "dev": "turbo run dev",
     "dev:backend": "pnpm --filter @lehena/backend dev",
