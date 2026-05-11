@@ -10,6 +10,10 @@ import {
   ListStorePagesQuerySchema,
   UpdatePageSchema,
 } from "./admin/pages/validators"
+import {
+  CreateRedirectSchema,
+  ListRedirectsQuerySchema,
+} from "./admin/redirects/validators"
 
 export default defineMiddlewares({
   routes: [
@@ -32,6 +36,16 @@ export default defineMiddlewares({
       matcher: "/store/pages",
       method: "GET",
       middlewares: [validateAndTransformQuery(ListStorePagesQuerySchema, {})],
+    },
+    {
+      matcher: "/admin/redirects",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(ListRedirectsQuerySchema, {})],
+    },
+    {
+      matcher: "/admin/redirects",
+      method: "POST",
+      middlewares: [validateAndTransformBody(CreateRedirectSchema)],
     },
   ],
 })

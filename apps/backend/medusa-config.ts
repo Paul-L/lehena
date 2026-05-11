@@ -24,7 +24,11 @@ module.exports = defineConfig({
       cookieSecret: requireEnv("COOKIE_SECRET"),
     },
   },
-  modules: [{ resolve: "./src/modules/pages" }],
+  modules: [
+    { resolve: "./src/modules/pages" },
+    { resolve: "./src/modules/catalog" },
+    { resolve: "./src/modules/redirects" },
+  ],
   plugins: [
     {
       resolve: "medusa-ai-assistant",
