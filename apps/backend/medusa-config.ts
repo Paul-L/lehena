@@ -13,6 +13,93 @@ function requireEnv(name: string): string {
   return value
 }
 
+function meilisearchPluginConfig() {
+  return {
+    resolve: "@rokmohar/medusa-plugin-meilisearch",
+    options: {
+      config: {
+        host: process.env.MEILISEARCH_HOST ?? "http://localhost:7700",
+        apiKey: process.env.MEILISEARCH_API_KEY ?? "",
+      },
+      settings: {
+        products: {
+          type: "products",
+          enabled: true,
+          fields: [
+            "id",
+            "title",
+            "subtitle",
+            "description",
+            "handle",
+            "thumbnail",
+            "variant_sku",
+            "tags",
+            "categories.id",
+            "categories.handle",
+            "categories.name",
+          ],
+          indexSettings: {
+            searchableAttributes: [
+              "title",
+              "subtitle",
+              "description",
+              "variant_sku",
+            ],
+            displayedAttributes: [
+              "id",
+              "handle",
+              "title",
+              "subtitle",
+              "description",
+              "thumbnail",
+              "categories",
+            ],
+            filterableAttributes: ["id", "handle", "categories.handle", "tags"],
+            rankingRules: [
+              "words",
+              "typo",
+              "proximity",
+              "attribute",
+              "sort",
+              "exactness",
+            ],
+          },
+          primaryKey: "id",
+        },
+        categories: {
+          type: "categories",
+          enabled: true,
+          fields: [
+            "id",
+            "name",
+            "description",
+            "handle",
+            "is_active",
+            "parent_category_id",
+          ],
+          indexSettings: {
+            searchableAttributes: ["name", "description"],
+            displayedAttributes: [
+              "id",
+              "name",
+              "description",
+              "handle",
+              "parent_category_id",
+            ],
+            filterableAttributes: [
+              "id",
+              "handle",
+              "is_active",
+              "parent_category_id",
+            ],
+          },
+          primaryKey: "id",
+        },
+      },
+    },
+  }
+}
+
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: requireEnv("DATABASE_URL"),
@@ -41,5 +128,9 @@ module.exports = defineConfig({
           : 4096,
       },
     },
+    // MeiliSearch plugin only registered when a host is configured. This
+    // keeps CI (and any env without Meili running) from crashing on every
+    // product save. The plugin auto-indexes via its own subscribers.
+    ...(process.env.MEILISEARCH_HOST ? [meilisearchPluginConfig()] : []),
   ],
 })
