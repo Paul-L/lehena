@@ -4,6 +4,7 @@ import {
   createShippingProfilesWorkflow,
   createStockLocationsWorkflow,
   linkSalesChannelsToStockLocationWorkflow,
+  updateStockLocationsWorkflow,
   updateStoresWorkflow,
 } from "@medusajs/medusa/core-flows"
 
@@ -66,7 +67,15 @@ export async function seedFulfillment(
     "[seed.fulfillment] Boutique Lehena location + 2 shipping profiles + stub options"
   )
 
-  // ─── Stock location (idempotent) ──────────────────────────────────
+  // ─── Stock location (idempotent: create-or-update address) ─────────
+  // Boutique + atelier d'affinage Lehena en Soule (Pyrénées-Atlantiques).
+  const BOUTIQUE_ADDRESS = {
+    address_1: "Bourg",
+    city: "Laguinge",
+    country_code: "fr",
+    postal_code: "64470",
+  } as const
+
   let stockLocationId: string
   const { data: existingLocations } = await query.graph({
     entity: "stock_location",
@@ -75,22 +84,17 @@ export async function seedFulfillment(
   })
   if (existingLocations.length > 0) {
     stockLocationId = existingLocations[0].id
+    // Sync the address so the DB tracks the seed source of truth.
+    await updateStockLocationsWorkflow(container).run({
+      input: {
+        selector: { id: stockLocationId },
+        update: { name: "Boutique Lehena", address: BOUTIQUE_ADDRESS },
+      },
+    })
   } else {
     const { result } = await createStockLocationsWorkflow(container).run({
       input: {
-        locations: [
-          {
-            name: "Boutique Lehena",
-            address: {
-              // ⚠️ Placeholder — replace with the real Lehena workshop
-              // address before going live (cf. Phase 1 plan, sub-passe C).
-              address_1: "Atelier Lehena, Pays Basque",
-              city: "Pays Basque",
-              country_code: "fr",
-              postal_code: "64000",
-            },
-          },
-        ],
+        locations: [{ name: "Boutique Lehena", address: BOUTIQUE_ADDRESS }],
       },
     })
     stockLocationId = result[0].id
