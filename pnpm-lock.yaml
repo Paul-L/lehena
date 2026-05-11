@@ -208,6 +208,9 @@ importers:
       lodash:
         specifier: ^4.17.21
         version: 4.18.1
+      meilisearch:
+        specifier: ^0.58.0
+        version: 0.58.0
       next:
         specifier: 15.3.9
         version: 15.3.9(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(react-dom@19.0.5(react@19.0.5))(react@19.0.5)
@@ -6791,6 +6794,10 @@ packages:
 
   meilisearch@0.56.0:
     resolution: {integrity: sha512-kBXba8DcSrLWHYqopCm2JL90oBy97VdIfHkP1ii7/eHufeEEEk9Zu5Vv/IFQpNzmhEpWszVFVlGvZoI6QJeGzA==}
+
+  meilisearch@0.58.0:
+    resolution: {integrity: sha512-MXFlU+JVG2I3tDI4brS3UHxEv2fjOROP24TPP16c8dGHTulb1kxMgXvKP0x4ImvUcsVVJFi4QXP0JNDS/TaWaw==}
+    engines: {node: ^20.19.0 || >=22.12.0}
 
   meow@12.1.1:
     resolution: {integrity: sha512-BhXM0Au22RwUneMPwSCnyhTOizdWoIEPU9sp0Aqa1PnDMR5Wv2FGXYDjuzJEIX+Eo2Rb8xuYe5jrnm5QowQFkw==}
@@ -16750,6 +16757,8 @@ snapshots:
       zod: 4.2.0
 
   meilisearch@0.56.0: {}
+
+  meilisearch@0.58.0: {}
 
   meow@12.1.1: {}
 

@@ -10,6 +10,7 @@ import {
 import { Frieze, Logo } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { LehenaLanguageSwitcher } from "@modules/layout/components/lehena-language-switcher"
+import { LehenaSearchAutocomplete } from "@modules/layout/components/lehena-search-autocomplete"
 import { useEffect, useState, type ReactNode } from "react"
 
 const ANNOUNCE = [
@@ -27,15 +28,6 @@ const NAV_LINKS: { label: string; href: string }[] = [
   { label: "Coffrets", href: "/categories/coffrets-cadeaux" },
   { label: "Histoire", href: "/notre-histoire" },
   { label: "La ferme", href: "/la-ferme" },
-]
-
-const SEARCH_SUGGESTIONS = [
-  "Jambon 24 mois",
-  "Patxaran",
-  "Coffret cadeau",
-  "Axoa",
-  "Chorizo",
-  "Lomo",
 ]
 
 const Announcement = () => (
@@ -231,53 +223,22 @@ export default function LehenaHeader({ cartButton }: LehenaHeaderProps) {
 
         {searchOpen && (
           <div className="header-search">
-            <div
-              className="lh-wrap-narrow"
-              style={{ display: "flex", alignItems: "center", gap: 16 }}
-            >
-              <LhSearch size={22} />
-              <input
-                autoFocus
-                placeholder="Jambon Orhi, patxaran, axoa…"
-                style={{
-                  flex: 1,
-                  border: 0,
-                  background: "transparent",
-                  fontFamily: "var(--serif-display)",
-                  fontSize: "clamp(20px, 4.5vw, 28px)",
-                  outline: "none",
-                  color: "var(--ink)",
-                  minWidth: 0,
-                }}
-              />
+            <div className="lh-wrap-narrow" style={{ position: "relative" }}>
               <button
                 type="button"
                 onClick={() => setSearchOpen(false)}
-                style={{ color: "var(--ink-mute)" }}
                 aria-label="Fermer la recherche"
+                style={{
+                  position: "absolute",
+                  top: -4,
+                  right: 0,
+                  color: "var(--ink-mute)",
+                  padding: 8,
+                }}
               >
                 <LhClose size={20} />
               </button>
-            </div>
-            <div
-              className="lh-wrap-narrow"
-              style={{
-                marginTop: 14,
-                display: "flex",
-                gap: 8,
-                flexWrap: "wrap",
-              }}
-            >
-              {SEARCH_SUGGESTIONS.map((s) => (
-                <button
-                  type="button"
-                  key={s}
-                  className="chip"
-                  onClick={() => setSearchOpen(false)}
-                >
-                  {s}
-                </button>
-              ))}
+              <LehenaSearchAutocomplete onPick={() => setSearchOpen(false)} />
             </div>
           </div>
         )}
