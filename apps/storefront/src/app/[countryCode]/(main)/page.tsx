@@ -1,41 +1,31 @@
 import { Metadata } from "next"
 
-import FeaturedProducts from "@modules/home/components/featured-products"
-import Hero from "@modules/home/components/hero"
-import { listCollections } from "@lib/data/collections"
-import { getRegion } from "@lib/data/regions"
+import LehenaHero from "@modules/home/components/lehena/hero"
+import LehenaStory from "@modules/home/components/lehena/story"
+import LehenaSelection from "@modules/home/components/lehena/selection"
+import LehenaJambonOrhi from "@modules/home/components/lehena/jambon-orhi"
+import LehenaLaFerme from "@modules/home/components/lehena/la-ferme"
+import LehenaEditorialBlocks from "@modules/home/components/lehena/editorial-blocks"
+import LehenaPressQuote from "@modules/home/components/lehena/press-quote"
+import RevealInit from "@modules/home/components/lehena/reveal-init"
 
 export const metadata: Metadata = {
-  title: "Medusa Next.js Starter Template",
+  title: "Maison Lehena · Maître artisan charcutier au Pays Basque",
   description:
-    "A performant frontend ecommerce starter template with Next.js 15 and Medusa.",
+    "Maître Artisan Charcutier au Pays Basque depuis 1974. Jambons affinés 24 mois, salaisons sans nitrite, patxaran et épicerie fine du Sud-Ouest.",
 }
 
-export default async function Home(props: {
-  params: Promise<{ countryCode: string }>
-}) {
-  const params = await props.params
-
-  const { countryCode } = params
-
-  const region = await getRegion(countryCode)
-
-  const { collections } = await listCollections({
-    fields: "id, handle, title",
-  })
-
-  if (!collections || !region) {
-    return null
-  }
-
+export default function Home() {
   return (
     <>
-      <Hero />
-      <div className="py-12">
-        <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={collections} region={region} />
-        </ul>
-      </div>
+      <RevealInit />
+      <LehenaHero />
+      <LehenaStory />
+      <LehenaSelection />
+      <LehenaJambonOrhi />
+      <LehenaLaFerme />
+      <LehenaEditorialBlocks />
+      <LehenaPressQuote />
     </>
   )
 }

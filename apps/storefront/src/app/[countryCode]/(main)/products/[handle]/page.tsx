@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { listProducts } from "@lib/data/products"
 import { getRegion, listRegions } from "@lib/data/regions"
-import ProductTemplate from "@modules/products/templates"
+import LehenaProductTemplate from "@modules/products/templates/lehena-product-template"
 import { HttpTypes } from "@medusajs/types"
 
 type Props = {
@@ -88,11 +88,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${product.title} | Medusa Store`,
-    description: `${product.title}`,
+    title: `${product.title} · Maison Lehena`,
+    description: product.subtitle || product.description || product.title,
     openGraph: {
-      title: `${product.title} | Medusa Store`,
-      description: `${product.title}`,
+      title: `${product.title} · Maison Lehena`,
+      description: product.subtitle || product.description || product.title,
       images: product.thumbnail ? [product.thumbnail] : [],
     },
   }
@@ -121,11 +121,11 @@ export default async function ProductPage(props: Props) {
   }
 
   return (
-    <ProductTemplate
+    <LehenaProductTemplate
       product={pricedProduct}
       region={region}
       countryCode={params.countryCode}
-      images={images}
+      images={images ?? []}
     />
   )
 }

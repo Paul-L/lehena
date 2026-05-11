@@ -1,156 +1,265 @@
-import { listCategories } from "@lib/data/categories"
-import { listCollections } from "@lib/data/collections"
-import { Text, clx } from "@medusajs/ui"
-
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import MedusaCTA from "@modules/layout/components/medusa-cta"
+import { Frieze, Logo } from "@modules/common/components/lehena/primitives"
+import { LhArrow } from "@modules/common/components/lehena/icons"
 
-export default async function Footer() {
-  const { collections } = await listCollections({
-    fields: "*products",
-  })
-  const productCategories = await listCategories()
+const FOOTER_COLS: {
+  title: string
+  links: { label: string; href: string }[]
+}[] = [
+  {
+    title: "Maison",
+    links: [
+      { label: "Notre histoire", href: "/histoire" },
+      { label: "De la ferme à l'assiette", href: "/ferme" },
+      { label: "Savoir-faire", href: "/histoire" },
+      { label: "Actualités", href: "/histoire" },
+    ],
+  },
+  {
+    title: "Boutique",
+    links: [
+      { label: "Tous les produits", href: "/store" },
+      { label: "Jambons", href: "/categories/jambons" },
+      { label: "Salaisons", href: "/categories/salaisons" },
+      { label: "Coffrets cadeaux", href: "/store" },
+    ],
+  },
+  {
+    title: "Aide",
+    links: [
+      { label: "Livraison", href: "/histoire" },
+      { label: "Conservation", href: "/histoire" },
+      { label: "Nous contacter", href: "/histoire" },
+      { label: "Mentions légales", href: "/histoire" },
+    ],
+  },
+]
 
+export default function Footer() {
   return (
-    <footer className="border-t border-ui-border-base w-full">
-      <div className="content-container flex flex-col w-full">
-        <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
+    <footer
+      style={{
+        background: "var(--bg-deep)",
+        color: "var(--bg)",
+        marginTop: 80,
+      }}
+    >
+      <Frieze color="var(--rouge)" size={14} />
+
+      <div className="lh-wrap" style={{ paddingTop: 80, paddingBottom: 40 }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.4fr 1fr",
+            gap: 80,
+            marginBottom: 64,
+            alignItems: "end",
+          }}
+        >
           <div>
-            <LocalizedClientLink
-              href="/"
-              className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
+            <div
+              className="eyebrow"
+              style={{ color: "rgba(244, 237, 224, 0.6)" }}
             >
-              Medusa Store
-            </LocalizedClientLink>
+              Maître Artisan Charcutier · Pays Basque
+            </div>
+            <h2
+              className="serif-display"
+              style={{
+                fontSize: "var(--step-6)",
+                marginTop: 16,
+                lineHeight: 0.95,
+                color: "var(--bg)",
+              }}
+            >
+              Du sel,
+              <br />
+              <em style={{ fontStyle: "italic", color: "var(--argile)" }}>
+                du temps,
+              </em>
+              <br />
+              et rien d'autre.
+            </h2>
           </div>
-          <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
-            {productCategories && productCategories?.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Categories
-                </span>
-                <ul
-                  className="grid grid-cols-1 gap-2"
-                  data-testid="footer-categories"
-                >
-                  {productCategories?.slice(0, 6).map((c) => {
-                    if (c.parent_category) {
-                      return
-                    }
-
-                    const children =
-                      c.category_children?.map((child) => ({
-                        name: child.name,
-                        handle: child.handle,
-                        id: child.id,
-                      })) || null
-
-                    return (
-                      <li
-                        className="flex flex-col gap-2 text-ui-fg-subtle txt-small"
-                        key={c.id}
-                      >
-                        <LocalizedClientLink
-                          className={clx(
-                            "hover:text-ui-fg-base",
-                            children && "txt-small-plus"
-                          )}
-                          href={`/categories/${c.handle}`}
-                          data-testid="category-link"
-                        >
-                          {c.name}
-                        </LocalizedClientLink>
-                        {children && (
-                          <ul className="grid grid-cols-1 ml-3 gap-2">
-                            {children &&
-                              children.map((child) => (
-                                <li key={child.id}>
-                                  <LocalizedClientLink
-                                    className="hover:text-ui-fg-base"
-                                    href={`/categories/${child.handle}`}
-                                    data-testid="category-link"
-                                  >
-                                    {child.name}
-                                  </LocalizedClientLink>
-                                </li>
-                              ))}
-                          </ul>
-                        )}
-                      </li>
-                    )
-                  })}
-                </ul>
+          <div>
+            <div
+              style={{
+                borderTop: "1px solid rgba(244, 237, 224, 0.2)",
+                paddingTop: 24,
+              }}
+            >
+              <div
+                className="eyebrow"
+                style={{
+                  color: "rgba(244, 237, 224, 0.6)",
+                  marginBottom: 12,
+                }}
+              >
+                Newsletter
               </div>
-            )}
-            {collections && collections.length > 0 && (
-              <div className="flex flex-col gap-y-2">
-                <span className="txt-small-plus txt-ui-fg-base">
-                  Collections
-                </span>
-                <ul
-                  className={clx(
-                    "grid grid-cols-1 gap-2 text-ui-fg-subtle txt-small",
-                    {
-                      "grid-cols-2": (collections?.length || 0) > 3,
-                    }
-                  )}
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "rgba(244, 237, 224, 0.8)",
+                  marginBottom: 20,
+                  lineHeight: 1.5,
+                }}
+              >
+                Recettes, nouveaux affinages, ouvertures de cave. Une lettre
+                par mois, jamais plus.
+              </p>
+              <form
+                style={{
+                  display: "flex",
+                  borderBottom: "1px solid rgba(244, 237, 224, 0.4)",
+                  paddingBottom: 8,
+                }}
+              >
+                <input
+                  type="email"
+                  placeholder="votre@email.fr"
+                  style={{
+                    flex: 1,
+                    background: "transparent",
+                    border: 0,
+                    color: "var(--bg)",
+                    fontFamily: "var(--serif)",
+                    fontSize: 18,
+                    outline: "none",
+                    padding: "8px 0",
+                  }}
+                />
+                <button
+                  type="submit"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    color: "var(--bg)",
+                    fontFamily: "var(--mono)",
+                    fontSize: 12,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                  }}
                 >
-                  {collections?.slice(0, 6).map((c) => (
-                    <li key={c.id}>
-                      <LocalizedClientLink
-                        className="hover:text-ui-fg-base"
-                        href={`/collections/${c.handle}`}
-                      >
-                        {c.title}
-                      </LocalizedClientLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">Medusa</span>
-              <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
-                <li>
-                  <a
-                    href="https://github.com/medusajs"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    GitHub
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://docs.medusajs.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/medusajs/nextjs-starter-medusa"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Source code
-                  </a>
-                </li>
-              </ul>
+                  S'abonner <LhArrow size={14} />
+                </button>
+              </form>
             </div>
           </div>
         </div>
-        <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
-          <Text className="txt-compact-small">
-            © {new Date().getFullYear()} Medusa Store. All rights reserved.
-          </Text>
-          <MedusaCTA />
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1.2fr 1fr 1fr 1fr",
+            gap: 60,
+            paddingTop: 48,
+            borderTop: "1px solid rgba(244, 237, 224, 0.15)",
+          }}
+        >
+          <div>
+            <div style={{ marginBottom: 16, filter: "brightness(1.1)" }}>
+              <Logo height={56} />
+            </div>
+            <p
+              style={{
+                fontSize: 13,
+                color: "rgba(244, 237, 224, 0.7)",
+                lineHeight: 1.6,
+                maxWidth: 280,
+              }}
+            >
+              Maison Lehena
+              <br />
+              Quartier Galharaga
+              <br />
+              64430 Saint-Étienne-de-Baïgorry
+              <br />
+              Pays Basque, France
+            </p>
+            <div style={{ marginTop: 18, display: "flex", gap: 12 }}>
+              {["Facebook", "Instagram"].map((s) => (
+                <a
+                  key={s}
+                  href="#"
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: "50%",
+                    border: "1px solid rgba(244, 237, 224, 0.3)",
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 11,
+                    fontFamily: "var(--mono)",
+                  }}
+                  aria-label={s}
+                >
+                  {s[0]}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {FOOTER_COLS.map((col) => (
+            <div key={col.title}>
+              <div
+                className="eyebrow"
+                style={{
+                  color: "rgba(244, 237, 224, 0.5)",
+                  marginBottom: 18,
+                }}
+              >
+                {col.title}
+              </div>
+              <ul
+                style={{
+                  listStyle: "none",
+                  margin: 0,
+                  padding: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                }}
+              >
+                {col.links.map((link) => (
+                  <li key={link.label}>
+                    <LocalizedClientLink
+                      href={link.href}
+                      style={{
+                        fontSize: 14,
+                        color: "var(--bg)",
+                        fontFamily: "var(--serif)",
+                      }}
+                    >
+                      {link.label}
+                    </LocalizedClientLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
+      </div>
+
+      <Frieze color="rgba(244, 237, 224, 0.3)" size={8} />
+      <div
+        className="lh-wrap"
+        style={{
+          padding: "24px 0",
+          display: "flex",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 16,
+          fontSize: 12,
+          color: "rgba(244, 237, 224, 0.5)",
+          fontFamily: "var(--mono)",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+        }}
+      >
+        <span>© {new Date().getFullYear()} Maison Lehena · Tous droits réservés</span>
+        <span>Paiement sécurisé · Livraison Chronofresh</span>
       </div>
     </footer>
   )

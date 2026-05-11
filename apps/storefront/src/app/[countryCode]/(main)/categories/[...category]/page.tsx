@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { getCategoryByHandle, listCategories } from "@lib/data/categories"
 import { listRegions } from "@lib/data/regions"
 import { StoreRegion } from "@medusajs/types"
-import CategoryTemplate from "@modules/categories/templates"
+import LehenaStoreTemplate from "@modules/store/templates/lehena-store-template"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
 type Props = {
@@ -12,6 +12,7 @@ type Props = {
   searchParams: Promise<{
     sortBy?: SortOptions
     page?: string
+    view?: "compact" | "comfort" | "spacious"
   }>
 }
 
@@ -47,12 +48,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   try {
     const productCategory = await getCategoryByHandle(params.category)
 
-    const title = productCategory.name + " | Medusa Store"
-
-    const description = productCategory.description ?? `${title} category.`
+    const title = `${productCategory.name} · Maison Lehena`
+    const description =
+      productCategory.description ??
+      `Découvrez notre sélection ${productCategory.name.toLowerCase()} chez Maison Lehena.`
 
     return {
-      title: `${title} | Medusa Store`,
+      title,
       description,
       alternates: {
         canonical: `${params.category.join("/")}`,
@@ -66,7 +68,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams
   const params = await props.params
-  const { sortBy, page } = searchParams
+  const { sortBy, page, view } = searchParams
 
   const productCategory = await getCategoryByHandle(params.category)
 
@@ -75,11 +77,22 @@ export default async function CategoryPage(props: Props) {
   }
 
   return (
-    <CategoryTemplate
-      category={productCategory}
+    <LehenaStoreTemplate
       sortBy={sortBy}
       page={page}
+      view={view}
       countryCode={params.countryCode}
+      category={{
+        id: productCategory.id,
+        name: productCategory.name,
+        handle: productCategory.handle,
+        description: productCategory.description,
+      }}
+      title={productCategory.name + ","}
+      subtitle={
+        productCategory.description ||
+        `Notre sélection ${productCategory.name.toLowerCase()}, affinée et expédiée depuis le Pays Basque.`
+      }
     />
   )
 }
