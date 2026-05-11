@@ -65,11 +65,19 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      # `medusa build` generates `apps/backend/.medusa/types/` (typed
+      # module containers, query entry points). Required before typecheck —
+      # without it, `pagesService` and friends resolve to `unknown`.
+      # Building the backend up-front is also faster than chaining via turbo
+      # since the storefront doesn't depend on backend artifacts.
+      - name: Build backend (generates .medusa/types)
+        run: pnpm --filter @lehena/backend build
+
       - name: Typecheck
         run: pnpm typecheck
 
       - name: Lint
         run: pnpm lint
 
-      - name: Build
-        run: pnpm build
+      - name: Build storefront
+        run: pnpm --filter @lehena/storefront build
