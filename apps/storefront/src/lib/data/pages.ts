@@ -12,12 +12,21 @@ export interface Page {
   meta_title: string | null
   meta_description: string | null
   og_image_url: string | null
+  noindex: boolean
+  canonical_override: string | null
   status: PageStatus
   published_at: string | null
   locale: string
+  translation_group_id: string | null
   created_at: string
   updated_at: string
   deleted_at: string | null
+}
+
+export interface PageTranslation {
+  id: string
+  locale: string
+  slug: string
 }
 
 export type PageSummary = Pick<
@@ -31,7 +40,10 @@ export type PageSummary = Pick<
   | "og_image_url"
   | "locale"
   | "published_at"
->
+> & {
+  noindex?: boolean
+  translation_group_id?: string | null
+}
 
 const REVALIDATE_SECONDS = 3600
 
@@ -58,25 +70,31 @@ const isNotFound = (err: unknown): boolean => {
  */
 export async function getPageBySlug(
   slug: string,
-  options: { previewToken?: string } = {}
-): Promise<Page | null> {
+  options: { previewToken?: string; locale?: string } = {}
+): Promise<{ page: Page; translations: PageTranslation[] } | null> {
   const headers: Record<string, string> = {}
   if (options.previewToken) {
     headers["x-preview-token"] = options.previewToken
   }
+  if (options.locale) {
+    headers["x-medusa-locale"] = options.locale
+  }
 
   try {
-    const { page } = await sdk.client.fetch<{ page: Page }>(
-      `/store/pages/${encodeURIComponent(slug)}`,
-      {
-        headers,
-        next: {
-          revalidate: REVALIDATE_SECONDS,
-          tags: ["pages", `page-${slug}`],
-        },
-      }
-    )
-    return page
+    const result = await sdk.client.fetch<{
+      page: Page
+      translations?: PageTranslation[]
+    }>(`/store/pages/${encodeURIComponent(slug)}`, {
+      headers,
+      next: {
+        revalidate: REVALIDATE_SECONDS,
+        tags: ["pages", `page-${slug}`],
+      },
+    })
+    return {
+      page: result.page,
+      translations: result.translations ?? [],
+    }
   } catch (err) {
     if (isNotFound(err)) return null
     throw err

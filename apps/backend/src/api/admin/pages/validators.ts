@@ -12,7 +12,10 @@ export const CreatePageSchema = z.object({
   meta_title: z.string().max(70).optional().nullable(),
   meta_description: z.string().max(160).optional().nullable(),
   og_image_url: z.string().url().optional().nullable(),
+  noindex: z.boolean().optional(),
+  canonical_override: z.string().url().optional().nullable(),
   locale: localeSchema.optional(),
+  translation_group_id: z.string().uuid().optional().nullable(),
 })
 export type CreatePageSchema = z.infer<typeof CreatePageSchema>
 
@@ -24,9 +27,19 @@ export const UpdatePageSchema = z.object({
   meta_title: z.string().max(70).optional().nullable(),
   meta_description: z.string().max(160).optional().nullable(),
   og_image_url: z.string().url().optional().nullable(),
+  noindex: z.boolean().optional(),
+  canonical_override: z.string().url().optional().nullable(),
   locale: localeSchema.optional(),
+  translation_group_id: z.string().uuid().optional().nullable(),
 })
 export type UpdatePageSchema = z.infer<typeof UpdatePageSchema>
+
+export const TranslatePageSchema = z.object({
+  target_locale: localeSchema,
+  /** Slug for the new translation. Falls back to source slug + `-${locale}`. */
+  slug: slugSchema.optional(),
+})
+export type TranslatePageSchema = z.infer<typeof TranslatePageSchema>
 
 const intFromString = (val: unknown) => {
   if (typeof val === "string" && val.trim() !== "") {
@@ -37,7 +50,10 @@ const intFromString = (val: unknown) => {
 }
 
 export const ListPagesQuerySchema = z.object({
-  limit: z.preprocess(intFromString, z.number().int().min(1).max(100).optional()),
+  limit: z.preprocess(
+    intFromString,
+    z.number().int().min(1).max(100).optional()
+  ),
   offset: z.preprocess(intFromString, z.number().int().min(0).optional()),
   status: statusSchema.optional(),
   locale: localeSchema.optional(),
@@ -51,7 +67,11 @@ export type ListPagesQuerySchema = z.infer<typeof ListPagesQuerySchema>
 // routes, read `req.locale` instead — populated from `?locale=fr` or the
 // `x-medusa-locale` header.
 export const ListStorePagesQuerySchema = z.object({
-  limit: z.preprocess(intFromString, z.number().int().min(1).max(100)).optional(),
+  limit: z
+    .preprocess(intFromString, z.number().int().min(1).max(100))
+    .optional(),
   offset: z.preprocess(intFromString, z.number().int().min(0)).optional(),
 })
-export type ListStorePagesQuerySchema = z.infer<typeof ListStorePagesQuerySchema>
+export type ListStorePagesQuerySchema = z.infer<
+  typeof ListStorePagesQuerySchema
+>

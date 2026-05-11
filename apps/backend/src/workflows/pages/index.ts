@@ -6,3 +6,7 @@ export {
   type UnpublishPageInput,
 } from "./unpublish-page"
 export { deletePageWorkflow, type DeletePageInput } from "./delete-page"
+export {
+  createPageTranslationWorkflow,
+  type CreatePageTranslationInput,
+} from "./create-page-translation"

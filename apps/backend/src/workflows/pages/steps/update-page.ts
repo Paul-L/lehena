@@ -16,7 +16,10 @@ export interface UpdatePageStepInput {
   meta_title?: string | null
   meta_description?: string | null
   og_image_url?: string | null
+  noindex?: boolean
+  canonical_override?: string | null
   locale?: string
+  translation_group_id?: string | null
 }
 
 export const updatePageStep = createStep(
@@ -25,6 +28,9 @@ export const updatePageStep = createStep(
     const pagesService = container.resolve(PAGES_MODULE)
 
     const before = await pagesService.retrievePage(input.id)
+
+    const nextSlug = input.slug ?? before.slug
+    const nextLocale = input.locale ?? before.locale
 
     if (input.slug && input.slug !== before.slug) {
       if (!PAGE_SLUG_REGEX.test(input.slug)) {
@@ -43,11 +49,20 @@ export const updatePageStep = createStep(
           `Slug "${input.slug}" is reserved.`
         )
       }
-      const collision = await pagesService.listPages({ slug: input.slug })
+    }
+
+    if (
+      (input.slug && input.slug !== before.slug) ||
+      (input.locale && input.locale !== before.locale)
+    ) {
+      const collision = await pagesService.listPages({
+        slug: nextSlug,
+        locale: nextLocale,
+      })
       if (collision.length > 0 && collision[0].id !== input.id) {
         throw new MedusaError(
           MedusaError.Types.DUPLICATE_ERROR,
-          `A page with slug "${input.slug}" already exists.`
+          `A page with slug "${nextSlug}" already exists for locale "${nextLocale}".`
         )
       }
     }
@@ -70,9 +85,12 @@ export const updatePageStep = createStep(
       meta_title: before.meta_title,
       meta_description: before.meta_description,
       og_image_url: before.og_image_url,
+      noindex: before.noindex,
+      canonical_override: before.canonical_override,
       status: before.status,
       published_at: before.published_at,
       locale: before.locale,
+      translation_group_id: before.translation_group_id,
     })
   }
 )
