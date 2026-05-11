@@ -1,3 +1,4 @@
+import { buildMetadata } from "@lib/seo/metadata"
 import LehenaBestSellers from "@modules/home/components/lehena/best-sellers"
 import LehenaCoffrets from "@modules/home/components/lehena/coffrets"
 import LehenaEditorialBlocks from "@modules/home/components/lehena/editorial-blocks"
@@ -13,11 +14,11 @@ import RevealInit from "@modules/home/components/lehena/reveal-init"
 import LehenaStory from "@modules/home/components/lehena/story"
 import { type Metadata } from "next"
 
-export const metadata: Metadata = {
-  title: "Maison Lehena · Maître artisan charcutier au Pays Basque",
+export const metadata: Metadata = buildMetadata({
+  // Home: the default title (with the brand) is exactly what we want — no override.
   description:
     "Maître Artisan Charcutier au Pays Basque depuis 1974. Jambons affinés 24 mois, salaisons sans nitrite, patxaran et épicerie fine du Sud-Ouest.",
-}
+})
 
 interface HomeProps {
   params: Promise<{ countryCode: string }>
