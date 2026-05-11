@@ -1,18 +1,18 @@
 import { listCategories } from "@lib/data/categories"
+import { parseFacetsFromSearchParams } from "@lib/data/facets-parser"
+import { LehenaSkeleton } from "@modules/common/components/lehena/skeleton"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import LehenaStoreControls, {
   type CategoryOption,
 } from "@modules/store/components/lehena-controls"
-import { type SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { LehenaFacetFilters } from "@modules/store/components/lehena-facet-filters"
 import { Suspense } from "react"
 
-import LehenaPaginatedProducts from "./lehena-paginated-products"
+import LehenaFacetedProducts from "./lehena-faceted-products"
 
 interface LehenaStoreTemplateProps {
-  sortBy?: SortOptions
-  page?: string
-  view?: "compact" | "comfort" | "spacious"
+  /** Raw URL search params (await searchParams in the page first). */
+  searchParams: Record<string, string | string[] | undefined>
   countryCode: string
   category?: {
     id: string
@@ -24,30 +24,23 @@ interface LehenaStoreTemplateProps {
   subtitle?: string
 }
 
-const FILTERS = [
-  { id: "sans-nitrite", label: "Sans nitrite" },
-  { id: "duroc", label: "Race Duroc" },
-  { id: "espelette", label: "Piment d'Espelette" },
-  { id: "plat-cuisine", label: "Plat cuisiné" },
-]
-
-const PRICE_BANDS = [
-  { id: "lt-20", label: "< 20 €" },
-  { id: "20-50", label: "20 – 50 €" },
-  { id: "50-100", label: "50 – 100 €" },
-  { id: "gt-100", label: "> 100 €" },
-]
-
 export default async function LehenaStoreTemplate({
-  sortBy = "created_at",
-  page = "1",
-  view = "comfort",
+  searchParams,
   countryCode,
   category,
   title,
   subtitle,
 }: LehenaStoreTemplateProps) {
-  const pageNumber = parseInt(page) || 1
+  const view: "compact" | "comfort" | "spacious" =
+    typeof searchParams.view === "string" &&
+    ["compact", "comfort", "spacious"].includes(searchParams.view)
+      ? (searchParams.view as "compact" | "comfort" | "spacious")
+      : "comfort"
+
+  const { facets, agingBucketId } = parseFacetsFromSearchParams(searchParams, {
+    countryCode,
+    category_handle: category?.handle,
+  })
 
   const allCategories = await listCategories({ limit: 100 }).catch(() => [])
   const topLevel = allCategories.filter((c) => !c.parent_category_id)
@@ -60,7 +53,7 @@ export default async function LehenaStoreTemplate({
   const headingItalic = "en un seul endroit."
   const description =
     subtitle ??
-    "Jambons, salaisons, patxaran et épicerie fine. Sélectionnés, affinés et expédiés depuis Saint-Étienne-de-Baïgorry."
+    "Jambons, salaisons, patxaran et épicerie fine. Sélectionnés, affinés et expédiés depuis le Pays Basque."
 
   return (
     <>
@@ -130,7 +123,7 @@ export default async function LehenaStoreTemplate({
       <LehenaStoreControls
         categories={categoryOptions}
         activeCategory={category?.handle}
-        sortBy={sortBy}
+        sortBy={facets.sort ?? "created_at"}
         view={view}
       />
 
@@ -139,94 +132,26 @@ export default async function LehenaStoreTemplate({
           className="lh-wrap"
           style={{
             display: "grid",
-            gridTemplateColumns: "240px 1fr",
+            gridTemplateColumns: "260px 1fr",
             gap: 48,
             alignItems: "start",
           }}
         >
           <aside style={{ position: "sticky", top: 160 }}>
-            <div className="eyebrow" style={{ marginBottom: 24 }}>
-              Affiner
-            </div>
-            <div style={{ marginBottom: 32 }}>
-              <div
-                className="serif"
-                style={{
-                  fontStyle: "italic",
-                  fontSize: 18,
-                  marginBottom: 14,
-                }}
-              >
-                Filtres
-              </div>
-              <ul
-                style={{
-                  listStyle: "none",
-                  padding: 0,
-                  margin: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                }}
-              >
-                {FILTERS.map((f) => (
-                  <li key={f.id}>
-                    <label
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                        cursor: "pointer",
-                        fontSize: 14,
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        style={{ accentColor: "var(--rouge)" }}
-                      />
-                      <span>{f.label}</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div style={{ marginBottom: 32 }}>
-              <div
-                className="serif"
-                style={{
-                  fontStyle: "italic",
-                  fontSize: 18,
-                  marginBottom: 14,
-                }}
-              >
-                Prix
-              </div>
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 10 }}
-              >
-                {PRICE_BANDS.map((b) => (
-                  <label
-                    key={b.id}
-                    style={{
-                      display: "flex",
-                      gap: 10,
-                      fontSize: 14,
-                      cursor: "pointer",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      style={{ accentColor: "var(--rouge)" }}
-                    />
-                    {b.label}
-                  </label>
-                ))}
-              </div>
-            </div>
+            <LehenaFacetFilters
+              applied={{
+                aging_bucket: agingBucketId,
+                nitrite_free: facets.nitrite_free,
+                breed: facets.breed,
+                origin: facets.origin,
+                allergens_excluded: facets.allergens_excluded,
+                format: facets.format,
+              }}
+            />
 
             <div
               style={{
+                marginTop: 32,
                 padding: 20,
                 background: "var(--bg-elevated)",
                 border: "1px solid var(--line)",
@@ -265,18 +190,40 @@ export default async function LehenaStoreTemplate({
           </aside>
 
           <div>
-            <Suspense fallback={<SkeletonProductGrid />}>
-              <LehenaPaginatedProducts
-                sortBy={sortBy}
-                page={pageNumber}
-                view={view}
-                categoryId={category?.id}
-                countryCode={countryCode}
-              />
+            <Suspense fallback={<FacetedGridSkeleton />}>
+              <LehenaFacetedProducts facets={facets} view={view} />
             </Suspense>
           </div>
         </div>
       </section>
     </>
+  )
+}
+
+function FacetedGridSkeleton() {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)",
+        gap: 32,
+        rowGap: 56,
+      }}
+    >
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <div
+          key={i}
+          style={{ display: "flex", flexDirection: "column", gap: 12 }}
+        >
+          <LehenaSkeleton
+            tone={i % 2 === 0 ? "kraft" : "argile"}
+            style={{ aspectRatio: "4 / 5" }}
+          />
+          <LehenaSkeleton tone="paper" height={14} width="60%" />
+          <LehenaSkeleton tone="paper" height={22} width="80%" />
+          <LehenaSkeleton tone="paper" height={14} width="40%" />
+        </div>
+      ))}
+    </div>
   )
 }
