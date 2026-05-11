@@ -16,4 +16,13 @@ module.exports = defineConfig({
   modules: [
     { resolve: "./src/modules/pages" },
   ],
+  plugins: [
+    {
+      resolve: "medusa-ai-assistant",
+      options: {
+        defaultModel: "claude-sonnet-4-6",
+        maxTokens: 4096,
+      },
+    },
+  ],
 })
