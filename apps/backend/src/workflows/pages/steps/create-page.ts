@@ -1,12 +1,13 @@
-import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { MedusaError } from "@medusajs/framework/utils"
+import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+
 import { PAGES_MODULE } from "../../../modules/pages"
 import {
   PAGE_RESERVED_SLUGS,
   PAGE_SLUG_REGEX,
 } from "../../../modules/pages/types"
 
-export type CreatePageStepInput = {
+export interface CreatePageStepInput {
   slug: string
   title: string
   content?: Record<string, unknown> | null

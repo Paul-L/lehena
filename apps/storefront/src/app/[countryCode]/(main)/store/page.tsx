@@ -1,7 +1,6 @@
-import { Metadata } from "next"
-
+import { type SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import LehenaStoreTemplate from "@modules/store/templates/lehena-store-template"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { type Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Boutique · Maison Lehena",
@@ -9,7 +8,7 @@ export const metadata: Metadata = {
     "Toute la maison Lehena, en un seul endroit. Jambons d'Iparralde, salaisons, patxaran et épicerie fine du Pays Basque.",
 }
 
-type Params = {
+interface Params {
   searchParams: Promise<{
     sortBy?: SortOptions
     page?: string

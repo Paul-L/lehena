@@ -1,5 +1,5 @@
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { LhArrow } from "@modules/common/components/lehena/icons"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const STEPS: [string, string, string][] = [
   ["01", "L'élevage", "Plein air, 0,5 ha par animal"],
@@ -61,8 +61,8 @@ export default function LehenaLaFerme() {
               }}
             >
               Chez nos partenaires éleveurs du Pays Basque intérieur, les porcs
-              Duroc grandissent en plein air, dans une agriculture extensive
-              qui respecte le rythme des saisons. Traçabilité totale, de la
+              Duroc grandissent en plein air, dans une agriculture extensive qui
+              respecte le rythme des saisons. Traçabilité totale, de la
               naissance à votre table.
             </p>
             <LocalizedClientLink
@@ -97,7 +97,10 @@ export default function LehenaLaFerme() {
                   {n}
                 </div>
                 <div>
-                  <div className="serif" style={{ fontSize: 20, marginBottom: 2 }}>
+                  <div
+                    className="serif"
+                    style={{ fontSize: 20, marginBottom: 2 }}
+                  >
                     {t}
                   </div>
                   <div

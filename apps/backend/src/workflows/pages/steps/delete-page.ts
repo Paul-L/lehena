@@ -1,7 +1,10 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+
 import { PAGES_MODULE } from "../../../modules/pages"
 
-export type DeletePageStepInput = { id: string }
+export interface DeletePageStepInput {
+  id: string
+}
 
 export const deletePageStep = createStep(
   "delete-page",

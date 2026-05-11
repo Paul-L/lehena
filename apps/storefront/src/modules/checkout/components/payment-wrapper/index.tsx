@@ -1,12 +1,13 @@
 "use client"
 
+import { isStripeLike } from "@lib/constants"
+import { type HttpTypes } from "@medusajs/types"
 import { loadStripe } from "@stripe/stripe-js"
 import React from "react"
-import StripeWrapper from "./stripe-wrapper"
-import { HttpTypes } from "@medusajs/types"
-import { isStripeLike } from "@lib/constants"
 
-type PaymentWrapperProps = {
+import StripeWrapper from "./stripe-wrapper"
+
+interface PaymentWrapperProps {
   cart: HttpTypes.StoreCart
   children: React.ReactNode
 }

@@ -1,7 +1,8 @@
 import {
-  MedusaRequest,
-  MedusaResponse,
+  type MedusaRequest,
+  type MedusaResponse,
 } from "@medusajs/framework/http"
+
 import { publishPageWorkflow } from "../../../../../workflows/pages"
 
 export async function POST(req: MedusaRequest, res: MedusaResponse) {

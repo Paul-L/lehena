@@ -1,14 +1,14 @@
 "use client"
 
+import { type HttpTypes } from "@medusajs/types"
+import { LhHeart } from "@modules/common/components/lehena/icons"
+import { Placeholder } from "@modules/common/components/lehena/primitives"
 import Image from "next/image"
 import { useState } from "react"
-import { HttpTypes } from "@medusajs/types"
-import { Placeholder } from "@modules/common/components/lehena/primitives"
-import { LhHeart } from "@modules/common/components/lehena/icons"
 
 const TONES = ["rouge", "kraft", "encre", "argile", "olive", "creme"] as const
 
-type GalleryProps = {
+interface GalleryProps {
   images: HttpTypes.StoreProductImage[]
   title: string
   badges?: string[]
@@ -57,7 +57,8 @@ export default function LehenaPDPGallery({
             aria-label={`Image ${i + 1}`}
             aria-current={i === active ? "true" : undefined}
             style={{
-              border: i === active ? "1px solid var(--ink)" : "1px solid var(--line)",
+              border:
+                i === active ? "1px solid var(--ink)" : "1px solid var(--line)",
               padding: 0,
               background: "transparent",
               cursor: "pointer",
@@ -122,7 +123,11 @@ export default function LehenaPDPGallery({
             }}
           >
             {badges.map((b) => (
-              <span key={b} className="chip chip-solid" style={{ fontSize: 10 }}>
+              <span
+                key={b}
+                className="chip chip-solid"
+                style={{ fontSize: 10 }}
+              >
                 {b}
               </span>
             ))}

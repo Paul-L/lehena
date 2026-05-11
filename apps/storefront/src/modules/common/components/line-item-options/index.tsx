@@ -1,7 +1,7 @@
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
 import { Text } from "@medusajs/ui"
 
-type LineItemOptionsProps = {
+interface LineItemOptionsProps {
   variant: HttpTypes.StoreProductVariant | undefined
   "data-testid"?: string
   "data-value"?: HttpTypes.StoreProductVariant

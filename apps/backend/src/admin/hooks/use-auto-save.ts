@@ -1,14 +1,10 @@
 import * as React from "react"
+
 import type { FieldValues, UseFormReturn } from "react-hook-form"
 
-export type AutoSaveStatus =
-  | "idle"
-  | "dirty"
-  | "saving"
-  | "saved"
-  | "error"
+export type AutoSaveStatus = "idle" | "dirty" | "saving" | "saved" | "error"
 
-export type UseAutoSaveOptions<T extends FieldValues> = {
+export interface UseAutoSaveOptions<T extends FieldValues> {
   form: UseFormReturn<T>
   /**
    * Persists the latest form values. Should resolve on success and reject
@@ -24,7 +20,7 @@ export type UseAutoSaveOptions<T extends FieldValues> = {
   enabled?: boolean
 }
 
-export type UseAutoSaveReturn = {
+export interface UseAutoSaveReturn {
   status: AutoSaveStatus
   lastSavedAt: number | null
   errorMessage: string | null

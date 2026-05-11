@@ -3,7 +3,7 @@ import { sdk } from "@lib/config"
 
 export type PageStatus = "draft" | "published"
 
-export type Page = {
+export interface Page {
   id: string
   slug: string
   title: string
@@ -35,7 +35,10 @@ export type PageSummary = Pick<
 
 const REVALIDATE_SECONDS = 3600
 
-type FetchError = { status?: number; statusCode?: number }
+interface FetchError {
+  status?: number
+  statusCode?: number
+}
 
 const isNotFound = (err: unknown): boolean => {
   const e = err as FetchError

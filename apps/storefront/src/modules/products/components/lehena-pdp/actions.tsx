@@ -1,14 +1,18 @@
 "use client"
 
-import { HttpTypes } from "@medusajs/types"
 import { addToCart } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
-import { LhCheck, LhMinus, LhPlus } from "@modules/common/components/lehena/icons"
+import { type HttpTypes } from "@medusajs/types"
+import {
+  LhCheck,
+  LhMinus,
+  LhPlus,
+} from "@modules/common/components/lehena/icons"
 import { useCartDrawer } from "@modules/layout/components/cart-drawer/cart-drawer-context"
 import { useParams } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 
-type Props = {
+interface Props {
   product: HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
 }
@@ -154,7 +158,9 @@ export default function LehenaProductActions({ product, region }: Props) {
                     border: isSelected
                       ? "2px solid var(--ink)"
                       : "1px solid var(--line-strong)",
-                    background: isSelected ? "var(--bg-elevated)" : "transparent",
+                    background: isSelected
+                      ? "var(--bg-elevated)"
+                      : "transparent",
                     textAlign: "left",
                     transition: "all 160ms ease",
                     position: "relative",
@@ -162,7 +168,10 @@ export default function LehenaProductActions({ product, region }: Props) {
                     cursor: "pointer",
                   }}
                 >
-                  <div className="serif" style={{ fontSize: 16, lineHeight: 1.1, marginBottom: 4 }}>
+                  <div
+                    className="serif"
+                    style={{ fontSize: 16, lineHeight: 1.1, marginBottom: 4 }}
+                  >
                     {v.title}
                   </div>
                   <div className="mono" style={{ fontSize: 11 }}>
@@ -204,7 +213,12 @@ export default function LehenaProductActions({ product, region }: Props) {
           <button
             type="button"
             onClick={() => setQty(Math.max(1, qty - 1))}
-            style={{ width: 50, height: 56, display: "grid", placeItems: "center" }}
+            style={{
+              width: 50,
+              height: 56,
+              display: "grid",
+              placeItems: "center",
+            }}
             aria-label="Diminuer la quantité"
           >
             <LhMinus />
@@ -222,7 +236,12 @@ export default function LehenaProductActions({ product, region }: Props) {
           <button
             type="button"
             onClick={() => setQty(qty + 1)}
-            style={{ width: 50, height: 56, display: "grid", placeItems: "center" }}
+            style={{
+              width: 50,
+              height: 56,
+              display: "grid",
+              placeItems: "center",
+            }}
             aria-label="Augmenter la quantité"
           >
             <LhPlus />
@@ -238,20 +257,23 @@ export default function LehenaProductActions({ product, region }: Props) {
             justifyContent: "center",
             padding: "16px 22px",
             opacity: !selectedVariant || !inStock || isAdding ? 0.6 : 1,
-            cursor: !selectedVariant || !inStock || isAdding ? "not-allowed" : "pointer",
+            cursor:
+              !selectedVariant || !inStock || isAdding
+                ? "not-allowed"
+                : "pointer",
           }}
           data-testid="add-product-button"
         >
           {isAdding
             ? "Ajout en cours…"
             : !selectedVariant
-            ? "Sélectionner un format"
-            : !inStock
-            ? "Rupture de stock"
-            : `Ajouter au panier · ${convertToLocale({
-                amount: totalPrice,
-                currency_code: currency,
-              })}`}
+              ? "Sélectionner un format"
+              : !inStock
+                ? "Rupture de stock"
+                : `Ajouter au panier · ${convertToLocale({
+                    amount: totalPrice,
+                    currency_code: currency,
+                  })}`}
         </button>
       </div>
       {error && (

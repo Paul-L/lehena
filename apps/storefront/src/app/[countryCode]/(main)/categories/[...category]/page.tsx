@@ -1,13 +1,12 @@
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
-
 import { getCategoryByHandle, listCategories } from "@lib/data/categories"
 import { listRegions } from "@lib/data/regions"
-import { StoreRegion } from "@medusajs/types"
+import { type StoreRegion } from "@medusajs/types"
+import { type SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import LehenaStoreTemplate from "@modules/store/templates/lehena-store-template"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { type Metadata } from "next"
+import { notFound } from "next/navigation"
 
-type Props = {
+interface Props {
   params: Promise<{ category: string[]; countryCode: string }>
   searchParams: Promise<{
     sortBy?: SortOptions

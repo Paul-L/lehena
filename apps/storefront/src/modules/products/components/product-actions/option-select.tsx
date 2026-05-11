@@ -1,8 +1,8 @@
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
 import { clx } from "@medusajs/ui"
 import React from "react"
 
-type OptionSelectProps = {
+interface OptionSelectProps {
   option: HttpTypes.StoreProductOption
   current: string | undefined
   updateOption: (title: string, value: string) => void

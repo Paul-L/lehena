@@ -1,13 +1,12 @@
 import {
-  MedusaRequest,
-  MedusaResponse,
+  type MedusaRequest,
+  type MedusaResponse,
 } from "@medusajs/framework/http"
+
 import { PAGES_MODULE } from "../../../modules/pages"
 import { createPageWorkflow } from "../../../workflows/pages"
-import {
-  CreatePageSchema,
-  ListPagesQuerySchema,
-} from "./validators"
+
+import { type CreatePageSchema, type ListPagesQuerySchema } from "./validators"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { limit, offset, status, locale, q } =

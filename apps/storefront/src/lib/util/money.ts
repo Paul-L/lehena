@@ -1,6 +1,6 @@
 import { isEmpty } from "./isEmpty"
 
-type ConvertToLocaleParams = {
+interface ConvertToLocaleParams {
   amount: number
   currency_code: string
   minimumFractionDigits?: number

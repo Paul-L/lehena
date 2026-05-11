@@ -1,19 +1,19 @@
-import * as React from "react"
 import { clx } from "@medusajs/ui"
+import * as React from "react"
 
 /**
  * Local TipTap JSON shape — mirrors `@tiptap/core`'s JSONContent without
  * pulling the editor and ProseMirror into the storefront bundle.
  */
-export type JSONContent = {
+export interface JSONContent {
   type?: string
   attrs?: Record<string, unknown>
   content?: JSONContent[]
-  marks?: Array<{ type: string; attrs?: Record<string, unknown> }>
+  marks?: { type: string; attrs?: Record<string, unknown> }[]
   text?: string
 }
 
-type LinkAttrs = {
+interface LinkAttrs {
   href?: string
   target?: string
   rel?: string
@@ -85,8 +85,9 @@ function applyMarks(
       }
       default:
         if (process.env.NODE_ENV !== "production") {
-          // eslint-disable-next-line no-console
-          console.warn(`[tiptap-renderer] Unknown mark "${mark.type}" — skipped.`)
+          console.warn(
+            `[tiptap-renderer] Unknown mark "${mark.type}" — skipped.`
+          )
         }
     }
   }
@@ -108,7 +109,11 @@ function renderChildren(
 function renderNode(node: JSONContent, key: string): React.ReactNode {
   switch (node.type) {
     case "doc":
-      return <React.Fragment key={key}>{renderChildren(node.content, key)}</React.Fragment>
+      return (
+        <React.Fragment key={key}>
+          {renderChildren(node.content, key)}
+        </React.Fragment>
+      )
 
     case "paragraph": {
       const children = renderChildren(node.content, key)
@@ -124,11 +129,9 @@ function renderNode(node: JSONContent, key: string): React.ReactNode {
     case "heading": {
       const rawLevel = (node.attrs?.level as number | undefined) ?? 2
       const level: HeadingLevel = (
-        ALLOWED_HEADING_LEVELS.includes(rawLevel as HeadingLevel)
-          ? rawLevel
-          : 2
+        ALLOWED_HEADING_LEVELS.includes(rawLevel as HeadingLevel) ? rawLevel : 2
       ) as HeadingLevel
-      const Tag = (`h${level}` as unknown) as keyof React.JSX.IntrinsicElements
+      const Tag = `h${level}` as unknown as keyof React.JSX.IntrinsicElements
       const sizeClass =
         level === 2
           ? "text-3xl mt-10 mb-4"
@@ -136,7 +139,10 @@ function renderNode(node: JSONContent, key: string): React.ReactNode {
             ? "text-2xl mt-8 mb-3"
             : "text-xl mt-6 mb-2"
       return (
-        <Tag key={key} className={clx("font-semibold leading-tight", sizeClass)}>
+        <Tag
+          key={key}
+          className={clx("font-semibold leading-tight", sizeClass)}
+        >
           {renderChildren(node.content, key)}
         </Tag>
       )
@@ -170,10 +176,9 @@ function renderNode(node: JSONContent, key: string): React.ReactNode {
       )
 
     case "codeBlock": {
-      const lang =
-        isString(node.attrs?.language)
-          ? (node.attrs!.language as string)
-          : null
+      const lang = isString(node.attrs?.language)
+        ? (node.attrs!.language as string)
+        : null
       const text = (node.content ?? [])
         .filter((c) => c.type === "text" && isString(c.text))
         .map((c) => c.text as string)
@@ -233,7 +238,6 @@ function renderNode(node: JSONContent, key: string): React.ReactNode {
 
     default:
       if (process.env.NODE_ENV !== "production") {
-        // eslint-disable-next-line no-console
         console.warn(
           `[tiptap-renderer] Unknown node type "${node.type}" — skipped.`
         )
@@ -246,7 +250,7 @@ function renderNode(node: JSONContent, key: string): React.ReactNode {
 /* Public component                                                         */
 /* ----------------------------------------------------------------------- */
 
-type TiptapContentProps = {
+interface TiptapContentProps {
   content: JSONContent | null | undefined
   className?: string
 }

@@ -1,10 +1,9 @@
 import { Container, clx } from "@medusajs/ui"
+import PlaceholderImage from "@modules/common/icons/placeholder-image"
 import Image from "next/image"
 import React from "react"
 
-import PlaceholderImage from "@modules/common/icons/placeholder-image"
-
-type ThumbnailProps = {
+interface ThumbnailProps {
   thumbnail?: string | null
   // TODO: Fix image typings
   images?: any[] | null

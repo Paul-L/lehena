@@ -3,15 +3,15 @@
 import { convertToLocale } from "@lib/util/money"
 import { CheckCircleSolid, XMark } from "@medusajs/icons"
 import {
-  HttpTypes,
-  StoreCart,
-  StoreCartShippingOption,
-  StorePrice,
+  type HttpTypes,
+  type StoreCart,
+  type StoreCartShippingOption,
+  type StorePrice,
 } from "@medusajs/types"
 import { Button, clx } from "@medusajs/ui"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { useState } from "react"
-import { StoreFreeShippingPrice } from "types/global"
+import { type StoreFreeShippingPrice } from "types/global"
 
 const computeTarget = (
   cart: HttpTypes.StoreCart,

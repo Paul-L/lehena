@@ -1,15 +1,15 @@
 "use client"
 
 import { Popover, PopoverPanel, Transition } from "@headlessui/react"
+import { type Locale } from "@lib/data/locales"
 import { ArrowRightMini, XMark } from "@medusajs/icons"
+import { type HttpTypes } from "@medusajs/types"
 import { Text, clx, useToggleState } from "@medusajs/ui"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { Fragment } from "react"
 
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CountrySelect from "../country-select"
 import LanguageSelect from "../language-select"
-import { HttpTypes } from "@medusajs/types"
-import { Locale } from "@lib/data/locales"
 
 const SideMenuItems = {
   Home: "/",
@@ -18,7 +18,7 @@ const SideMenuItems = {
   Cart: "/cart",
 }
 
-type SideMenuProps = {
+interface SideMenuProps {
   regions: HttpTypes.StoreRegion[] | null
   locales: Locale[] | null
   currentLocale: string | null

@@ -1,24 +1,29 @@
 "use client"
 
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useTransition } from "react"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+
 import type { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
-export type CategoryOption = { slug: string | null; label: string }
+export interface CategoryOption {
+  slug: string | null
+  label: string
+}
 
-type Props = {
+interface Props {
   categories: CategoryOption[]
   activeCategory?: string
   sortBy: SortOptions
   view: "compact" | "comfort" | "spacious"
 }
 
-const VIEW_OPTIONS: { id: "compact" | "comfort" | "spacious"; cols: number }[] = [
-  { id: "compact", cols: 4 },
-  { id: "comfort", cols: 3 },
-  { id: "spacious", cols: 2 },
-]
+const VIEW_OPTIONS: { id: "compact" | "comfort" | "spacious"; cols: number }[] =
+  [
+    { id: "compact", cols: 4 },
+    { id: "comfort", cols: 3 },
+    { id: "spacious", cols: 2 },
+  ]
 
 const SORT_OPTIONS: { value: SortOptions; label: string }[] = [
   { value: "created_at", label: "Recommandés" },
@@ -151,7 +156,9 @@ export default function LehenaStoreControls({
                 <button
                   key={v.id}
                   type="button"
-                  onClick={() => setParam("view", v.id === "comfort" ? null : v.id)}
+                  onClick={() =>
+                    setParam("view", v.id === "comfort" ? null : v.id)
+                  }
                   title={v.id}
                   disabled={isPending}
                   style={{

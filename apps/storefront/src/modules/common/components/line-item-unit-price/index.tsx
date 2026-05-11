@@ -1,8 +1,8 @@
 import { convertToLocale } from "@lib/util/money"
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
 import { clx } from "@medusajs/ui"
 
-type LineItemUnitPriceProps = {
+interface LineItemUnitPriceProps {
   item: HttpTypes.StoreCartLineItem | HttpTypes.StoreOrderLineItem
   style?: "default" | "tight"
   currencyCode: string
@@ -13,7 +13,8 @@ const LineItemUnitPrice = ({
   style = "default",
   currencyCode,
 }: LineItemUnitPriceProps) => {
-  const { total, original_total } = item
+  const total = item.total ?? 0
+  const original_total = item.original_total ?? 0
   const hasReducedPrice = total < original_total
 
   const percentage_diff = Math.round(

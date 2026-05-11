@@ -1,7 +1,9 @@
+import { Label, Select, Text } from "@medusajs/ui"
 import * as React from "react"
 import { Controller, useFormContext } from "react-hook-form"
-import { Label, Select, Text } from "@medusajs/ui"
+
 import { CollapsibleSection } from "./collapsible-section"
+
 import type { PageFormValues } from "../page-form-schema"
 
 const COMMON_LOCALES = [

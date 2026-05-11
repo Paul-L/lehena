@@ -1,12 +1,13 @@
-import StarterKit from "@tiptap/starter-kit"
-import Link from "@tiptap/extension-link"
-import Image from "@tiptap/extension-image"
-import Typography from "@tiptap/extension-typography"
-import Placeholder from "@tiptap/extension-placeholder"
 import CharacterCount from "@tiptap/extension-character-count"
+import Image from "@tiptap/extension-image"
+import Link from "@tiptap/extension-link"
+import Placeholder from "@tiptap/extension-placeholder"
+import Typography from "@tiptap/extension-typography"
+import StarterKit from "@tiptap/starter-kit"
+
 import type { Extensions } from "@tiptap/react"
 
-export type GetEditorExtensionsOptions = {
+export interface GetEditorExtensionsOptions {
   placeholder?: string
   maxCharacters?: number
 }

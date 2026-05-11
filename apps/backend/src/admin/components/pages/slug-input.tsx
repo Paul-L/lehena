@@ -1,14 +1,13 @@
-import * as React from "react"
 import { clx, IconButton, Input, Text, Tooltip } from "@medusajs/ui"
 import { Check, Loader2, Lock, Unlock, XCircle } from "lucide-react"
+import * as React from "react"
+
 import { useDebouncedValue } from "../../hooks/use-debounced-value"
 import { useCheckSlugAvailability } from "../../hooks/use-pages"
-import {
-  PAGE_RESERVED_SLUGS,
-  PAGE_SLUG_REGEX,
-} from "./page-form-schema"
 
-type SlugInputProps = {
+import { PAGE_RESERVED_SLUGS, PAGE_SLUG_REGEX } from "./page-form-schema"
+
+interface SlugInputProps {
   value: string
   onChange: (value: string) => void
   /**
@@ -73,9 +72,7 @@ export const SlugInput: React.FC<SlugInputProps> = ({
   const Icon = (() => {
     switch (validation.kind) {
       case "checking":
-        return (
-          <Loader2 className="h-4 w-4 text-ui-fg-muted animate-spin" />
-        )
+        return <Loader2 className="h-4 w-4 text-ui-fg-muted animate-spin" />
       case "ok":
         return <Check className="h-4 w-4 text-ui-tag-green-icon" />
       case "error":

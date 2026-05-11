@@ -1,5 +1,5 @@
-import { NextResponse, type NextRequest } from "next/server"
 import { revalidatePath, revalidateTag } from "next/cache"
+import { NextResponse, type NextRequest } from "next/server"
 
 /**
  * Webhook called by the Medusa backend (`src/subscribers/revalidate-page.ts`)
@@ -16,7 +16,7 @@ import { revalidatePath, revalidateTag } from "next/cache"
  *   - Each path in `paths` is also revalidated
  */
 
-type RevalidateBody = {
+interface RevalidateBody {
   slug?: string
   locale?: string
   paths?: string[]

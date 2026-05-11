@@ -1,9 +1,10 @@
 "use server"
 
 import { sdk } from "@lib/config"
+
 import { getCacheOptions } from "./cookies"
 
-export type Locale = {
+export interface Locale {
   code: string
   name: string
 }

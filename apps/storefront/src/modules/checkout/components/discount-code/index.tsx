@@ -1,16 +1,16 @@
 "use client"
 
-import { Badge, Heading, Input, Label, Text } from "@medusajs/ui"
-import React from "react"
-
 import { applyPromotions } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
+import { Badge, Heading, Input, Label, Text } from "@medusajs/ui"
 import Trash from "@modules/common/icons/trash"
+import React from "react"
+
 import ErrorMessage from "../error-message"
 import { SubmitButton } from "../submit-button"
 
-type DiscountCodeProps = {
+interface DiscountCodeProps {
   cart: HttpTypes.StoreCart & {
     promotions: HttpTypes.StorePromotion[]
   }

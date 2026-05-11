@@ -1,6 +1,6 @@
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { Frieze, Logo } from "@modules/common/components/lehena/primitives"
 import { LhArrow } from "@modules/common/components/lehena/icons"
+import { Frieze, Logo } from "@modules/common/components/lehena/primitives"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const FOOTER_COLS: {
   title: string
@@ -105,8 +105,8 @@ export default function Footer() {
                   lineHeight: 1.5,
                 }}
               >
-                Recettes, nouveaux affinages, ouvertures de cave. Une lettre
-                par mois, jamais plus.
+                Recettes, nouveaux affinages, ouvertures de cave. Une lettre par
+                mois, jamais plus.
               </p>
               <form
                 style={{
@@ -258,7 +258,9 @@ export default function Footer() {
           textTransform: "uppercase",
         }}
       >
-        <span>© {new Date().getFullYear()} Maison Lehena · Tous droits réservés</span>
+        <span>
+          © {new Date().getFullYear()} Maison Lehena · Tous droits réservés
+        </span>
         <span>Paiement sécurisé · Livraison Chronofresh</span>
       </div>
     </footer>

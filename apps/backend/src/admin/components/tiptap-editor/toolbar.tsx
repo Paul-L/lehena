@@ -1,5 +1,3 @@
-import * as React from "react"
-import type { Editor } from "@tiptap/react"
 import {
   Bold,
   Italic,
@@ -18,14 +16,18 @@ import {
   Undo2,
   Redo2,
 } from "lucide-react"
-import { ToolbarButton } from "./toolbar-button"
+import * as React from "react"
+
 import { LinkPopover } from "./link-popover"
+import { ToolbarButton } from "./toolbar-button"
+
+import type { Editor } from "@tiptap/react"
 
 const isMac = typeof navigator !== "undefined" && /Mac/.test(navigator.platform)
 const mod = isMac ? "⌘" : "Ctrl"
 const shift = isMac ? "⇧" : "Shift"
 
-type ToolbarProps = {
+interface ToolbarProps {
   editor: Editor
   onImageClick: () => void
   imageUploading?: boolean
@@ -80,27 +82,21 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         label="Titre H2"
         shortcut={`${mod}+Alt+2`}
         isActive={editor.isActive("heading", { level: 2 })}
-        onClick={() =>
-          editor.chain().focus().toggleHeading({ level: 2 }).run()
-        }
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
       />
       <ToolbarButton
         icon={Heading3}
         label="Titre H3"
         shortcut={`${mod}+Alt+3`}
         isActive={editor.isActive("heading", { level: 3 })}
-        onClick={() =>
-          editor.chain().focus().toggleHeading({ level: 3 }).run()
-        }
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
       />
       <ToolbarButton
         icon={Heading4}
         label="Titre H4"
         shortcut={`${mod}+Alt+4`}
         isActive={editor.isActive("heading", { level: 4 })}
-        onClick={() =>
-          editor.chain().focus().toggleHeading({ level: 4 }).run()
-        }
+        onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
       />
 
       <Divider />

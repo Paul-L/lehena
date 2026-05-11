@@ -1,13 +1,19 @@
+import { ArrowUturnLeft } from "@medusajs/icons"
+import { Button, Heading, Text, toast } from "@medusajs/ui"
+import { ExternalLink } from "lucide-react"
 import * as React from "react"
 import { Link } from "react-router-dom"
-import { Button, Heading, Text, toast } from "@medusajs/ui"
-import { ArrowUturnLeft } from "@medusajs/icons"
-import { ExternalLink } from "lucide-react"
-import { StatusBadge } from "./status-badge"
-import { useFetchPreviewToken, type Page, type PageStatus } from "../../hooks/use-pages"
+
+import {
+  useFetchPreviewToken,
+  type Page,
+  type PageStatus,
+} from "../../hooks/use-pages"
 import { buildPageStorefrontUrl } from "../../lib/sdk"
 
-type PageHeaderProps = {
+import { StatusBadge } from "./status-badge"
+
+interface PageHeaderProps {
   page: Page | null
   draftTitle?: string
   isSaving?: boolean

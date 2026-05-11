@@ -2,9 +2,13 @@
 
 import { useState } from "react"
 
-type Tab = { id: string; label: string; content: string }
+interface Tab {
+  id: string
+  label: string
+  content: string
+}
 
-type Props = {
+interface Props {
   tabs: Tab[]
 }
 
@@ -17,7 +21,11 @@ export default function LehenaProductTabs({ tabs }: Props) {
     <div style={{ borderTop: "1px solid var(--ink)" }}>
       <div
         role="tablist"
-        style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--line)" }}
+        style={{
+          display: "flex",
+          gap: 0,
+          borderBottom: "1px solid var(--line)",
+        }}
       >
         {tabs.map((t) => {
           const isActive = active === t.id

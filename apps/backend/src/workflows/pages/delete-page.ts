@@ -3,14 +3,9 @@ import {
   transform,
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk"
-import {
-  emitEventStep,
-  useQueryGraphStep,
-} from "@medusajs/medusa/core-flows"
-import {
-  deletePageStep,
-  type DeletePageStepInput,
-} from "./steps/delete-page"
+import { emitEventStep, useQueryGraphStep } from "@medusajs/medusa/core-flows"
+
+import { deletePageStep, type DeletePageStepInput } from "./steps/delete-page"
 
 export type DeletePageInput = DeletePageStepInput
 
@@ -25,14 +20,11 @@ export const deletePageWorkflow = createWorkflow(
 
     const deleted = deletePageStep(input)
 
-    const eventData = transform(
-      { pages, deleted },
-      ({ pages, deleted }) => ({
-        id: deleted.id,
-        slug: pages[0]?.slug,
-        locale: pages[0]?.locale,
-      })
-    )
+    const eventData = transform({ pages, deleted }, ({ pages, deleted }) => ({
+      id: deleted.id,
+      slug: pages[0]?.slug,
+      locale: pages[0]?.locale,
+    }))
 
     emitEventStep({
       eventName: "page.deleted",

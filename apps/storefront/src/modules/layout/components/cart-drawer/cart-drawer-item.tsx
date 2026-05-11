@@ -1,13 +1,18 @@
 "use client"
 
-import { useState, useTransition } from "react"
-import Image from "next/image"
-import { HttpTypes } from "@medusajs/types"
 import { deleteLineItem, updateLineItem } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
-import { LhClose, LhMinus, LhPlus } from "@modules/common/components/lehena/icons"
+import { type HttpTypes } from "@medusajs/types"
+import {
+  LhClose,
+  LhMinus,
+  LhPlus,
+} from "@modules/common/components/lehena/icons"
 import { Placeholder } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Image from "next/image"
+import { useState, useTransition } from "react"
+
 import { useCartDrawer } from "./cart-drawer-context"
 
 export default function CartDrawerItem({
@@ -63,7 +68,14 @@ export default function CartDrawerItem({
         style={{ width: 72, height: 72, flexShrink: 0 }}
       >
         {thumb ? (
-          <div style={{ position: "relative", width: 72, height: 72, overflow: "hidden" }}>
+          <div
+            style={{
+              position: "relative",
+              width: 72,
+              height: 72,
+              overflow: "hidden",
+            }}
+          >
             <Image
               src={thumb}
               alt={item.product_title || item.title || ""}
@@ -81,7 +93,9 @@ export default function CartDrawerItem({
         )}
       </LocalizedClientLink>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
+        <div
+          style={{ display: "flex", justifyContent: "space-between", gap: 10 }}
+        >
           <LocalizedClientLink
             href={`/products/${item.product_handle}`}
             onClick={() => setOpen(false)}
@@ -100,7 +114,13 @@ export default function CartDrawerItem({
           </button>
         </div>
         {item.variant?.title && item.variant.title !== "Default" && (
-          <div style={{ fontSize: 12, color: "var(--ink-mute)", margin: "4px 0 10px" }}>
+          <div
+            style={{
+              fontSize: 12,
+              color: "var(--ink-mute)",
+              margin: "4px 0 10px",
+            }}
+          >
             {item.variant.title}
           </div>
         )}
@@ -123,7 +143,12 @@ export default function CartDrawerItem({
             <button
               type="button"
               onClick={() => update(optimisticQty - 1)}
-              style={{ width: 28, height: 28, display: "grid", placeItems: "center" }}
+              style={{
+                width: 28,
+                height: 28,
+                display: "grid",
+                placeItems: "center",
+              }}
               aria-label="Moins"
               disabled={isPending}
             >
@@ -138,7 +163,12 @@ export default function CartDrawerItem({
             <button
               type="button"
               onClick={() => update(optimisticQty + 1)}
-              style={{ width: 28, height: 28, display: "grid", placeItems: "center" }}
+              style={{
+                width: 28,
+                height: 28,
+                display: "grid",
+                placeItems: "center",
+              }}
               aria-label="Plus"
               disabled={isPending}
             >

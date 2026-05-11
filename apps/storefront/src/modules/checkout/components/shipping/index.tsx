@@ -5,7 +5,7 @@ import { setShippingMethod } from "@lib/data/cart"
 import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
 import { convertToLocale } from "@lib/util/money"
 import { CheckCircleSolid, Loader } from "@medusajs/icons"
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
 import { Button, clx, Heading, Text } from "@medusajs/ui"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import Divider from "@modules/common/components/divider"
@@ -16,7 +16,7 @@ import { useEffect, useState } from "react"
 const PICKUP_OPTION_ON = "__PICKUP_ON"
 const PICKUP_OPTION_OFF = "__PICKUP_OFF"
 
-type ShippingProps = {
+interface ShippingProps {
   cart: HttpTypes.StoreCart
   availableShippingMethods: HttpTypes.StoreCartShippingOption[] | null
 }
@@ -70,12 +70,25 @@ const Shipping: React.FC<ShippingProps> = ({
 
   const isOpen = searchParams.get("step") === "delivery"
 
+  // TODO Phase 5: rewrite shipping step around Chronofresh/Colissimo providers.
+  // `service_zone` is not exposed on StoreCartShippingOption in current Medusa
+  // types — keeping the read for the legacy template until then.
   const _shippingMethods = availableShippingMethods?.filter(
-    (sm) => sm.service_zone?.fulfillment_set?.type !== "pickup"
+    (sm) =>
+      (
+        sm as unknown as {
+          service_zone?: { fulfillment_set?: { type?: string } }
+        }
+      ).service_zone?.fulfillment_set?.type !== "pickup"
   )
 
   const _pickupMethods = availableShippingMethods?.filter(
-    (sm) => sm.service_zone?.fulfillment_set?.type === "pickup"
+    (sm) =>
+      (
+        sm as unknown as {
+          service_zone?: { fulfillment_set?: { type?: string } }
+        }
+      ).service_zone?.fulfillment_set?.type === "pickup"
   )
 
   const hasPickupOptions = !!_pickupMethods?.length
@@ -340,12 +353,28 @@ const Shipping: React.FC<ShippingProps> = ({
                               <span className="text-base-regular">
                                 {option.name}
                               </span>
-                              <span className="text-base-regular text-ui-fg-muted">
-                                {formatAddress(
-                                  option.service_zone?.fulfillment_set?.location
-                                    ?.address
-                                )}
-                              </span>
+                              {(() => {
+                                const pickupAddress = (
+                                  option as unknown as {
+                                    service_zone?: {
+                                      fulfillment_set?: {
+                                        location?: {
+                                          address?: Parameters<
+                                            typeof formatAddress
+                                          >[0]
+                                        }
+                                      }
+                                    }
+                                  }
+                                ).service_zone?.fulfillment_set?.location
+                                  ?.address
+                                if (!pickupAddress) return null
+                                return (
+                                  <span className="text-base-regular text-ui-fg-muted">
+                                    {formatAddress(pickupAddress)}
+                                  </span>
+                                )
+                              })()}
                             </div>
                           </div>
                           <span className="justify-self-end text-ui-fg-base">

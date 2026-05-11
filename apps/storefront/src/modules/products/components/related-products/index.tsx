@@ -1,9 +1,10 @@
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
+
 import Product from "../product-preview"
 
-type RelatedProductsProps = {
+interface RelatedProductsProps {
   product: HttpTypes.StoreProduct
   countryCode: string
 }

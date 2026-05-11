@@ -1,8 +1,9 @@
+import { Container, Text } from "@medusajs/ui"
 import * as React from "react"
 import { useParams, Navigate } from "react-router-dom"
-import { Container, Text } from "@medusajs/ui"
-import { usePage } from "../../../hooks/use-pages"
+
 import { PageForm } from "../../../components/pages/page-form"
+import { usePage } from "../../../hooks/use-pages"
 
 const PageEditPage = () => {
   const { id } = useParams<{ id: string }>()

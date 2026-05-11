@@ -1,16 +1,16 @@
-import { Suspense } from "react"
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import RevealInit from "@modules/home/components/lehena/reveal-init"
 import LehenaProductActions from "@modules/products/components/lehena-pdp/actions"
 import LehenaPDPGallery from "@modules/products/components/lehena-pdp/gallery"
 import LehenaLeGeste from "@modules/products/components/lehena-pdp/le-geste"
 import LehenaPairings from "@modules/products/components/lehena-pdp/pairings"
-import LehenaProductTabs from "@modules/products/components/lehena-pdp/tabs"
 import LehenaReviews from "@modules/products/components/lehena-pdp/reviews"
+import LehenaProductTabs from "@modules/products/components/lehena-pdp/tabs"
 import LehenaTrustBadges from "@modules/products/components/lehena-pdp/trust-badges"
+import { Suspense } from "react"
 
-type Props = {
+interface Props {
   product: HttpTypes.StoreProduct
   region: HttpTypes.StoreRegion
   countryCode: string
@@ -65,13 +65,16 @@ export default function LehenaProductTemplate({
     {
       id: "description",
       label: "Description",
-      content: description || "Une pièce d'exception, séchée lentement et naturellement.",
+      content:
+        description ||
+        "Une pièce d'exception, séchée lentement et naturellement.",
     },
     ...DEFAULT_TABS.map((t) => ({
       id: t.id,
       label: t.label,
       content:
-        (typeof meta[t.id] === "string" && (meta[t.id] as string)) || t.fallback,
+        (typeof meta[t.id] === "string" && (meta[t.id] as string)) ||
+        t.fallback,
     })),
   ]
 
@@ -95,7 +98,10 @@ export default function LehenaProductTemplate({
             Maison
           </LocalizedClientLink>
           <span style={{ color: "var(--ink-mute)" }}>/</span>
-          <LocalizedClientLink href="/store" style={{ color: "var(--ink-mute)" }}>
+          <LocalizedClientLink
+            href="/store"
+            style={{ color: "var(--ink-mute)" }}
+          >
             Boutique
           </LocalizedClientLink>
           {category && (
@@ -114,7 +120,10 @@ export default function LehenaProductTemplate({
         </div>
       </div>
 
-      <section style={{ padding: "20px 0 80px" }} data-testid="product-container">
+      <section
+        style={{ padding: "20px 0 80px" }}
+        data-testid="product-container"
+      >
         <div
           className="lh-wrap"
           style={{

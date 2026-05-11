@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
-type PreviewBannerProps = {
+interface PreviewBannerProps {
   isDraft: boolean
 }
 

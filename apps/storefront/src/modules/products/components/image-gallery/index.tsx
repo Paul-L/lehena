@@ -1,8 +1,8 @@
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
 import { Container } from "@medusajs/ui"
 import Image from "next/image"
 
-type ImageGalleryProps = {
+interface ImageGalleryProps {
   images: HttpTypes.StoreProductImage[]
 }
 

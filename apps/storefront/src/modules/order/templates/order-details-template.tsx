@@ -1,7 +1,7 @@
 "use client"
 
 import { XMark } from "@medusajs/icons"
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Help from "@modules/order/components/help"
 import Items from "@modules/order/components/items"
@@ -10,7 +10,7 @@ import OrderSummary from "@modules/order/components/order-summary"
 import ShippingDetails from "@modules/order/components/shipping-details"
 import React from "react"
 
-type OrderDetailsTemplateProps = {
+interface OrderDetailsTemplateProps {
   order: HttpTypes.StoreOrder
 }
 

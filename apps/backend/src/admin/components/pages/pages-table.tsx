@@ -1,13 +1,15 @@
-import * as React from "react"
-import { Link } from "react-router-dom"
 import { Badge, Table, Text } from "@medusajs/ui"
 import { formatDistanceToNow } from "date-fns"
 import { fr } from "date-fns/locale"
-import { StatusBadge } from "./status-badge"
+import * as React from "react"
+import { Link } from "react-router-dom"
+
 import { PagesRowActions } from "./pages-row-actions"
+import { StatusBadge } from "./status-badge"
+
 import type { Page } from "../../hooks/use-pages"
 
-type PagesTableProps = {
+interface PagesTableProps {
   pages: Page[]
   isLoading?: boolean
 }

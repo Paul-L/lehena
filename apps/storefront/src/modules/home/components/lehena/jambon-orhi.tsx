@@ -1,6 +1,6 @@
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { Placeholder } from "@modules/common/components/lehena/primitives"
 import { LhArrow } from "@modules/common/components/lehena/icons"
+import { Placeholder } from "@modules/common/components/lehena/primitives"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const FACTS: [string, string][] = [
   ["Race", "Duroc"],
@@ -92,7 +92,11 @@ export default function LehenaJambonOrhi() {
           </LocalizedClientLink>
         </div>
         <div style={{ position: "relative" }}>
-          <Placeholder label="Jambon Orhi · 24 mois" aspect="4/5" tone="rouge" />
+          <Placeholder
+            label="Jambon Orhi · 24 mois"
+            aspect="4/5"
+            tone="rouge"
+          />
           <div
             style={{
               position: "absolute",
@@ -104,7 +108,10 @@ export default function LehenaJambonOrhi() {
               maxWidth: 220,
             }}
           >
-            <div className="serif-display" style={{ fontSize: 30, lineHeight: 1 }}>
+            <div
+              className="serif-display"
+              style={{ fontSize: 30, lineHeight: 1 }}
+            >
               24
             </div>
             <div className="eyebrow" style={{ marginTop: 4 }}>

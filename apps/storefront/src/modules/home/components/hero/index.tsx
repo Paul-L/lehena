@@ -22,6 +22,7 @@ const Hero = () => {
         <a
           href="https://github.com/medusajs/nextjs-starter-medusa"
           target="_blank"
+          rel="noreferrer"
         >
           <Button variant="secondary">
             View on GitHub

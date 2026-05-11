@@ -1,13 +1,10 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+
 import { sdk } from "../lib/sdk"
 
 export type PageStatus = "draft" | "published"
 
-export type Page = {
+export interface Page {
   id: string
   slug: string
   title: string
@@ -24,7 +21,7 @@ export type Page = {
   deleted_at: string | null
 }
 
-export type ListPagesQuery = {
+export interface ListPagesQuery {
   limit?: number
   offset?: number
   status?: PageStatus
@@ -33,17 +30,23 @@ export type ListPagesQuery = {
   slug?: string
 }
 
-export type ListPagesResponse = {
+export interface ListPagesResponse {
   pages: Page[]
   count: number
   limit: number
   offset: number
 }
 
-export type SinglePageResponse = { page: Page }
-export type DeletePageResponse = { id: string; object: "page"; deleted: true }
+export interface SinglePageResponse {
+  page: Page
+}
+export interface DeletePageResponse {
+  id: string
+  object: "page"
+  deleted: true
+}
 
-export type CreatePageInput = {
+export interface CreatePageInput {
   slug: string
   title: string
   content?: Record<string, unknown> | null
@@ -90,25 +93,18 @@ export const usePages = (query: ListPagesQuery = {}) =>
 export const usePage = (id: string | undefined | null) =>
   useQuery({
     queryKey: pagesKeys.detail(id ?? ""),
-    queryFn: () =>
-      sdk.client.fetch<SinglePageResponse>(`/admin/pages/${id}`),
+    queryFn: () => sdk.client.fetch<SinglePageResponse>(`/admin/pages/${id}`),
     enabled: !!id,
   })
 
-export const useCheckSlugAvailability = (
-  slug: string,
-  excludeId?: string
-) =>
+export const useCheckSlugAvailability = (slug: string, excludeId?: string) =>
   useQuery({
     queryKey: pagesKeys.slugCheck(slug, excludeId),
     queryFn: async () => {
       if (!slug) return { available: true as const }
-      const resp = await sdk.client.fetch<ListPagesResponse>(
-        "/admin/pages",
-        {
-          query: { slug, limit: 1 },
-        }
-      )
+      const resp = await sdk.client.fetch<ListPagesResponse>("/admin/pages", {
+        query: { slug, limit: 1 },
+      })
       const conflict = resp.pages.find((p) => p.id !== excludeId)
       return { available: !conflict }
     },
@@ -167,10 +163,9 @@ export const usePublishPage = (id: string) => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: () =>
-      sdk.client.fetch<SinglePageResponse>(
-        `/admin/pages/${id}/publish`,
-        { method: "POST" }
-      ),
+      sdk.client.fetch<SinglePageResponse>(`/admin/pages/${id}/publish`, {
+        method: "POST",
+      }),
     onSuccess: async (data) => {
       qc.setQueryData(pagesKeys.detail(id), data)
       await qc.invalidateQueries({ queryKey: pagesKeys.lists() })
@@ -182,10 +177,9 @@ export const useUnpublishPage = (id: string) => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: () =>
-      sdk.client.fetch<SinglePageResponse>(
-        `/admin/pages/${id}/unpublish`,
-        { method: "POST" }
-      ),
+      sdk.client.fetch<SinglePageResponse>(`/admin/pages/${id}/unpublish`, {
+        method: "POST",
+      }),
     onSuccess: async (data) => {
       qc.setQueryData(pagesKeys.detail(id), data)
       await qc.invalidateQueries({ queryKey: pagesKeys.lists() })
@@ -193,7 +187,7 @@ export const useUnpublishPage = (id: string) => {
   })
 }
 
-export type PreviewTokenResponse = {
+export interface PreviewTokenResponse {
   token: string
   expires_in: number
 }
@@ -207,7 +201,5 @@ export type PreviewTokenResponse = {
 export const useFetchPreviewToken = () =>
   useMutation({
     mutationFn: () =>
-      sdk.client.fetch<PreviewTokenResponse>(
-        "/admin/pages/preview-token"
-      ),
+      sdk.client.fetch<PreviewTokenResponse>("/admin/pages/preview-token"),
   })

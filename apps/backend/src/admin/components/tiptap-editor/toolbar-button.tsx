@@ -1,7 +1,7 @@
-import * as React from "react"
 import { IconButton, Tooltip, clx } from "@medusajs/ui"
+import * as React from "react"
 
-export type ToolbarButtonProps = {
+export interface ToolbarButtonProps {
   icon: React.ComponentType<{ className?: string }>
   label: string
   shortcut?: string
