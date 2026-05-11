@@ -28,6 +28,7 @@ module.exports = defineConfig({
     { resolve: "./src/modules/pages" },
     { resolve: "./src/modules/catalog" },
     { resolve: "./src/modules/redirects" },
+    { resolve: "./src/modules/faq" },
   ],
   plugins: [
     {

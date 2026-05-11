@@ -4,12 +4,17 @@ import {
   validateAndTransformQuery,
 } from "@medusajs/framework/http"
 
+import { UpdateFaqItemSchema } from "./admin/faq-items/[id]/validators"
 import {
   CreatePageSchema,
   ListPagesQuerySchema,
   ListStorePagesQuerySchema,
   UpdatePageSchema,
 } from "./admin/pages/validators"
+import {
+  CreateProductFaqItemSchema,
+  ReorderProductFaqItemsSchema,
+} from "./admin/products/[id]/faq-items/validators"
 import {
   CreateRedirectSchema,
   ListRedirectsQuerySchema,
@@ -46,6 +51,21 @@ export default defineMiddlewares({
       matcher: "/admin/redirects",
       method: "POST",
       middlewares: [validateAndTransformBody(CreateRedirectSchema)],
+    },
+    {
+      matcher: "/admin/products/:id/faq-items",
+      method: "POST",
+      middlewares: [validateAndTransformBody(CreateProductFaqItemSchema)],
+    },
+    {
+      matcher: "/admin/products/:id/faq-items/reorder",
+      method: "POST",
+      middlewares: [validateAndTransformBody(ReorderProductFaqItemsSchema)],
+    },
+    {
+      matcher: "/admin/faq-items/:id",
+      method: "POST",
+      middlewares: [validateAndTransformBody(UpdateFaqItemSchema)],
     },
   ],
 })
