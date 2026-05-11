@@ -226,6 +226,9 @@ importers:
       react-dom:
         specifier: 19.0.5
         version: 19.0.5(react@19.0.5)
+      react-medium-image-zoom:
+        specifier: ^5.4.5
+        version: 5.4.5(react-dom@19.0.5(react@19.0.5))(react@19.0.5)
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -7576,6 +7579,12 @@ packages:
     engines: {node: '>=10'}
     peerDependencies:
       react: 19.0.5
+
+  react-medium-image-zoom@5.4.5:
+    resolution: {integrity: sha512-58QSIRK6X3uw2fSTejJRnH0JuKTZl7ZJYX+sAMaYx4YTEm33gsNdnP5RuQSCnBiAvisQeErqZWAT31bR89WB6g==}
+    peerDependencies:
+      react: 19.0.5
+      react-dom: 19.0.5
 
   react-refresh@0.17.0:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
@@ -17557,6 +17566,11 @@ snapshots:
       react: 19.0.5
     optionalDependencies:
       fsevents: 2.3.3
+
+  react-medium-image-zoom@5.4.5(react-dom@19.0.5(react@19.0.5))(react@19.0.5):
+    dependencies:
+      react: 19.0.5
+      react-dom: 19.0.5(react@19.0.5)
 
   react-refresh@0.17.0: {}
 
