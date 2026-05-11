@@ -1,33 +1,21 @@
-import { type SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { buildMetadata } from "@lib/seo/metadata"
 import LehenaStoreTemplate from "@modules/store/templates/lehena-store-template"
 import { type Metadata } from "next"
 
-export const metadata: Metadata = {
-  title: "Boutique · Maison Lehena",
+export const metadata: Metadata = buildMetadata({
+  title: "Boutique",
   description:
     "Toute la maison Lehena, en un seul endroit. Jambons d'Iparralde, salaisons, patxaran et épicerie fine du Pays Basque.",
-}
+})
 
-interface Params {
-  searchParams: Promise<{
-    sortBy?: SortOptions
-    page?: string
-    view?: "compact" | "comfort" | "spacious"
-  }>
+interface Props {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
   params: Promise<{ countryCode: string }>
 }
 
-export default async function StorePage(props: Params) {
-  const params = await props.params
-  const searchParams = await props.searchParams
-  const { sortBy, page, view } = searchParams
+export default async function StorePage({ searchParams, params }: Props) {
+  const sp = await searchParams
+  const { countryCode } = await params
 
-  return (
-    <LehenaStoreTemplate
-      sortBy={sortBy}
-      page={page}
-      view={view}
-      countryCode={params.countryCode}
-    />
-  )
+  return <LehenaStoreTemplate searchParams={sp} countryCode={countryCode} />
 }

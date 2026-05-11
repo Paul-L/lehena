@@ -118,7 +118,7 @@ export default function LehenaStoreControls({
         <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
           <select
             value={sortBy}
-            onChange={(e) => setParam("sortBy", e.target.value)}
+            onChange={(e) => setParam("sort", e.target.value)}
             disabled={isPending}
             style={{
               fontFamily: "var(--mono)",
