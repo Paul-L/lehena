@@ -1,6 +1,11 @@
-import { LhArrow } from "@modules/common/components/lehena/icons"
+import {
+  LhAward,
+  LhLeaf,
+  LhTruck,
+} from "@modules/common/components/lehena/icons"
 import { Frieze, Logo } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { NewsletterForm } from "@modules/layout/components/newsletter-form"
 
 const FOOTER_COLS: {
   title: string
@@ -9,31 +14,35 @@ const FOOTER_COLS: {
   {
     title: "Maison",
     links: [
-      { label: "Notre histoire", href: "/histoire" },
-      { label: "De la ferme à l'assiette", href: "/ferme" },
-      { label: "Savoir-faire", href: "/histoire" },
-      { label: "Actualités", href: "/histoire" },
+      { label: "Notre histoire", href: "/notre-histoire" },
+      { label: "De la ferme à l'assiette", href: "/la-ferme" },
+      { label: "Savoir-faire", href: "/savoir-faire" },
+      { label: "Actualités", href: "/actualites" },
     ],
   },
   {
     title: "Boutique",
     links: [
       { label: "Tous les produits", href: "/store" },
-      { label: "Jambons", href: "/categories/jambons" },
+      { label: "Jambons d'Iparralde", href: "/categories/jambons-iparralde" },
       { label: "Salaisons", href: "/categories/salaisons" },
-      { label: "Coffrets cadeaux", href: "/store" },
+      { label: "Coffrets cadeaux", href: "/categories/coffrets-cadeaux" },
     ],
   },
   {
     title: "Aide",
     links: [
-      { label: "Livraison", href: "/histoire" },
-      { label: "Conservation", href: "/histoire" },
-      { label: "Nous contacter", href: "/histoire" },
-      { label: "Mentions légales", href: "/histoire" },
+      { label: "Livraison", href: "/livraison" },
+      { label: "Conservation", href: "/conservation" },
+      { label: "Nous contacter", href: "/contact" },
+      { label: "CGV", href: "/cgv" },
+      { label: "Mentions légales", href: "/mentions-legales" },
+      { label: "Confidentialité", href: "/confidentialite" },
     ],
   },
 ]
+
+const PAYMENT_BADGES = ["Visa", "Mastercard", "Amex", "Apple Pay", "Google Pay"]
 
 export default function Footer() {
   return (
@@ -108,43 +117,7 @@ export default function Footer() {
                 Recettes, nouveaux affinages, ouvertures de cave. Une lettre par
                 mois, jamais plus.
               </p>
-              <form
-                style={{
-                  display: "flex",
-                  borderBottom: "1px solid rgba(244, 237, 224, 0.4)",
-                  paddingBottom: 8,
-                }}
-              >
-                <input
-                  type="email"
-                  placeholder="votre@email.fr"
-                  style={{
-                    flex: 1,
-                    background: "transparent",
-                    border: 0,
-                    color: "var(--bg)",
-                    fontFamily: "var(--serif)",
-                    fontSize: 18,
-                    outline: "none",
-                    padding: "8px 0",
-                  }}
-                />
-                <button
-                  type="submit"
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    color: "var(--bg)",
-                    fontFamily: "var(--mono)",
-                    fontSize: 12,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  S'abonner <LhArrow size={14} />
-                </button>
-              </form>
+              <NewsletterForm source="footer" tone="dark" />
             </div>
           </div>
         </div>
@@ -162,8 +135,9 @@ export default function Footer() {
             <div style={{ marginBottom: 16, filter: "brightness(1.1)" }}>
               <Logo height={56} />
             </div>
-            <p
+            <address
               style={{
+                fontStyle: "normal",
                 fontSize: 13,
                 color: "rgba(244, 237, 224, 0.7)",
                 lineHeight: 1.6,
@@ -172,32 +146,31 @@ export default function Footer() {
             >
               Maison Lehena
               <br />
-              Quartier Galharaga
+              Bourg
               <br />
-              64430 Saint-Étienne-de-Baïgorry
+              64470 Laguinge
               <br />
               Pays Basque, France
-            </p>
+            </address>
             <div style={{ marginTop: 18, display: "flex", gap: 12 }}>
-              {["Facebook", "Instagram"].map((s) => (
-                <a
-                  key={s}
-                  href="#"
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: "50%",
-                    border: "1px solid rgba(244, 237, 224, 0.3)",
-                    display: "grid",
-                    placeItems: "center",
-                    fontSize: 11,
-                    fontFamily: "var(--mono)",
-                  }}
-                  aria-label={s}
-                >
-                  {s[0]}
-                </a>
-              ))}
+              <a
+                href="https://www.facebook.com/maisonlehena"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={socialIconStyle}
+                aria-label="Maison Lehena sur Facebook"
+              >
+                F
+              </a>
+              <a
+                href="https://www.instagram.com/maisonlehena"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={socialIconStyle}
+                aria-label="Maison Lehena sur Instagram"
+              >
+                I
+              </a>
             </div>
           </div>
 
@@ -240,6 +213,114 @@ export default function Footer() {
             </div>
           ))}
         </div>
+
+        {/* ─── Badges row : paiement · livraison · origine ─── */}
+        <div
+          style={{
+            marginTop: 56,
+            paddingTop: 32,
+            borderTop: "1px solid rgba(244, 237, 224, 0.15)",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: 32,
+            alignItems: "center",
+            color: "rgba(244, 237, 224, 0.75)",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <span
+              className="eyebrow"
+              style={{ color: "rgba(244, 237, 224, 0.5)" }}
+            >
+              Paiement sécurisé
+            </span>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 8,
+              }}
+            >
+              {PAYMENT_BADGES.map((b) => (
+                <span
+                  key={b}
+                  style={{
+                    fontFamily: "var(--mono)",
+                    fontSize: 10,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    padding: "4px 8px",
+                    border: "1px solid rgba(244, 237, 224, 0.3)",
+                    borderRadius: 4,
+                    color: "rgba(244, 237, 224, 0.85)",
+                  }}
+                >
+                  {b}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <span
+              className="eyebrow"
+              style={{ color: "rgba(244, 237, 224, 0.5)" }}
+            >
+              Livraison
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                }}
+              >
+                <LhTruck size={16} /> Chronofresh
+              </span>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                }}
+              >
+                <LhTruck size={16} /> Colissimo
+              </span>
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <span
+              className="eyebrow"
+              style={{ color: "rgba(244, 237, 224, 0.5)" }}
+            >
+              Origine
+            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                }}
+              >
+                <LhAward size={16} /> Pays Basque
+              </span>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                }}
+              >
+                <LhLeaf size={16} /> Sans nitrite
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Frieze color="rgba(244, 237, 224, 0.3)" size={8} />
@@ -261,8 +342,20 @@ export default function Footer() {
         <span>
           © {new Date().getFullYear()} Maison Lehena · Tous droits réservés
         </span>
-        <span>Paiement sécurisé · Livraison Chronofresh</span>
+        <span>SIRET à venir · TVA FR à venir</span>
       </div>
     </footer>
   )
 }
+
+const socialIconStyle = {
+  width: 36,
+  height: 36,
+  borderRadius: "50%",
+  border: "1px solid rgba(244, 237, 224, 0.3)",
+  display: "grid",
+  placeItems: "center",
+  fontSize: 11,
+  fontFamily: "var(--mono)",
+  color: "var(--bg)",
+} as const

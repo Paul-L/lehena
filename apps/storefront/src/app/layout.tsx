@@ -1,3 +1,6 @@
+import { JsonLd } from "@lib/seo/json-ld"
+import { organizationSchema } from "@lib/seo/schemas/organization"
+import { websiteSchema } from "@lib/seo/schemas/website"
 import { getBaseURL } from "@lib/util/env"
 import { type Metadata } from "next"
 import "styles/globals.css"
@@ -23,6 +26,8 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
         />
+        <JsonLd id="lehena-organization" schema={organizationSchema()} />
+        <JsonLd id="lehena-website" schema={websiteSchema()} />
       </head>
       <body className="lh">
         <main className="relative">{props.children}</main>

@@ -8,9 +8,13 @@ import {
   LhClose,
 } from "@modules/common/components/lehena/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { useEffect, useId, useRef } from "react"
 
 import { useCartDrawer } from "./cart-drawer-context"
 import CartDrawerItem from "./cart-drawer-item"
+
+const FOCUSABLE_SELECTOR =
+  'a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'
 
 const FREE_SHIPPING_THRESHOLD = 50
 
@@ -20,6 +24,53 @@ export default function CartDrawer({
   cart: HttpTypes.StoreCart | null
 }) {
   const { open, setOpen } = useCartDrawer()
+  const titleId = useId()
+  const asideRef = useRef<HTMLElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
+
+  // Focus management: trap Tab inside the panel + restore focus on close.
+  useEffect(() => {
+    if (!open) return
+    previousFocusRef.current = document.activeElement as HTMLElement | null
+    const aside = asideRef.current
+    if (!aside) return
+
+    const focusables = Array.from(
+      aside.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+    )
+    focusables[0]?.focus()
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return
+      const list = Array.from(
+        aside.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+      )
+      if (list.length === 0) {
+        e.preventDefault()
+        return
+      }
+      const first = list[0]
+      const last = list[list.length - 1]
+      const active = document.activeElement as HTMLElement | null
+      if (e.shiftKey && active === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    aside.addEventListener("keydown", onKey)
+    return () => {
+      aside.removeEventListener("keydown", onKey)
+    }
+  }, [open])
+
+  useEffect(() => {
+    if (open) return
+    // Restore focus after close (skip on first mount).
+    previousFocusRef.current?.focus()
+  }, [open])
 
   const items = cart?.items ?? []
   const sortedItems = [...items].sort((a, b) =>
@@ -41,8 +92,11 @@ export default function CartDrawer({
 
   return (
     <>
-      <div
+      <button
+        type="button"
         onClick={() => setOpen(false)}
+        tabIndex={open ? 0 : -1}
+        aria-label="Fermer le panier"
         style={{
           position: "fixed",
           inset: 0,
@@ -51,12 +105,19 @@ export default function CartDrawer({
           pointerEvents: open ? "auto" : "none",
           transition: "opacity 320ms ease",
           zIndex: 80,
+          border: 0,
+          padding: 0,
+          cursor: open ? "pointer" : "default",
         }}
         aria-hidden={!open}
       />
       <aside
-        aria-label="Panier"
+        ref={asideRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
         aria-hidden={!open}
+        tabIndex={-1}
         style={{
           position: "fixed",
           top: 0,
@@ -83,14 +144,15 @@ export default function CartDrawer({
         >
           <div>
             <div className="eyebrow">Votre panier</div>
-            <div
+            <h2
+              id={titleId}
               className="serif-display"
-              style={{ fontSize: 26, marginTop: 4 }}
+              style={{ fontSize: 26, marginTop: 4, fontWeight: 400 }}
             >
               {itemCount > 0
                 ? `${itemCount} pièce${itemCount > 1 ? "s" : ""}`
                 : "Vide"}
-            </div>
+            </h2>
           </div>
           <button
             type="button"
