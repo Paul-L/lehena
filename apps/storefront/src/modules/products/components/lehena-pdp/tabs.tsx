@@ -1,19 +1,23 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type ReactNode } from "react"
 
-interface Tab {
+export interface Tab {
   id: string
   label: string
-  content: string
+  content: ReactNode
 }
 
 interface Props {
   tabs: Tab[]
+  /** Optional id of the tab to open first. Falls back to the first tab. */
+  defaultTabId?: string
 }
 
-export default function LehenaProductTabs({ tabs }: Props) {
-  const [active, setActive] = useState(tabs[0]?.id)
+export default function LehenaProductTabs({ tabs, defaultTabId }: Props) {
+  const [active, setActive] = useState<string>(
+    defaultTabId ?? tabs[0]?.id ?? ""
+  )
   if (tabs.length === 0) return null
   const current = tabs.find((t) => t.id === active) ?? tabs[0]
 
@@ -65,10 +69,13 @@ export default function LehenaProductTabs({ tabs }: Props) {
           color: "var(--ink-soft)",
           lineHeight: 1.65,
           minHeight: 120,
-          whiteSpace: "pre-line",
         }}
       >
-        {current.content}
+        {typeof current.content === "string" ? (
+          <p style={{ whiteSpace: "pre-line", margin: 0 }}>{current.content}</p>
+        ) : (
+          current.content
+        )}
       </div>
     </div>
   )

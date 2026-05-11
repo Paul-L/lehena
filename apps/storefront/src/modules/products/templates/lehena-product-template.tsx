@@ -1,17 +1,24 @@
 import { type HttpTypes } from "@medusajs/types"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { LehenaBreadcrumb } from "@modules/common/components/lehena/breadcrumb"
 import RevealInit from "@modules/home/components/lehena/reveal-init"
 import LehenaProductActions from "@modules/products/components/lehena-pdp/actions"
+import LehenaPDPDeliveryEstimate from "@modules/products/components/lehena-pdp/delivery-estimate"
+import LehenaPDPFaq from "@modules/products/components/lehena-pdp/faq"
 import LehenaPDPGallery from "@modules/products/components/lehena-pdp/gallery"
 import LehenaLeGeste from "@modules/products/components/lehena-pdp/le-geste"
+import LehenaPDPNutritional from "@modules/products/components/lehena-pdp/nutritional"
 import LehenaPairings from "@modules/products/components/lehena-pdp/pairings"
 import LehenaReviews from "@modules/products/components/lehena-pdp/reviews"
-import LehenaProductTabs from "@modules/products/components/lehena-pdp/tabs"
+import LehenaProductTabs, {
+  type Tab,
+} from "@modules/products/components/lehena-pdp/tabs"
 import LehenaTrustBadges from "@modules/products/components/lehena-pdp/trust-badges"
 import { Suspense } from "react"
 
+import type { EnrichedProduct } from "@lib/data/product-details"
+
 interface Props {
-  product: HttpTypes.StoreProduct
+  product: EnrichedProduct
   region: HttpTypes.StoreRegion
   countryCode: string
   images: HttpTypes.StoreProductImage[]
@@ -26,26 +33,121 @@ function splitTitle(title: string): { lead: string; tail: string | null } {
   }
 }
 
-const DEFAULT_TABS = [
-  {
-    id: "origine",
-    label: "Origine",
-    fallback:
-      "Élevé chez nos partenaires éleveurs du Pays Basque intérieur, en agriculture extensive. Traçabilité totale de la naissance à votre table.",
-  },
-  {
-    id: "affinage",
-    label: "Affinage",
-    fallback:
-      "Salé au sel sec, posé en cave d'affinage naturel, brassé d'air marin et de mistral pendant plusieurs mois.",
-  },
-  {
-    id: "conservation",
-    label: "Conservation",
-    fallback:
-      "À conserver dans un linge propre, au frais. Une fois entamé, recouvrir la coupe et consommer dans les 30 jours.",
-  },
-] as const
+const CONSERVATION_LABEL: Record<string, string> = {
+  ambient: "à température ambiante",
+  fresh: "au frais (4 °C)",
+  frozen: "au congélateur (−18 °C)",
+}
+
+function buildTabs(product: EnrichedProduct): Tab[] {
+  const details = product.product_details ?? null
+  const description =
+    product.description ||
+    details?.terroir_story ||
+    product.subtitle ||
+    "Une pièce d'exception, séchée lentement et naturellement."
+
+  const tabs: Tab[] = [
+    {
+      id: "description",
+      label: "Description",
+      content: description,
+    },
+  ]
+
+  // Origine
+  const originLines: string[] = []
+  if (details?.breed) originLines.push(`Race : ${details.breed}.`)
+  if (details?.origin) originLines.push(`Origine : ${details.origin}.`)
+  if (details?.terroir_story && details.terroir_story !== description) {
+    originLines.push(details.terroir_story)
+  }
+  if (originLines.length > 0) {
+    tabs.push({
+      id: "origine",
+      label: "Origine",
+      content: originLines.join("\n\n"),
+    })
+  } else {
+    tabs.push({
+      id: "origine",
+      label: "Origine",
+      content:
+        "Élevé chez nos partenaires éleveurs du Pays Basque, en agriculture extensive. Traçabilité totale de la naissance à votre table.",
+    })
+  }
+
+  // Affinage
+  const affinageLines: string[] = []
+  if (details?.aging_months) {
+    affinageLines.push(
+      `Affinage : ${details.aging_months} mois minimum dans nos caves de Soule.`
+    )
+  }
+  if (details?.cure_method) {
+    affinageLines.push(`Méthode : ${details.cure_method}.`)
+  }
+  if (details?.nitrite_free) {
+    affinageLines.push("Sans nitrite ajouté. Sel sec uniquement.")
+  }
+  if (affinageLines.length > 0) {
+    tabs.push({
+      id: "affinage",
+      label: "Affinage",
+      content: affinageLines.join("\n\n"),
+    })
+  } else {
+    tabs.push({
+      id: "affinage",
+      label: "Affinage",
+      content:
+        "Salé au sel sec, posé en cave d'affinage naturel, brassé d'air marin et de mistral pendant plusieurs mois.",
+    })
+  }
+
+  // Conservation
+  const conservationLines: string[] = []
+  if (details?.conservation_temp) {
+    conservationLines.push(
+      `À conserver ${CONSERVATION_LABEL[details.conservation_temp] ?? details.conservation_temp}.`
+    )
+  }
+  if (details?.conservation_days_after_opening) {
+    conservationLines.push(
+      `Une fois ouvert, à consommer sous ${details.conservation_days_after_opening} jours.`
+    )
+  }
+  if (details?.ddm_days) {
+    conservationLines.push(
+      `DDM : ${Math.floor(details.ddm_days / 30)} mois minimum à compter de l'expédition.`
+    )
+  }
+  if (conservationLines.length > 0) {
+    tabs.push({
+      id: "conservation",
+      label: "Conservation",
+      content: conservationLines.join("\n\n"),
+    })
+  } else {
+    tabs.push({
+      id: "conservation",
+      label: "Conservation",
+      content:
+        "À conserver dans un linge propre, au frais. Une fois entamé, recouvrir la coupe et consommer dans les 30 jours.",
+    })
+  }
+
+  // Ingrédients (uniquement si dispo dans le catalog)
+  if (details?.ingredients) {
+    tabs.push({
+      id: "ingredients",
+      label: "Ingrédients",
+      content: details.ingredients,
+    })
+  }
+
+  return tabs
+}
 
 export default function LehenaProductTemplate({
   product,
@@ -55,69 +157,39 @@ export default function LehenaProductTemplate({
 }: Props) {
   const { lead, tail } = splitTitle(product.title)
   const category = product.categories?.[0]
-  const meta = (product.metadata ?? {}) as Record<string, unknown>
-
-  const description =
-    product.description ||
-    (typeof meta.description === "string" ? (meta.description as string) : "")
-
-  const tabs = [
-    {
-      id: "description",
-      label: "Description",
-      content:
-        description ||
-        "Une pièce d'exception, séchée lentement et naturellement.",
-    },
-    ...DEFAULT_TABS.map((t) => ({
-      id: t.id,
-      label: t.label,
-      content:
-        (typeof meta[t.id] === "string" && (meta[t.id] as string)) ||
-        t.fallback,
-    })),
-  ]
+  const details = product.product_details ?? null
+  const tabs = buildTabs(product)
 
   const badges: string[] = []
   const tagBadges = (product.tags ?? [])
     .map((t) => t.value)
     .filter((v): v is string => !!v)
-    .slice(0, 3)
+    .slice(0, 2)
   badges.push(...tagBadges)
+  if (details?.nitrite_free) badges.push("Sans nitrite")
+  if (details?.aging_months && details.aging_months >= 24)
+    badges.push(`${details.aging_months} mois`)
   if (badges.length === 0) badges.push("Maison Lehena")
 
   return (
     <>
       <RevealInit />
       <div className="lh-wrap" style={{ padding: "24px 0 8px" }}>
-        <div
-          className="eyebrow"
-          style={{ display: "flex", gap: 8, flexWrap: "wrap" }}
-        >
-          <LocalizedClientLink href="/" style={{ color: "var(--ink-mute)" }}>
-            Maison
-          </LocalizedClientLink>
-          <span style={{ color: "var(--ink-mute)" }}>/</span>
-          <LocalizedClientLink
-            href="/store"
-            style={{ color: "var(--ink-mute)" }}
-          >
-            Boutique
-          </LocalizedClientLink>
-          {category && (
-            <>
-              <span style={{ color: "var(--ink-mute)" }}>/</span>
-              <LocalizedClientLink
-                href={`/categories/${category.handle}`}
-                style={{ color: "var(--ink-mute)" }}
-              >
-                {category.name}
-              </LocalizedClientLink>
-            </>
-          )}
-          <span style={{ color: "var(--ink-mute)" }}>/</span>
-          <span>{product.title}</span>
-        </div>
+        <LehenaBreadcrumb
+          items={[
+            { label: "Maison", href: "/" },
+            { label: "Boutique", href: "/store" },
+            ...(category
+              ? [
+                  {
+                    label: category.name,
+                    href: `/categories/${category.handle}`,
+                  },
+                ]
+              : []),
+            { label: product.title },
+          ]}
+        />
       </div>
 
       <section
@@ -184,7 +256,13 @@ export default function LehenaProductTemplate({
 
             <LehenaProductActions product={product} region={region} />
 
-            <LehenaTrustBadges />
+            <div style={{ marginTop: 24, marginBottom: 28 }}>
+              <LehenaPDPDeliveryEstimate
+                conservationTemp={details?.conservation_temp}
+              />
+            </div>
+
+            <LehenaTrustBadges details={details} />
 
             <LehenaProductTabs tabs={tabs} />
           </div>
@@ -192,6 +270,12 @@ export default function LehenaProductTemplate({
       </section>
 
       <LehenaLeGeste />
+
+      {details ? <LehenaPDPNutritional details={details} /> : null}
+
+      {product.faq_items && product.faq_items.length > 0 ? (
+        <LehenaPDPFaq items={product.faq_items} />
+      ) : null}
 
       <Suspense fallback={null}>
         <LehenaPairings product={product} countryCode={countryCode} />

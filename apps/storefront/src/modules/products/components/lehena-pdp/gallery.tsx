@@ -5,6 +5,9 @@ import { LhHeart } from "@modules/common/components/lehena/icons"
 import { Placeholder } from "@modules/common/components/lehena/primitives"
 import Image from "next/image"
 import { useState } from "react"
+import Zoom from "react-medium-image-zoom"
+
+import "react-medium-image-zoom/dist/styles.css"
 
 const TONES = ["rouge", "kraft", "encre", "argile", "olive", "creme"] as const
 
@@ -89,24 +92,27 @@ export default function LehenaPDPGallery({
       </div>
       <div style={{ position: "relative" }}>
         {current.image ? (
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              aspectRatio: "4 / 5",
-              overflow: "hidden",
-              background: "var(--paper)",
-            }}
-          >
-            <Image
-              src={current.image.url}
-              alt={current.label}
-              fill
-              priority
-              sizes="(max-width: 720px) 100vw, 60vw"
-              style={{ objectFit: "cover" }}
-            />
-          </div>
+          <Zoom zoomMargin={32} classDialog="lh-zoom-dialog">
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                aspectRatio: "4 / 5",
+                overflow: "hidden",
+                background: "var(--paper)",
+                cursor: "zoom-in",
+              }}
+            >
+              <Image
+                src={current.image.url}
+                alt={current.label}
+                fill
+                priority
+                sizes="(max-width: 720px) 100vw, 60vw"
+                style={{ objectFit: "cover" }}
+              />
+            </div>
+          </Zoom>
         ) : (
           <Placeholder label={current.label} aspect="4/5" tone={current.tone} />
         )}
@@ -120,6 +126,8 @@ export default function LehenaPDPGallery({
               gap: 6,
               flexWrap: "wrap",
               maxWidth: "calc(100% - 80px)",
+              zIndex: 2,
+              pointerEvents: "none",
             }}
           >
             {badges.map((b) => (
@@ -148,6 +156,7 @@ export default function LehenaPDPGallery({
             placeItems: "center",
             border: "1px solid var(--line)",
             color: "var(--ink)",
+            zIndex: 2,
           }}
         >
           <LhHeart size={16} />

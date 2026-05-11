@@ -9,7 +9,12 @@ import {
   LhPlus,
 } from "@modules/common/components/lehena/icons"
 import { useCartDrawer } from "@modules/layout/components/cart-drawer/cart-drawer-context"
-import { useParams } from "next/navigation"
+import {
+  usePathname,
+  useParams,
+  useRouter,
+  useSearchParams,
+} from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 
 interface Props {
@@ -20,6 +25,9 @@ interface Props {
 export default function LehenaProductActions({ product, region }: Props) {
   const { setOpen } = useCartDrawer()
   const countryCode = useParams().countryCode as string
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   const variants = product.variants ?? []
   const hasMultipleVariants = variants.length > 1
@@ -27,6 +35,8 @@ export default function LehenaProductActions({ product, region }: Props) {
 
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     () => {
+      const fromUrl = searchParams.get("v") ?? searchParams.get("v_id")
+      if (fromUrl && variants.some((v) => v.id === fromUrl)) return fromUrl
       if (!hasMultipleVariants && variants[0]?.id) return variants[0].id
       return null
     }
@@ -41,6 +51,17 @@ export default function LehenaProductActions({ product, region }: Props) {
       setSelectedVariantId(variants[0].id)
     }
   }, [hasMultipleVariants, variants])
+
+  // Sync to URL via router.replace (scroll: false, no server fetch).
+  const selectVariant = (variantId: string | null) => {
+    setSelectedVariantId(variantId)
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete("v_id")
+    if (variantId) params.set("v", variantId)
+    else params.delete("v")
+    const qs = params.toString()
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
+  }
 
   const selectedVariant = useMemo(() => {
     if (!selectedVariantId) return undefined
@@ -152,7 +173,7 @@ export default function LehenaProductActions({ product, region }: Props) {
                 <button
                   key={v.id}
                   type="button"
-                  onClick={() => setSelectedVariantId(v.id ?? null)}
+                  onClick={() => selectVariant(v.id ?? null)}
                   style={{
                     padding: "16px 12px",
                     border: isSelected
