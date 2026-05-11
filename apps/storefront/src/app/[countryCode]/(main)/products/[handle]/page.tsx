@@ -4,6 +4,7 @@ import { getRegion, listRegions } from "@lib/data/regions"
 import { JsonLd } from "@lib/seo/json-ld"
 import { buildMetadata } from "@lib/seo/metadata"
 import { breadcrumbSchema } from "@lib/seo/schemas/breadcrumb"
+import { faqPageSchema } from "@lib/seo/schemas/faq"
 import { productSchema } from "@lib/seo/schemas/product"
 import { getBaseURL } from "@lib/util/env"
 import { type HttpTypes } from "@medusajs/types"
@@ -128,6 +129,17 @@ export default async function ProductPage(props: Props) {
           { name: product.title },
         ])}
       />
+      {product.faq_items && product.faq_items.length > 0 ? (
+        <JsonLd
+          id="lehena-pdp-faq"
+          schema={faqPageSchema(
+            product.faq_items.map((it) => ({
+              question: it.question,
+              answer: it.answer,
+            }))
+          )}
+        />
+      ) : null}
       <LehenaProductTemplate
         product={product}
         region={region}

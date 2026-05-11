@@ -2,8 +2,11 @@ import { type HttpTypes } from "@medusajs/types"
 import { LehenaBreadcrumb } from "@modules/common/components/lehena/breadcrumb"
 import RevealInit from "@modules/home/components/lehena/reveal-init"
 import LehenaProductActions from "@modules/products/components/lehena-pdp/actions"
+import LehenaPDPDeliveryEstimate from "@modules/products/components/lehena-pdp/delivery-estimate"
+import LehenaPDPFaq from "@modules/products/components/lehena-pdp/faq"
 import LehenaPDPGallery from "@modules/products/components/lehena-pdp/gallery"
 import LehenaLeGeste from "@modules/products/components/lehena-pdp/le-geste"
+import LehenaPDPNutritional from "@modules/products/components/lehena-pdp/nutritional"
 import LehenaPairings from "@modules/products/components/lehena-pdp/pairings"
 import LehenaReviews from "@modules/products/components/lehena-pdp/reviews"
 import LehenaProductTabs, {
@@ -253,6 +256,12 @@ export default function LehenaProductTemplate({
 
             <LehenaProductActions product={product} region={region} />
 
+            <div style={{ marginTop: 24, marginBottom: 28 }}>
+              <LehenaPDPDeliveryEstimate
+                conservationTemp={details?.conservation_temp}
+              />
+            </div>
+
             <LehenaTrustBadges details={details} />
 
             <LehenaProductTabs tabs={tabs} />
@@ -261,6 +270,12 @@ export default function LehenaProductTemplate({
       </section>
 
       <LehenaLeGeste />
+
+      {details ? <LehenaPDPNutritional details={details} /> : null}
+
+      {product.faq_items && product.faq_items.length > 0 ? (
+        <LehenaPDPFaq items={product.faq_items} />
+      ) : null}
 
       <Suspense fallback={null}>
         <LehenaPairings product={product} countryCode={countryCode} />

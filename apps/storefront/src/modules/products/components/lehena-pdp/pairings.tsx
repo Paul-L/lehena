@@ -1,22 +1,58 @@
 import { listProducts } from "@lib/data/products"
+import { listFacetedProducts } from "@lib/data/products-faceted"
 import { getRegion } from "@lib/data/regions"
 import { type HttpTypes } from "@medusajs/types"
 import { LhArrow } from "@modules/common/components/lehena/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import LehenaProductCard from "@modules/products/components/lehena-product-card"
 
+import type { EnrichedProduct } from "@lib/data/product-details"
+
 interface Props {
-  product: HttpTypes.StoreProduct
+  product: EnrichedProduct
   countryCode: string
 }
 
-export default async function LehenaPairings({ product, countryCode }: Props) {
-  const region = await getRegion(countryCode)
-  if (!region) return null
+async function fromPairingsTags(
+  product: EnrichedProduct,
+  countryCode: string
+): Promise<HttpTypes.StoreProduct[]> {
+  const tags = product.product_details?.pairings_tags ?? []
+  if (tags.length === 0) return []
 
-  const queryParams: HttpTypes.StoreProductListParams = {
-    region_id: region.id,
+  // Take up to 3 tags and run a search per tag in parallel via the faceted
+  // endpoint's `q` text search. Dedupe by id, exclude the current product.
+  const results = await Promise.all(
+    tags.slice(0, 3).map((tag) =>
+      listFacetedProducts({
+        countryCode,
+        q: tag,
+        limit: 4,
+      }).catch(() => ({ products: [], count: 0, limit: 0, offset: 0 }))
+    )
+  )
+
+  const seen = new Set<string>([product.id])
+  const merged: HttpTypes.StoreProduct[] = []
+  for (const r of results) {
+    for (const p of r.products) {
+      if (seen.has(p.id)) continue
+      seen.add(p.id)
+      merged.push(p)
+      if (merged.length >= 2) return merged
+    }
   }
+  return merged
+}
+
+async function fromCollectionAndTags(
+  product: EnrichedProduct,
+  countryCode: string
+): Promise<HttpTypes.StoreProduct[]> {
+  const region = await getRegion(countryCode)
+  if (!region) return []
+
+  const queryParams: HttpTypes.StoreProductListParams = { region_id: region.id }
   if (product.collection_id) queryParams.collection_id = [product.collection_id]
   if (product.tags?.length) {
     queryParams.tag_id = product.tags
@@ -34,9 +70,25 @@ export default async function LehenaPairings({ product, countryCode }: Props) {
     )
     .catch(() => [])
 
-  const pairings = products.slice(0, 2)
-  if (pairings.length === 0) return null
+  return products.slice(0, 2)
+}
 
+export default async function LehenaPairings({ product, countryCode }: Props) {
+  // Prefer the catalog-curated pairings (Phase 1 seed: pairings_tags).
+  // Fall back to the native collection+tags heuristic when none are set or
+  // none resolve to other products.
+  const pairings = await fromPairingsTags(product, countryCode)
+  if (pairings.length < 2) {
+    const fallback = await fromCollectionAndTags(product, countryCode)
+    const seen = new Set(pairings.map((p) => p.id))
+    for (const p of fallback) {
+      if (seen.has(p.id) || pairings.length >= 2) continue
+      seen.add(p.id)
+      pairings.push(p)
+    }
+  }
+
+  if (pairings.length === 0) return null
   const cols = Math.min(pairings.length + 1, 3)
 
   return (
@@ -127,7 +179,7 @@ export default async function LehenaPairings({ product, countryCode }: Props) {
               Le produit + ses accords, dans un coffret prêt à offrir.
             </p>
             <LocalizedClientLink
-              href="/store"
+              href="/categories/coffrets-cadeaux"
               className="btn"
               style={{
                 borderColor: "#fff",
