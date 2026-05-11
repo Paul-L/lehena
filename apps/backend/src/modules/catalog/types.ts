@@ -103,7 +103,7 @@ export const ProductDetailsInputSchema = z
       .max(180)
       .nullable()
       .optional(),
-    ddm_days: z.number().int().min(1).max(1095),
+    ddm_days: z.number().int().min(1).max(3650),
     cure_method: z.string().max(200).nullable().optional(),
     nutritional: NutritionalSchema.nullable().optional(),
     ingredients: z.string().max(2000).nullable().optional(),
