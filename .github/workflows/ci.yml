@@ -24,6 +24,11 @@ env:
   STOREFRONT_URL: http://localhost:8000
   REVALIDATE_SECRET: ci-stub
   PREVIEW_SECRET: ci-stub
+  # The storefront validates these at build time (apps/storefront/src/lib/util/env.ts).
+  NEXT_PUBLIC_MEDUSA_BACKEND_URL: http://localhost:9000
+  NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: pk_ci_stub
+  NEXT_PUBLIC_BASE_URL: http://localhost:8000
+  NEXT_PUBLIC_DEFAULT_REGION: fr
 
 jobs:
   ci:
