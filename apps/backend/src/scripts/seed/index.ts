@@ -1,5 +1,6 @@
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
+import { seedCategories } from "./categories"
 import { seedFulfillment } from "./fulfillment"
 import { seedRegions } from "./regions"
 import { seedStore } from "./store"
@@ -7,7 +8,7 @@ import { seedStore } from "./store"
 import type { ExecArgs } from "@medusajs/framework/types"
 
 // Orchestrator for Phase 1 base data.
-// Catalog seed (categories + 30 products) is added in sub-passes D and E.
+// Catalog seed (30 products) is added in sub-pass E.
 export default async function seedLehena({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   logger.info("=== Lehena seed ===")
@@ -18,11 +19,13 @@ export default async function seedLehena({ container }: ExecArgs) {
     storeId: store.storeId,
     defaultSalesChannelId: store.defaultSalesChannelId,
   })
+  const categories = await seedCategories(container)
 
   logger.info("=== Lehena seed done ===")
   logger.info(
     `Publishable key id: ${store.publishableApiKeyId}  ` +
       `regions: fr=${regions.fr.id} eu=${regions.eu.id} world=${regions.world.id}  ` +
-      `profiles: fresh=${fulfillment.shippingProfiles.fresh.id} ambient=${fulfillment.shippingProfiles.ambient.id}`
+      `profiles: fresh=${fulfillment.shippingProfiles.fresh.id} ambient=${fulfillment.shippingProfiles.ambient.id}  ` +
+      `categories: ${categories.byHandle.size}`
   )
 }
