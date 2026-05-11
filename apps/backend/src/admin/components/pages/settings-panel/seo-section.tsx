@@ -1,16 +1,19 @@
-import * as React from "react"
-import { Controller, useFormContext } from "react-hook-form"
 import { Button, clx, Input, Label, Text, Textarea, toast } from "@medusajs/ui"
 import { Trash2, Upload } from "lucide-react"
+import * as React from "react"
+import { Controller, useFormContext } from "react-hook-form"
+
+import { uploadImageToMedusa } from "../../tiptap-editor/upload"
+
 import { CollapsibleSection } from "./collapsible-section"
 import { SeoGooglePreview } from "./seo-google-preview"
-import { uploadImageToMedusa } from "../../tiptap-editor/upload"
+
 import type { PageFormValues } from "../page-form-schema"
 
 const META_TITLE_MAX = 70
 const META_DESCRIPTION_MAX = 160
 
-type CharCounterProps = {
+interface CharCounterProps {
   current: number
   max: number
   ideal?: string
@@ -45,9 +48,7 @@ export const SeoSection: React.FC = () => {
   const slug = watch("slug")
   const fallbackTitle = watch("title")
 
-  const handleFileChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     e.target.value = ""
     if (!file) return
@@ -57,9 +58,7 @@ export const SeoSection: React.FC = () => {
       setValue("og_image_url", url, { shouldDirty: true, shouldValidate: true })
       toast.success("Image OG uploadée")
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Échec de l'upload"
-      )
+      toast.error(err instanceof Error ? err.message : "Échec de l'upload")
     } finally {
       setUploading(false)
     }
@@ -92,11 +91,7 @@ export const SeoSection: React.FC = () => {
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label
-          size="small"
-          weight="plus"
-          htmlFor="seo-meta-description"
-        >
+        <Label size="small" weight="plus" htmlFor="seo-meta-description">
           Meta description
         </Label>
         <Controller

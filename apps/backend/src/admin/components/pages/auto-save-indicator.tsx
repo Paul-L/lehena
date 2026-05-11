@@ -1,11 +1,12 @@
-import * as React from "react"
 import { clx, Text } from "@medusajs/ui"
-import { Check, CircleAlert, CloudUpload, Loader2 } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { fr } from "date-fns/locale"
+import { Check, CircleAlert, CloudUpload, Loader2 } from "lucide-react"
+import * as React from "react"
+
 import type { AutoSaveStatus } from "../../hooks/use-auto-save"
 
-type AutoSaveIndicatorProps = {
+interface AutoSaveIndicatorProps {
   status: AutoSaveStatus
   lastSavedAt: number | null
   errorMessage: string | null

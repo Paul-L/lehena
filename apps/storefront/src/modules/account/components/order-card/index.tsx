@@ -1,12 +1,11 @@
+import { convertToLocale } from "@lib/util/money"
+import { type HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Thumbnail from "@modules/products/components/thumbnail"
 import { useMemo } from "react"
 
-import Thumbnail from "@modules/products/components/thumbnail"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { convertToLocale } from "@lib/util/money"
-import { HttpTypes } from "@medusajs/types"
-
-type OrderCardProps = {
+interface OrderCardProps {
   order: HttpTypes.StoreOrder
 }
 

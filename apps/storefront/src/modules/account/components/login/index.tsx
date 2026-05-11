@@ -5,7 +5,7 @@ import { SubmitButton } from "@modules/checkout/components/submit-button"
 import Input from "@modules/common/components/input"
 import { useActionState } from "react"
 
-type Props = {
+interface Props {
   setCurrentView: (view: LOGIN_VIEW) => void
 }
 

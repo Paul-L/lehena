@@ -1,4 +1,7 @@
-type IconProps = { size?: number; className?: string }
+interface IconProps {
+  size?: number
+  className?: string
+}
 
 export const LhSearch = ({ size = 18 }: IconProps) => (
   <svg

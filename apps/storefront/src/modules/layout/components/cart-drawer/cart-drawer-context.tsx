@@ -11,7 +11,7 @@ import {
   type ReactNode,
 } from "react"
 
-type CartDrawerCtx = {
+interface CartDrawerCtx {
   open: boolean
   setOpen: (open: boolean) => void
   toggle: () => void

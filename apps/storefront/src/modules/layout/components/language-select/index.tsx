@@ -7,15 +7,14 @@ import {
   ListboxOptions,
   Transition,
 } from "@headlessui/react"
-import { Fragment, useEffect, useMemo, useState, useTransition } from "react"
+import { updateLocale } from "@lib/data/locale-actions"
+import { type Locale } from "@lib/data/locales"
+import { type StateType } from "@lib/hooks/use-toggle-state"
 import { useRouter } from "next/navigation"
+import { Fragment, useEffect, useMemo, useState, useTransition } from "react"
 import ReactCountryFlag from "react-country-flag"
 
-import { StateType } from "@lib/hooks/use-toggle-state"
-import { updateLocale } from "@lib/data/locale-actions"
-import { Locale } from "@lib/data/locales"
-
-type LanguageOption = {
+interface LanguageOption {
   code: string
   name: string
   localizedName: string
@@ -36,7 +35,7 @@ const getCountryCodeFromLocale = (localeCode: string): string => {
   }
 }
 
-type LanguageSelectProps = {
+interface LanguageSelectProps {
   toggleState: StateType
   locales: Locale[]
   currentLocale: string | null
@@ -49,7 +48,7 @@ type LanguageSelectProps = {
 const getLocalizedLanguageName = (
   code: string,
   fallbackName: string,
-  displayLocale: string = "en-US"
+  displayLocale = "en-US"
 ): string => {
   try {
     const displayNames = new Intl.DisplayNames([displayLocale], {
@@ -119,9 +118,9 @@ const LanguageSelect = ({
         onChange={handleChange}
         defaultValue={
           currentLocale
-            ? options.find(
+            ? (options.find(
                 (o) => o.code.toLowerCase() === currentLocale.toLowerCase()
-              ) ?? DEFAULT_OPTION
+              ) ?? DEFAULT_OPTION)
             : DEFAULT_OPTION
         }
         disabled={isPending}

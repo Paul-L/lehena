@@ -2,11 +2,11 @@ import { listProductsWithSort } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import LehenaProductCard from "@modules/products/components/lehena-product-card"
 import { Pagination } from "@modules/store/components/pagination"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { type SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
 const PRODUCT_LIMIT = 12
 
-type LehenaPaginatedProductsProps = {
+interface LehenaPaginatedProductsProps {
   sortBy: SortOptions
   page: number
   view: "compact" | "comfort" | "spacious"
@@ -25,7 +25,7 @@ export default async function LehenaPaginatedProducts({
   productsIds,
   countryCode,
 }: LehenaPaginatedProductsProps) {
-  type Query = {
+  interface Query {
     limit: number
     collection_id?: string[]
     category_id?: string[]
@@ -63,7 +63,10 @@ export default async function LehenaPaginatedProducts({
   if (products.length === 0) {
     return (
       <div style={{ padding: "80px 0", textAlign: "center" }}>
-        <div className="serif-display" style={{ fontSize: 32, marginBottom: 8 }}>
+        <div
+          className="serif-display"
+          style={{ fontSize: 32, marginBottom: 8 }}
+        >
           Rien à cette adresse.
         </div>
         <p style={{ color: "var(--ink-mute)", marginBottom: 20 }}>

@@ -1,6 +1,6 @@
 import {
-  MedusaRequest,
-  MedusaResponse,
+  type MedusaRequest,
+  type MedusaResponse,
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 import jwt from "jsonwebtoken"
@@ -24,11 +24,9 @@ export async function GET(_req: MedusaRequest, res: MedusaResponse) {
     )
   }
 
-  const token = jwt.sign(
-    { scope: "preview" },
-    previewSecret,
-    { expiresIn: TOKEN_TTL_SECONDS }
-  )
+  const token = jwt.sign({ scope: "preview" }, previewSecret, {
+    expiresIn: TOKEN_TTL_SECONDS,
+  })
 
   return res.json({
     token,

@@ -3,10 +3,8 @@ import {
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk"
 import { emitEventStep } from "@medusajs/medusa/core-flows"
-import {
-  updatePageStep,
-  type UpdatePageStepInput,
-} from "./steps/update-page"
+
+import { updatePageStep, type UpdatePageStepInput } from "./steps/update-page"
 
 export type UpdatePageInput = UpdatePageStepInput
 

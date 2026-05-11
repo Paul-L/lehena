@@ -1,13 +1,13 @@
-import { StorePrice } from "@medusajs/types"
+import { type StorePrice } from "@medusajs/types"
 
-export type FeaturedProduct = {
+export interface FeaturedProduct {
   id: string
   title: string
   handle: string
   thumbnail?: string
 }
 
-export type VariantPrice = {
+export interface VariantPrice {
   calculated_price_number: number
   calculated_price: string
   original_price_number: number

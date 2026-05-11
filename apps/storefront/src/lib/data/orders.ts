@@ -2,8 +2,9 @@
 
 import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
+import { type HttpTypes } from "@medusajs/types"
+
 import { getAuthHeaders, getCacheOptions } from "./cookies"
-import { HttpTypes } from "@medusajs/types"
 
 export const retrieveOrder = async (id: string) => {
   const headers = {
@@ -30,8 +31,8 @@ export const retrieveOrder = async (id: string) => {
 }
 
 export const listOrders = async (
-  limit: number = 10,
-  offset: number = 0,
+  limit = 10,
+  offset = 0,
   filters?: Record<string, any>
 ) => {
   const headers = {

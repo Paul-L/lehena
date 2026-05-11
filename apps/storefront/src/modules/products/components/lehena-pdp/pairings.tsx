@@ -1,11 +1,11 @@
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
-import { HttpTypes } from "@medusajs/types"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { type HttpTypes } from "@medusajs/types"
 import { LhArrow } from "@modules/common/components/lehena/icons"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import LehenaProductCard from "@modules/products/components/lehena-product-card"
 
-type Props = {
+interface Props {
   product: HttpTypes.StoreProduct
   countryCode: string
 }

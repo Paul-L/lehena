@@ -1,5 +1,6 @@
-import * as React from "react"
 import { Badge } from "@medusajs/ui"
+import * as React from "react"
+
 import type { PageStatus } from "../../hooks/use-pages"
 
 const LABELS: Record<PageStatus, string> = {

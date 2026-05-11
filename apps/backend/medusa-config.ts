@@ -1,27 +1,39 @@
-import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { loadEnv, defineConfig } from "@medusajs/framework/utils"
 
-loadEnv(process.env.NODE_ENV || 'development', process.cwd())
+loadEnv(process.env.NODE_ENV || "development", process.cwd())
+
+function requireEnv(name: string): string {
+  const value = process.env[name]
+  if (!value || value.length === 0) {
+    throw new Error(
+      `[medusa-config] Missing required environment variable: ${name}. ` +
+        `Copy apps/backend/.env.example to apps/backend/.env and fill it in.`
+    )
+  }
+  return value
+}
 
 module.exports = defineConfig({
   projectConfig: {
-    databaseUrl: process.env.DATABASE_URL,
+    databaseUrl: requireEnv("DATABASE_URL"),
     http: {
-      storeCors: process.env.STORE_CORS!,
-      adminCors: process.env.ADMIN_CORS!,
-      authCors: process.env.AUTH_CORS!,
-      jwtSecret: process.env.JWT_SECRET || "supersecret",
-      cookieSecret: process.env.COOKIE_SECRET || "supersecret",
-    }
+      storeCors: requireEnv("STORE_CORS"),
+      adminCors: requireEnv("ADMIN_CORS"),
+      authCors: requireEnv("AUTH_CORS"),
+      jwtSecret: requireEnv("JWT_SECRET"),
+      cookieSecret: requireEnv("COOKIE_SECRET"),
+    },
   },
-  modules: [
-    { resolve: "./src/modules/pages" },
-  ],
+  modules: [{ resolve: "./src/modules/pages" }],
   plugins: [
     {
       resolve: "medusa-ai-assistant",
       options: {
-        defaultModel: "claude-sonnet-4-6",
-        maxTokens: 4096,
+        defaultModel:
+          process.env.ASSISTANT_DEFAULT_MODEL ?? "claude-sonnet-4-6",
+        maxTokens: process.env.ASSISTANT_MAX_TOKENS
+          ? Number(process.env.ASSISTANT_MAX_TOKENS)
+          : 4096,
       },
     },
   ],

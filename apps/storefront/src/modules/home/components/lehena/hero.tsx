@@ -1,5 +1,3 @@
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { Placeholder } from "@modules/common/components/lehena/primitives"
 import {
   LhArrow,
   LhAward,
@@ -7,6 +5,8 @@ import {
   LhSparkle,
   LhTruck,
 } from "@modules/common/components/lehena/icons"
+import { Placeholder } from "@modules/common/components/lehena/primitives"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const TRUST = [
   {
@@ -33,7 +33,9 @@ const TRUST = [
 
 export default function LehenaHero() {
   return (
-    <section style={{ position: "relative", overflow: "hidden", paddingBottom: 0 }}>
+    <section
+      style={{ position: "relative", overflow: "hidden", paddingBottom: 0 }}
+    >
       <div className="lh-wrap" style={{ paddingTop: 60, paddingBottom: 80 }}>
         <div
           style={{
@@ -95,7 +97,12 @@ export default function LehenaHero() {
             </p>
             <div
               className="reveal"
-              style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}
+              style={{
+                display: "flex",
+                gap: 16,
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
             >
               <LocalizedClientLink href="/store" className="btn btn-rouge">
                 Découvrir nos produits <LhArrow />
@@ -152,7 +159,10 @@ export default function LehenaHero() {
                 transform: "rotate(-8deg)",
               }}
             >
-              <div className="serif-display" style={{ fontSize: 32, lineHeight: 1 }}>
+              <div
+                className="serif-display"
+                style={{ fontSize: 32, lineHeight: 1 }}
+              >
                 24
               </div>
               <div

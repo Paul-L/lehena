@@ -1,13 +1,14 @@
 import {
-  MedusaRequest,
-  MedusaResponse,
+  type MedusaRequest,
+  type MedusaResponse,
 } from "@medusajs/framework/http"
+
 import { PAGES_MODULE } from "../../../../modules/pages"
 import {
   deletePageWorkflow,
   updatePageWorkflow,
 } from "../../../../workflows/pages"
-import { UpdatePageSchema } from "../validators"
+import { type UpdatePageSchema } from "../validators"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { id } = req.params

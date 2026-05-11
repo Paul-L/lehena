@@ -1,13 +1,15 @@
+import { EllipsisHorizontal } from "@medusajs/icons"
+import { DropdownMenu, IconButton, toast } from "@medusajs/ui"
 import * as React from "react"
 import { useNavigate } from "react-router-dom"
-import { DropdownMenu, IconButton, toast } from "@medusajs/ui"
-import { EllipsisHorizontal } from "@medusajs/icons"
+
 import {
   useCreatePage,
   useFetchPreviewToken,
   type Page,
 } from "../../hooks/use-pages"
 import { buildPageStorefrontUrl, sdk } from "../../lib/sdk"
+
 import { DeletePageModal } from "./delete-page-modal"
 
 /**
@@ -17,7 +19,7 @@ import { DeletePageModal } from "./delete-page-modal"
 async function findAvailableDuplicateSlug(baseSlug: string): Promise<string> {
   for (let i = 1; i < 100; i++) {
     const candidate = i === 1 ? `${baseSlug}-copie` : `${baseSlug}-copie-${i}`
-    const resp = await sdk.client.fetch<{ pages: Array<{ id: string }> }>(
+    const resp = await sdk.client.fetch<{ pages: { id: string }[] }>(
       "/admin/pages",
       { query: { slug: candidate, limit: 1 } }
     )
@@ -27,7 +29,7 @@ async function findAvailableDuplicateSlug(baseSlug: string): Promise<string> {
   return `${baseSlug}-copie-${Date.now()}`
 }
 
-type PagesRowActionsProps = {
+interface PagesRowActionsProps {
   page: Page
 }
 
@@ -69,9 +71,7 @@ export const PagesRowActions: React.FC<PagesRowActionsProps> = ({ page }) => {
       toast.success("Page dupliquée")
       navigate(`/pages/${created.page.id}`)
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Duplication impossible"
-      )
+      toast.error(err instanceof Error ? err.message : "Duplication impossible")
     }
   }
 

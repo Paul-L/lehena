@@ -1,16 +1,15 @@
 "use client"
 
-import { clx } from "@medusajs/ui"
+import { signout } from "@lib/data/customer"
 import { ArrowRightOnRectangle } from "@medusajs/icons"
-import { useParams, usePathname } from "next/navigation"
-
+import { type HttpTypes } from "@medusajs/types"
+import { clx } from "@medusajs/ui"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ChevronDown from "@modules/common/icons/chevron-down"
-import User from "@modules/common/icons/user"
 import MapPin from "@modules/common/icons/map-pin"
 import Package from "@modules/common/icons/package"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { HttpTypes } from "@medusajs/types"
-import { signout } from "@lib/data/customer"
+import User from "@modules/common/icons/user"
+import { useParams, usePathname } from "next/navigation"
 
 const AccountNav = ({
   customer,
@@ -167,7 +166,7 @@ const AccountNav = ({
   )
 }
 
-type AccountNavLinkProps = {
+interface AccountNavLinkProps {
   href: string
   route: string
   children: React.ReactNode

@@ -1,30 +1,26 @@
+import { zodResolver } from "@hookform/resolvers/zod"
+import { ArrowUturnLeft } from "@medusajs/icons"
+import { Button, Container, Heading, toast } from "@medusajs/ui"
 import * as React from "react"
-import { useNavigate, Link } from "react-router-dom"
 import {
   Controller,
   FormProvider,
   useForm,
   type SubmitHandler,
 } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Button, Container, Heading, toast } from "@medusajs/ui"
-import { ArrowUturnLeft } from "@medusajs/icons"
-import {
-  pageFormSchema,
-  type PageFormValues,
-} from "./page-form-schema"
-import { TitleInput } from "./title-input"
-import { SlugInput } from "./slug-input"
-import { SettingsPanel } from "./settings-panel"
-import { AutoSaveIndicator } from "./auto-save-indicator"
+import { useNavigate, Link } from "react-router-dom"
+
+import { useAutoSave } from "../../hooks/use-auto-save"
+import { useCheckSlugAvailability, useCreatePage } from "../../hooks/use-pages"
+import { slugify } from "../../lib/slugify"
 import { TiptapEditor } from "../tiptap-editor"
 import { uploadImageToMedusa } from "../tiptap-editor/upload"
-import { slugify } from "../../lib/slugify"
-import {
-  useCheckSlugAvailability,
-  useCreatePage,
-} from "../../hooks/use-pages"
-import { useAutoSave } from "../../hooks/use-auto-save"
+
+import { AutoSaveIndicator } from "./auto-save-indicator"
+import { pageFormSchema, type PageFormValues } from "./page-form-schema"
+import { SettingsPanel } from "./settings-panel"
+import { SlugInput } from "./slug-input"
+import { TitleInput } from "./title-input"
 
 const EMPTY_VALUES: PageFormValues = {
   title: "",
@@ -89,9 +85,7 @@ export const PageCreateForm: React.FC = () => {
       await createAndRedirect(values)
       toast.success("Page créée")
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Création impossible"
-      )
+      toast.error(err instanceof Error ? err.message : "Création impossible")
     }
   }
 

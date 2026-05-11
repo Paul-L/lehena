@@ -2,7 +2,7 @@ import type { JSONContent } from "@tiptap/react"
 
 export type { JSONContent }
 
-export type TiptapEditorProps = {
+export interface TiptapEditorProps {
   value: JSONContent | null
   onChange: (value: JSONContent) => void
   placeholder?: string

@@ -1,7 +1,7 @@
 import { convertToLocale } from "@lib/util/money"
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
 
-type OrderSummaryProps = {
+interface OrderSummaryProps {
   order: HttpTypes.StoreOrder
 }
 

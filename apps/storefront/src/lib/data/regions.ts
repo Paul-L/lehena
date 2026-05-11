@@ -2,7 +2,8 @@
 
 import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
+
 import { getCacheOptions } from "./cookies"
 
 export const listRegions = async () => {

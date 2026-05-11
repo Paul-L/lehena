@@ -1,9 +1,11 @@
-import * as React from "react"
-import { useEditor, EditorContent } from "@tiptap/react"
 import { clx } from "@medusajs/ui"
+import { useEditor, EditorContent } from "@tiptap/react"
+import * as React from "react"
+
+import { EditorBubbleMenu } from "./bubble-menu"
 import { getEditorExtensions } from "./extensions"
 import { Toolbar } from "./toolbar"
-import { EditorBubbleMenu } from "./bubble-menu"
+
 import type { TiptapEditorProps } from "./types"
 
 const EDITOR_CONTENT_CLASS = clx(
@@ -21,7 +23,7 @@ const EDITOR_CONTENT_CLASS = clx(
   "[&_p.is-editor-empty:first-child]:before:h-0"
 )
 
-export type TiptapEditorHandle = {
+export interface TiptapEditorHandle {
   openLinkPopover?: () => void
 }
 
@@ -164,9 +166,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
         const url = await onImageUploadRef.current(file)
         insertImageAtCursor(editor, url)
       } catch (err) {
-        setUploadError(
-          err instanceof Error ? err.message : "Échec de l'upload"
-        )
+        setUploadError(err instanceof Error ? err.message : "Échec de l'upload")
       } finally {
         setImageUploading(false)
       }
@@ -174,7 +174,8 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     [editor, insertImageAtCursor]
   )
 
-  const characterCount: number = editor?.storage.characterCount?.characters() ?? 0
+  const characterCount: number =
+    editor?.storage.characterCount?.characters() ?? 0
   const overLimit =
     typeof maxCharacters === "number" && characterCount > maxCharacters
 

@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-type FriezeProps = {
+interface FriezeProps {
   color?: string
   size?: number
   opacity?: number
@@ -32,7 +32,7 @@ type PlaceholderTone =
   | "olive"
   | "argile"
 
-type PlaceholderProps = {
+interface PlaceholderProps {
   label?: string
   aspect?: string
   tone?: PlaceholderTone
@@ -99,7 +99,10 @@ export const Placeholder = ({
   )
 }
 
-type LogoProps = { height?: number; invert?: boolean }
+interface LogoProps {
+  height?: number
+  invert?: boolean
+}
 
 export const Logo = ({ height = 36, invert = false }: LogoProps) => (
   <div

@@ -1,8 +1,6 @@
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import {
-  Placeholder,
-} from "@modules/common/components/lehena/primitives"
 import { LhArrow } from "@modules/common/components/lehena/icons"
+import { Placeholder } from "@modules/common/components/lehena/primitives"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const FEATURED: {
   slug: string
@@ -120,7 +118,11 @@ export default function LehenaSelection() {
                     marginBottom: 16,
                   }}
                 >
-                  <Placeholder label={p.placeholder} aspect="4/5" tone={p.tone} />
+                  <Placeholder
+                    label={p.placeholder}
+                    aspect="4/5"
+                    tone={p.tone}
+                  />
                   <div
                     style={{
                       position: "absolute",

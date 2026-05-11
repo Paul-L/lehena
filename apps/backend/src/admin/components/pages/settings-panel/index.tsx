@@ -1,10 +1,12 @@
 import * as React from "react"
-import { StatusSection } from "./status-section"
-import { SeoSection } from "./seo-section"
+
 import { LocaleSection } from "./locale-section"
+import { SeoSection } from "./seo-section"
+import { StatusSection } from "./status-section"
+
 import type { Page } from "../../../hooks/use-pages"
 
-type SettingsPanelProps = {
+interface SettingsPanelProps {
   page: Page | null
 }
 

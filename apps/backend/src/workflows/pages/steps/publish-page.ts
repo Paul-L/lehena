@@ -1,7 +1,10 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+
 import { PAGES_MODULE } from "../../../modules/pages"
 
-export type PublishPageStepInput = { id: string }
+export interface PublishPageStepInput {
+  id: string
+}
 
 export const publishPageStep = createStep(
   "publish-page",

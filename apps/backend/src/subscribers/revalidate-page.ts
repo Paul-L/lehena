@@ -1,6 +1,6 @@
-import { SubscriberArgs, type SubscriberConfig } from "@medusajs/framework"
+import { type SubscriberArgs, type SubscriberConfig } from "@medusajs/framework"
 
-type PageEventData = {
+interface PageEventData {
   id: string
   slug?: string
   locale?: string
@@ -34,10 +34,7 @@ export default async function revalidatePageHandler({
 
   const url = `${storefrontUrl.replace(/\/$/, "")}/api/revalidate`
   const controller = new AbortController()
-  const timeout = setTimeout(
-    () => controller.abort(),
-    REVALIDATE_TIMEOUT_MS
-  )
+  const timeout = setTimeout(() => controller.abort(), REVALIDATE_TIMEOUT_MS)
 
   try {
     const response = await fetch(url, {
@@ -75,10 +72,5 @@ export default async function revalidatePageHandler({
 }
 
 export const config: SubscriberConfig = {
-  event: [
-    "page.published",
-    "page.updated",
-    "page.unpublished",
-    "page.deleted",
-  ],
+  event: ["page.published", "page.updated", "page.unpublished", "page.deleted"],
 }

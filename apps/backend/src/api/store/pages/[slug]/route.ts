@@ -1,9 +1,10 @@
 import {
-  MedusaRequest,
-  MedusaResponse,
+  type MedusaRequest,
+  type MedusaResponse,
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 import jwt from "jsonwebtoken"
+
 import { PAGES_MODULE } from "../../../../modules/pages"
 
 /**
@@ -15,10 +16,7 @@ import { PAGES_MODULE } from "../../../../modules/pages"
  *   2. The raw PREVIEW_SECRET string itself (kept for curl/debugging and
  *      backwards compatibility with the integration tests).
  */
-function isValidPreviewToken(
-  token: string,
-  previewSecret: string
-): boolean {
+function isValidPreviewToken(token: string, previewSecret: string): boolean {
   if (token === previewSecret) return true
   try {
     const payload = jwt.verify(token, previewSecret) as

@@ -1,9 +1,9 @@
 "use client"
 
 import { Heading, Text, clx } from "@medusajs/ui"
+import { useSearchParams } from "next/navigation"
 
 import PaymentButton from "../payment-button"
-import { useSearchParams } from "next/navigation"
 
 const Review = ({ cart }: { cart: any }) => {
   const searchParams = useSearchParams()

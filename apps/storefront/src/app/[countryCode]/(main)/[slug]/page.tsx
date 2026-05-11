@@ -1,17 +1,21 @@
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { getAllPublishedPages, getPageBySlug } from "@lib/data/pages"
-import {
-  TiptapContent,
-  type JSONContent,
-} from "@lib/tiptap-renderer"
+import { TiptapContent, type JSONContent } from "@lib/tiptap-renderer"
 import { getBaseURL } from "@lib/util/env"
+import { notFound } from "next/navigation"
+
 import { PreviewBanner } from "../../../../components/preview-banner"
 
-type Params = { countryCode: string; slug: string }
-type SearchParams = { preview?: string }
+import type { Metadata } from "next"
 
-type Props = {
+interface Params {
+  countryCode: string
+  slug: string
+}
+interface SearchParams {
+  preview?: string
+}
+
+interface Props {
   params: Promise<Params>
   searchParams: Promise<SearchParams>
 }

@@ -1,11 +1,16 @@
 "use client"
 
-import { HttpTypes } from "@medusajs/types"
 import { convertToLocale } from "@lib/util/money"
-import { LhArrow, LhBag, LhClose } from "@modules/common/components/lehena/icons"
+import { type HttpTypes } from "@medusajs/types"
+import {
+  LhArrow,
+  LhBag,
+  LhClose,
+} from "@modules/common/components/lehena/icons"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import CartDrawerItem from "./cart-drawer-item"
+
 import { useCartDrawer } from "./cart-drawer-context"
+import CartDrawerItem from "./cart-drawer-item"
 
 const FREE_SHIPPING_THRESHOLD = 50
 
@@ -29,7 +34,10 @@ export default function CartDrawer({
   // Free-shipping progress (best-effort: works for EUR-style amounts).
   const subtotalDisplay = subtotal
   const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotalDisplay)
-  const progress = Math.min(100, (subtotalDisplay / FREE_SHIPPING_THRESHOLD) * 100)
+  const progress = Math.min(
+    100,
+    (subtotalDisplay / FREE_SHIPPING_THRESHOLD) * 100
+  )
 
   return (
     <>
@@ -75,8 +83,13 @@ export default function CartDrawer({
         >
           <div>
             <div className="eyebrow">Votre panier</div>
-            <div className="serif-display" style={{ fontSize: 26, marginTop: 4 }}>
-              {itemCount > 0 ? `${itemCount} pièce${itemCount > 1 ? "s" : ""}` : "Vide"}
+            <div
+              className="serif-display"
+              style={{ fontSize: 26, marginTop: 4 }}
+            >
+              {itemCount > 0
+                ? `${itemCount} pièce${itemCount > 1 ? "s" : ""}`
+                : "Vide"}
             </div>
           </div>
           <button
@@ -90,7 +103,12 @@ export default function CartDrawer({
         </header>
 
         {items.length > 0 && (
-          <div style={{ padding: "14px 28px", borderBottom: "1px solid var(--line)" }}>
+          <div
+            style={{
+              padding: "14px 28px",
+              borderBottom: "1px solid var(--line)",
+            }}
+          >
             <div
               style={{
                 display: "flex",
@@ -155,10 +173,19 @@ export default function CartDrawer({
               >
                 <LhBag size={26} />
               </div>
-              <div className="serif-display" style={{ fontSize: 22, marginBottom: 8 }}>
+              <div
+                className="serif-display"
+                style={{ fontSize: 22, marginBottom: 8 }}
+              >
                 Votre cave est vide
               </div>
-              <div style={{ color: "var(--ink-mute)", fontSize: 14, marginBottom: 22 }}>
+              <div
+                style={{
+                  color: "var(--ink-mute)",
+                  fontSize: 14,
+                  marginBottom: 22,
+                }}
+              >
                 Découvrez nos jambons affinés, salaisons et patxaran.
               </div>
               <LocalizedClientLink
@@ -199,7 +226,10 @@ export default function CartDrawer({
             >
               <span>Sous-total</span>
               <span>
-                {convertToLocale({ amount: subtotal, currency_code: currencyCode })}
+                {convertToLocale({
+                  amount: subtotal,
+                  currency_code: currencyCode,
+                })}
               </span>
             </div>
             <div
@@ -232,7 +262,10 @@ export default function CartDrawer({
             >
               <span className="eyebrow">Total</span>
               <span className="serif-display" style={{ fontSize: 28 }}>
-                {convertToLocale({ amount: total, currency_code: currencyCode })}
+                {convertToLocale({
+                  amount: total,
+                  currency_code: currencyCode,
+                })}
               </span>
             </div>
             <LocalizedClientLink
@@ -261,11 +294,17 @@ export default function CartDrawer({
       </aside>
       <style jsx global>{`
         @keyframes lh-flash {
-          0% { background: rgba(168, 57, 37, 0.15); }
-          100% { background: transparent; }
+          0% {
+            background: rgba(168, 57, 37, 0.15);
+          }
+          100% {
+            background: transparent;
+          }
         }
         @media (max-width: 720px) {
-          aside[aria-label="Panier"] { width: 100vw !important; }
+          aside[aria-label="Panier"] {
+            width: 100vw !important;
+          }
         }
       `}</style>
     </>

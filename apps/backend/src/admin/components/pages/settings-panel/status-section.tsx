@@ -1,9 +1,11 @@
-import * as React from "react"
 import { Text } from "@medusajs/ui"
+import * as React from "react"
+
 import { StatusBadge } from "../status-badge"
+
 import type { Page } from "../../../hooks/use-pages"
 
-type StatusSectionProps = {
+interface StatusSectionProps {
   page: Page | null
 }
 

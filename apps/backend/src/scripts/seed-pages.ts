@@ -1,5 +1,6 @@
-import { ExecArgs } from "@medusajs/framework/types"
+import { type ExecArgs } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+
 import {
   createPageWorkflow,
   publishPageWorkflow,
@@ -96,7 +97,8 @@ const SEEDS = (locale: string): SeedPage[] => [
     slug: "faq",
     title: "Questions fréquentes",
     locale,
-    excerpt: "Réponses aux questions fréquentes sur nos produits et la livraison.",
+    excerpt:
+      "Réponses aux questions fréquentes sur nos produits et la livraison.",
     meta_title: "FAQ — Lehena",
     meta_description:
       "Toutes les réponses aux questions fréquentes : conservation, livraison, retours, paiement.",
@@ -146,7 +148,8 @@ const SEEDS = (locale: string): SeedPage[] => [
     slug: "livraison-et-retours",
     title: "Livraison et retours",
     locale,
-    excerpt: "Tout savoir sur nos modes de livraison, délais et politique de retour.",
+    excerpt:
+      "Tout savoir sur nos modes de livraison, délais et politique de retour.",
     meta_title: "Livraison et retours — Lehena",
     meta_description:
       "Modes de livraison, zones desservies, délais de traitement et procédure de retour.",
@@ -186,7 +189,8 @@ const SEEDS = (locale: string): SeedPage[] => [
     locale,
     excerpt: "Mentions légales obligatoires du site Lehena.",
     meta_title: "Mentions légales — Lehena",
-    meta_description: "Éditeur, hébergeur, propriété intellectuelle et données personnelles.",
+    meta_description:
+      "Éditeur, hébergeur, propriété intellectuelle et données personnelles.",
     content: doc(
       h2("Éditeur du site"),
       para(
@@ -239,15 +243,15 @@ export default async function seedPages({ container }: ExecArgs) {
   const locale = process.env.SEED_LOCALE ?? "fr"
   const force = process.env.SEED_FORCE === "true"
 
-  logger.info(
-    `[seed-pages] Seeding pages (locale=${locale}, force=${force})`
-  )
+  logger.info(`[seed-pages] Seeding pages (locale=${locale}, force=${force})`)
 
   // Lazy-import the module service to access the underlying CRUD methods
   // for collision checks and force-delete; mutations still go through the
   // workflows below so events fire normally.
   const pagesService = container.resolve("pages") as {
-    listPages(filters?: Record<string, unknown>): Promise<Array<{ id: string; slug: string }>>
+    listPages(
+      filters?: Record<string, unknown>
+    ): Promise<{ id: string; slug: string }[]>
     deletePages(ids: string | string[]): Promise<void>
   }
 

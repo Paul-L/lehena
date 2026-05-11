@@ -1,5 +1,3 @@
-import * as React from "react"
-import { Link } from "react-router-dom"
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import {
   Button,
@@ -11,9 +9,12 @@ import {
   Text,
 } from "@medusajs/ui"
 import { FileText } from "lucide-react"
-import { usePages, type PageStatus } from "../../hooks/use-pages"
-import { useDebouncedValue } from "../../hooks/use-debounced-value"
+import * as React from "react"
+import { Link } from "react-router-dom"
+
 import { PagesTable } from "../../components/pages/pages-table"
+import { useDebouncedValue } from "../../hooks/use-debounced-value"
+import { usePages, type PageStatus } from "../../hooks/use-pages"
 
 const PAGE_SIZE = 20
 const ALL = "all" as const
@@ -118,7 +119,8 @@ const PagesListPage = () => {
 
       {isError && (
         <div className="rounded-md border border-ui-border-error bg-ui-bg-base p-3 text-ui-fg-error text-sm">
-          Erreur de chargement : {error instanceof Error ? error.message : "inconnue"}
+          Erreur de chargement :{" "}
+          {error instanceof Error ? error.message : "inconnue"}
         </div>
       )}
 

@@ -1,9 +1,10 @@
 import {
-  MedusaRequest,
-  MedusaResponse,
+  type MedusaRequest,
+  type MedusaResponse,
 } from "@medusajs/framework/http"
+
 import { PAGES_MODULE } from "../../../modules/pages"
-import { ListStorePagesQuerySchema } from "../../admin/pages/validators"
+import { type ListStorePagesQuerySchema } from "../../admin/pages/validators"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const pagesService = req.scope.resolve(PAGES_MODULE)

@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/develop' }}
+
+env:
+  TURBO_TELEMETRY_DISABLED: "1"
+  # Phase 0 placeholders — actual values are not required for typecheck/lint.
+  # Real secrets land in GitHub repo secrets in Phase 13.
+  DATABASE_URL: postgres://stub:stub@localhost:5432/stub
+  REDIS_URL: redis://localhost:6379
+  STORE_CORS: http://localhost:8000
+  ADMIN_CORS: http://localhost:9000
+  AUTH_CORS: http://localhost:9000,http://localhost:8000
+  JWT_SECRET: ci-stub-jwt-secret-not-used-at-runtime-only-for-build
+  COOKIE_SECRET: ci-stub-cookie-secret-not-used-at-runtime-only-for-build
+  STOREFRONT_URL: http://localhost:8000
+  REVALIDATE_SECRET: ci-stub
+  PREVIEW_SECRET: ci-stub
+  # The storefront validates these at build time (apps/storefront/src/lib/util/env.ts).
+  NEXT_PUBLIC_MEDUSA_BACKEND_URL: http://localhost:9000
+  NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: pk_ci_stub
+  NEXT_PUBLIC_BASE_URL: http://localhost:8000
+  NEXT_PUBLIC_DEFAULT_REGION: fr
+
+jobs:
+  ci:
+    name: install · typecheck · lint · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.4
+          run_install: false
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # Plugin `medusa-ai-assistant` is linked via yalc on the maintainer's
+      # machine (see ADR-001). The directory `apps/backend/.yalc/` is
+      # gitignored — until the plugin is published as a public package,
+      # the backend install fails on CI. We sidestep by stubbing it here.
+      - name: Stub medusa-ai-assistant (yalc-linked, not yet published)
+        run: |
+          mkdir -p apps/backend/.yalc/medusa-ai-assistant
+          cat > apps/backend/.yalc/medusa-ai-assistant/package.json <<'EOF'
+          {
+            "name": "medusa-ai-assistant",
+            "version": "0.0.0-ci-stub",
+            "main": "index.js"
+          }
+          EOF
+          echo "module.exports = {};" > apps/backend/.yalc/medusa-ai-assistant/index.js
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # `medusa build` generates `apps/backend/.medusa/types/` (typed
+      # module containers, query entry points). Required before typecheck —
+      # without it, `pagesService` and friends resolve to `unknown`.
+      # Building the backend up-front is also faster than chaining via turbo
+      # since the storefront doesn't depend on backend artifacts.
+      - name: Build backend (generates .medusa/types)
+        run: pnpm --filter @lehena/backend build
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      # NOTE Phase 13: `next build` runs SSG/data collection (fetches from
+      # the Medusa backend at build time for `generateStaticParams` and
+      # category/product prerendering). That needs a reachable backend
+      # which we won't have until staging infra lands in Phase 13. For now,
+      # typecheck + backend build are the source of truth for "the
+      # storefront compiles". Re-enable here once staging is wired.

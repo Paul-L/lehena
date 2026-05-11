@@ -3,7 +3,7 @@
 import { convertToLocale } from "@lib/util/money"
 import React from "react"
 
-type CartTotalsProps = {
+interface CartTotalsProps {
   totals: {
     total?: number | null
     subtotal?: number | null

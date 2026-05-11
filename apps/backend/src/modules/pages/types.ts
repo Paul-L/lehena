@@ -1,4 +1,4 @@
-import { PAGE_STATUSES } from "./models/page"
+import { type PAGE_STATUSES } from "./models/page"
 
 export type PageStatus = (typeof PAGE_STATUSES)[number]
 

@@ -1,7 +1,7 @@
 import { ChevronUpDown } from "@medusajs/icons"
 import { clx } from "@medusajs/ui"
 import {
-  SelectHTMLAttributes,
+  type SelectHTMLAttributes,
   forwardRef,
   useEffect,
   useImperativeHandle,

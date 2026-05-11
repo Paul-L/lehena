@@ -1,6 +1,7 @@
-import type { MetadataRoute } from "next"
 import { getAllPublishedPages } from "@lib/data/pages"
 import { getBaseURL } from "@lib/util/env"
+
+import type { MetadataRoute } from "next"
 
 /**
  * App Router native sitemap — exposed at `/sitemap.xml`.

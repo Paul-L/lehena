@@ -1,8 +1,5 @@
 "use client"
 
-import { useEffect, useState, type ReactNode } from "react"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { Frieze, Logo } from "@modules/common/components/lehena/primitives"
 import {
   LhArrow,
   LhBurger,
@@ -10,6 +7,9 @@ import {
   LhSearch,
   LhUser,
 } from "@modules/common/components/lehena/icons"
+import { Frieze, Logo } from "@modules/common/components/lehena/primitives"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { useEffect, useState, type ReactNode } from "react"
 
 const ANNOUNCE = [
   "Livraison Chronofresh 24–48h",
@@ -86,7 +86,7 @@ const Announcement = () => (
   </div>
 )
 
-type LehenaHeaderProps = {
+interface LehenaHeaderProps {
   cartButton: ReactNode
 }
 

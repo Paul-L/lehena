@@ -1,8 +1,8 @@
-import * as React from "react"
 import { clx, Text } from "@medusajs/ui"
 import { ChevronDown } from "lucide-react"
+import * as React from "react"
 
-type CollapsibleSectionProps = {
+interface CollapsibleSectionProps {
   title: string
   defaultOpen?: boolean
   children: React.ReactNode

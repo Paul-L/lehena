@@ -1,6 +1,6 @@
 import * as React from "react"
 
-type SeoGooglePreviewProps = {
+interface SeoGooglePreviewProps {
   title: string
   description: string
   url: string
@@ -30,10 +30,7 @@ export const SeoGooglePreview: React.FC<SeoGooglePreviewProps> = ({
         {truncate(title || "Titre de la page", 70)}
       </div>
       <div className="text-xs text-[#4d5156] dark:text-ui-fg-subtle leading-relaxed mt-1">
-        {truncate(
-          description || "Aucune meta description renseignée.",
-          160
-        )}
+        {truncate(description || "Aucune meta description renseignée.", 160)}
       </div>
     </div>
   )

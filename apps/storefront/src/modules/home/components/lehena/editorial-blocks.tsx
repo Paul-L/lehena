@@ -1,5 +1,5 @@
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { Placeholder } from "@modules/common/components/lehena/primitives"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const CARDS: {
   title: string

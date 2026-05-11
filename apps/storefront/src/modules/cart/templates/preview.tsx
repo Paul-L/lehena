@@ -1,13 +1,12 @@
 "use client"
 
 import repeat from "@lib/util/repeat"
-import { HttpTypes } from "@medusajs/types"
+import { type HttpTypes } from "@medusajs/types"
 import { Table, clx } from "@medusajs/ui"
-
 import Item from "@modules/cart/components/item"
 import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
 
-type ItemsTemplateProps = {
+interface ItemsTemplateProps {
   cart: HttpTypes.StoreCart
 }
 

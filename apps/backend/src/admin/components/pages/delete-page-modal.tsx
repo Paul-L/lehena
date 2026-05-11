@@ -1,8 +1,9 @@
-import * as React from "react"
 import { Button, Input, Label, Prompt, toast } from "@medusajs/ui"
+import * as React from "react"
+
 import { useDeletePage, type Page } from "../../hooks/use-pages"
 
-type DeletePageModalProps = {
+interface DeletePageModalProps {
   page: Page
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -32,9 +33,7 @@ export const DeletePageModal: React.FC<DeletePageModalProps> = ({
       onOpenChange(false)
       onDeleted?.()
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Suppression impossible"
-      )
+      toast.error(err instanceof Error ? err.message : "Suppression impossible")
     }
   }
 

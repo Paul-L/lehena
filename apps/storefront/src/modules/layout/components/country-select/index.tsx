@@ -7,47 +7,47 @@ import {
   ListboxOptions,
   Transition,
 } from "@headlessui/react"
+import { updateRegion } from "@lib/data/cart"
+import { type StateType } from "@lib/hooks/use-toggle-state"
+import { type HttpTypes } from "@medusajs/types"
+import { useParams, usePathname } from "next/navigation"
 import { Fragment, useEffect, useMemo, useState } from "react"
 import ReactCountryFlag from "react-country-flag"
 
-import { StateType } from "@lib/hooks/use-toggle-state"
-import { useParams, usePathname } from "next/navigation"
-import { updateRegion } from "@lib/data/cart"
-import { HttpTypes } from "@medusajs/types"
-
-type CountryOption = {
+interface CountryOption {
   country: string
   region: string
   label: string
 }
 
-type CountrySelectProps = {
+interface CountrySelectProps {
   toggleState: StateType
   regions: HttpTypes.StoreRegion[]
 }
 
 const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
-  const [current, setCurrent] = useState<
-    | { country: string | undefined; region: string; label: string | undefined }
-    | undefined
-  >(undefined)
+  const [current, setCurrent] = useState<CountryOption | undefined>(undefined)
 
   const { countryCode } = useParams()
   const currentPath = usePathname().split(`/${countryCode}`)[1]
 
   const { state, close } = toggleState
 
-  const options = useMemo(() => {
+  const options = useMemo<CountryOption[]>(() => {
     return regions
-      ?.map((r) => {
-        return r.countries?.map((c) => ({
-          country: c.iso_2,
-          region: r.id,
-          label: c.display_name,
-        }))
-      })
-      .flat()
-      .sort((a, b) => (a?.label ?? "").localeCompare(b?.label ?? ""))
+      .flatMap((r) =>
+        (r.countries ?? [])
+          .filter(
+            (c): c is typeof c & { iso_2: string; display_name: string } =>
+              !!c.iso_2 && !!c.display_name
+          )
+          .map((c) => ({
+            country: c.iso_2,
+            region: r.id,
+            label: c.display_name,
+          }))
+      )
+      .sort((a, b) => a.label.localeCompare(b.label))
   }, [regions])
 
   useEffect(() => {

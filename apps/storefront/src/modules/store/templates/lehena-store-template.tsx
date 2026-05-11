@@ -1,14 +1,15 @@
-import { Suspense } from "react"
 import { listCategories } from "@lib/data/categories"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import LehenaStoreControls, {
   type CategoryOption,
 } from "@modules/store/components/lehena-controls"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
-import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
+import { type SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { Suspense } from "react"
+
 import LehenaPaginatedProducts from "./lehena-paginated-products"
 
-type LehenaStoreTemplateProps = {
+interface LehenaStoreTemplateProps {
   sortBy?: SortOptions
   page?: string
   view?: "compact" | "comfort" | "spacious"
@@ -242,8 +243,8 @@ export default async function LehenaStoreTemplate({
                   lineHeight: 1.5,
                 }}
               >
-                Vous hésitez ? Notre équipe vous guide pour trouver la pièce
-                qui vous correspond.
+                Vous hésitez ? Notre équipe vous guide pour trouver la pièce qui
+                vous correspond.
               </p>
               <a
                 href="mailto:contact@lehena.fr"

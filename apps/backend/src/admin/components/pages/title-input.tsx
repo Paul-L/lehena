@@ -1,9 +1,9 @@
-import * as React from "react"
 import { clx, Text } from "@medusajs/ui"
+import * as React from "react"
 
 const MAX = 200
 
-type TitleInputProps = {
+interface TitleInputProps {
   value: string
   onChange: (value: string) => void
   error?: string
@@ -12,7 +12,10 @@ type TitleInputProps = {
 }
 
 export const TitleInput = React.forwardRef<HTMLInputElement, TitleInputProps>(
-  ({ value, onChange, error, placeholder = "Titre de la page", autoFocus }, ref) => {
+  (
+    { value, onChange, error, placeholder = "Titre de la page", autoFocus },
+    ref
+  ) => {
     const length = value?.length ?? 0
     const overLimit = length > MAX
 
@@ -41,9 +44,7 @@ export const TitleInput = React.forwardRef<HTMLInputElement, TitleInputProps>(
           )}
           <Text
             size="small"
-            className={clx(
-              overLimit ? "text-ui-fg-error" : "text-ui-fg-muted"
-            )}
+            className={clx(overLimit ? "text-ui-fg-error" : "text-ui-fg-muted")}
           >
             {length} / {MAX}
           </Text>

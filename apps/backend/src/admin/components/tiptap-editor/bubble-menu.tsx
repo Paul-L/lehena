@@ -1,11 +1,13 @@
-import * as React from "react"
-import type { Editor } from "@tiptap/react"
 import { BubbleMenu as TiptapBubbleMenu } from "@tiptap/react/menus"
 import { Bold, Italic, Link as LinkIcon } from "lucide-react"
-import { ToolbarButton } from "./toolbar-button"
-import { LinkPopover } from "./link-popover"
+import * as React from "react"
 
-type BubbleMenuProps = {
+import { LinkPopover } from "./link-popover"
+import { ToolbarButton } from "./toolbar-button"
+
+import type { Editor } from "@tiptap/react"
+
+interface BubbleMenuProps {
   editor: Editor
 }
 

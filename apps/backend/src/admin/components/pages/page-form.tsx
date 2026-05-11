@@ -1,3 +1,5 @@
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Container, toast } from "@medusajs/ui"
 import * as React from "react"
 import {
   Controller,
@@ -5,20 +7,7 @@ import {
   useForm,
   type SubmitHandler,
 } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Container, toast } from "@medusajs/ui"
-import {
-  pageFormSchema,
-  type PageFormValues,
-} from "./page-form-schema"
-import { PageHeader } from "./page-header"
-import { TitleInput } from "./title-input"
-import { SlugInput } from "./slug-input"
-import { SettingsPanel } from "./settings-panel"
-import { AutoSaveIndicator } from "./auto-save-indicator"
-import { TiptapEditor } from "../tiptap-editor"
-import { uploadImageToMedusa } from "../tiptap-editor/upload"
-import { slugify } from "../../lib/slugify"
+
 import { useAutoSave } from "../../hooks/use-auto-save"
 import {
   useCheckSlugAvailability,
@@ -27,8 +16,18 @@ import {
   useUpdatePage,
   type Page,
 } from "../../hooks/use-pages"
+import { slugify } from "../../lib/slugify"
+import { TiptapEditor } from "../tiptap-editor"
+import { uploadImageToMedusa } from "../tiptap-editor/upload"
 
-type PageFormProps = {
+import { AutoSaveIndicator } from "./auto-save-indicator"
+import { pageFormSchema, type PageFormValues } from "./page-form-schema"
+import { PageHeader } from "./page-header"
+import { SettingsPanel } from "./settings-panel"
+import { SlugInput } from "./slug-input"
+import { TitleInput } from "./title-input"
+
+interface PageFormProps {
   page: Page
 }
 
@@ -120,9 +119,7 @@ export const PageForm: React.FC<PageFormProps> = ({ page }) => {
       await publishMutation.mutateAsync()
       toast.success("Page publiée")
     } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Publication impossible"
-      )
+      toast.error(err instanceof Error ? err.message : "Publication impossible")
     }
   }
 

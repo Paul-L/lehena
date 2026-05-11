@@ -1,8 +1,9 @@
-import * as React from "react"
-import type { Editor } from "@tiptap/react"
 import { Button, Input, Label, Popover } from "@medusajs/ui"
+import * as React from "react"
 
-type LinkPopoverProps = {
+import type { Editor } from "@tiptap/react"
+
+interface LinkPopoverProps {
   editor: Editor
   children: React.ReactNode
 }
@@ -57,11 +58,7 @@ export const LinkPopover: React.FC<LinkPopoverProps> = ({
           }}
           className="flex flex-col gap-2"
         >
-          <Label
-            size="small"
-            weight="plus"
-            htmlFor="tiptap-link-url"
-          >
+          <Label size="small" weight="plus" htmlFor="tiptap-link-url">
             URL
           </Label>
           <Input

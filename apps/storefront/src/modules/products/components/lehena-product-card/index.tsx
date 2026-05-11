@@ -1,10 +1,10 @@
-import Image from "next/image"
-import { HttpTypes } from "@medusajs/types"
 import { getProductPrice } from "@lib/util/get-product-price"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { type HttpTypes } from "@medusajs/types"
 import { Placeholder } from "@modules/common/components/lehena/primitives"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Image from "next/image"
 
-type LehenaProductCardProps = {
+interface LehenaProductCardProps {
   product: HttpTypes.StoreProduct
   size?: "comfort" | "compact" | "spacious"
 }

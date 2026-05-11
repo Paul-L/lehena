@@ -1,7 +1,10 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
+
 import { PAGES_MODULE } from "../../../modules/pages"
 
-export type UnpublishPageStepInput = { id: string }
+export interface UnpublishPageStepInput {
+  id: string
+}
 
 export const unpublishPageStep = createStep(
   "unpublish-page",

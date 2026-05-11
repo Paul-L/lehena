@@ -1,11 +1,11 @@
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { listProducts } from "@lib/data/products"
 import { getRegion, listRegions } from "@lib/data/regions"
+import { type HttpTypes } from "@medusajs/types"
 import LehenaProductTemplate from "@modules/products/templates/lehena-product-template"
-import { HttpTypes } from "@medusajs/types"
+import { type Metadata } from "next"
+import { notFound } from "next/navigation"
 
-type Props = {
+interface Props {
   params: Promise<{ countryCode: string; handle: string }>
   searchParams: Promise<{ v_id?: string }>
 }
@@ -60,13 +60,14 @@ function getImagesForVariant(
     return product.images
   }
 
-  const variant = product.variants!.find((v) => v.id === selectedVariantId)
-  if (!variant || !variant.images.length) {
+  const variant = product.variants.find((v) => v.id === selectedVariantId)
+  const variantImages = variant?.images ?? []
+  if (!variant || variantImages.length === 0) {
     return product.images
   }
 
-  const imageIdsMap = new Map(variant.images.map((i) => [i.id, true]))
-  return product.images!.filter((i) => imageIdsMap.has(i.id))
+  const imageIdsMap = new Map(variantImages.map((i) => [i.id, true]))
+  return product.images?.filter((i) => imageIdsMap.has(i.id))
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
