@@ -27,6 +27,7 @@ module.exports = defineConfig({
   modules: [
     { resolve: "./src/modules/pages" },
     { resolve: "./src/modules/catalog" },
+    { resolve: "./src/modules/redirects" },
   ],
   plugins: [
     {
