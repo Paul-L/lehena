@@ -53,6 +53,31 @@ const link = (url: string, label: string) => ({
 
 const doc = (...content: unknown[]) => ({ type: "doc", content })
 
+const pressQuote = (
+  quote: string,
+  author: string,
+  outlet: string,
+  outlet_logo_url: string | null = null
+) => ({
+  type: "press-quote",
+  attrs: { quote, author, outlet, outlet_logo_url },
+})
+
+const gallery = (items: { src: string; alt: string; caption?: string }[]) => ({
+  type: "gallery-terroir",
+  attrs: { items },
+})
+
+const callout = (
+  tone: "info" | "note" | "warning",
+  title: string,
+  ...content: unknown[]
+) => ({
+  type: "callout",
+  attrs: { tone, title },
+  content: content.length > 0 ? content : [{ type: "paragraph" }],
+})
+
 const SEEDS = (locale: string): SeedPage[] => [
   {
     slug: "a-propos",
@@ -235,6 +260,391 @@ const SEEDS = (locale: string): SeedPage[] => [
     ) as Record<string, unknown>,
     publish: false,
   },
+  {
+    slug: "notre-histoire",
+    title: "Notre histoire",
+    locale,
+    excerpt:
+      "Quatre générations d'artisans charcutiers au Pays Basque, et une certitude : prendre le temps.",
+    meta_title: "Notre histoire — Lehena",
+    meta_description:
+      "Depuis 1974, Maison Lehena perpétue les techniques de salaison ancestrales du Pays Basque. Quatre générations, une même obsession : la qualité.",
+    content: doc(
+      h2("Au commencement, une obstination"),
+      para(
+        txt(
+          "Quand Jean-Baptiste Lehena ouvre son atelier en 1974, dans la vallée des Aldudes, on lui dit qu'il est dépassé. Les jambons mettent trop de temps à sécher ; les chambres froides industrielles vont plus vite, à moindre coût. Il n'écoute pas."
+        )
+      ),
+      pressQuote(
+        "Chez Lehena, on n'invente rien. On laisse simplement le temps faire son travail.",
+        "Marc Demaison",
+        "Le Monde · Le Goût"
+      ),
+      h2("Trois ateliers, une seule règle"),
+      para(
+        txt(
+          "Aujourd'hui, l'atelier d'origine est toujours là — agrandi, mais inchangé dans ses gestes. Les jambons y restent au minimum douze mois, parfois trente. Les saucissons sèchent en cave naturelle, ventilée par les vents d'ouest. Aucun nitrite. Aucun raccourci."
+        )
+      ),
+      gallery([
+        {
+          src: "/placeholder-ferme-1.jpg",
+          alt: "Cave d'affinage",
+          caption: "Cave d'affinage, 14 °C constant",
+        },
+        {
+          src: "/placeholder-ferme-2.jpg",
+          alt: "Pièce en suspension",
+          caption: "Pièce en suspension, 18e mois",
+        },
+        {
+          src: "/placeholder-ferme-3.jpg",
+          alt: "Salle de désossage",
+          caption: "Salle de désossage, lundi matin",
+        },
+      ]),
+      h2("La transmission, comme priorité"),
+      para(
+        txt(
+          "Quatre générations plus tard, Maïté Lehena dirige l'atelier avec son père, Pantxo. Sept artisans — dont trois apprentis — y travaillent à plein temps. Les techniques sont enseignées en face à face, jamais par écrit : c'est la main qui sait."
+        )
+      ),
+      callout(
+        "note",
+        "Le saviez-vous ?",
+        para(
+          txt(
+            "Un jambon Lehena perd entre 38 % et 45 % de son poids à l'affinage. C'est ce qui concentre ses arômes — et explique son prix."
+          )
+        )
+      )
+    ) as Record<string, unknown>,
+    publish: true,
+  },
+  {
+    slug: "la-ferme",
+    title: "De la ferme à l'assiette",
+    locale,
+    excerpt:
+      "Une seule race, six éleveurs partenaires, et un cahier des charges plus strict que toute appellation.",
+    meta_title: "De la ferme à l'assiette — Lehena",
+    meta_description:
+      "Tous nos cochons proviennent de six élevages partenaires dans un rayon de 80 km. Race basque, plein air, alimentation locale.",
+    content: doc(
+      h2("La race basque, et rien d'autre"),
+      para(
+        txt(
+          "Le porc basque — kintoa — est une race rustique qui a failli disparaître dans les années 1980. Quelques éleveurs l'ont sauvée. Aujourd'hui, c'est la seule race que nous travaillons : croissance lente, chair persillée, goût singulier."
+        )
+      ),
+      gallery([
+        {
+          src: "/placeholder-eleveur-1.jpg",
+          alt: "Éleveur dans son pré",
+          caption: "Joseph, élevage de la Soule",
+        },
+        {
+          src: "/placeholder-eleveur-2.jpg",
+          alt: "Porcs basques au pâturage",
+          caption: "Pâturage d'altitude, juin",
+        },
+      ]),
+      h2("Six élevages, 80 kilomètres maximum"),
+      para(
+        txt(
+          "Nous travaillons exclusivement avec six éleveurs, tous situés dans un rayon de 80 km autour de l'atelier. Chaque ferme est visitée plusieurs fois par an. Les bêtes vivent en plein air, nourries avec des céréales locales et des glands en saison."
+        )
+      ),
+      callout(
+        "info",
+        "Notre cahier des charges",
+        para(
+          txt(
+            "Plein air permanent · alimentation 100 % d'origine locale · abattage à 14 mois minimum · transport limité à 1 h."
+          )
+        )
+      ),
+      h2("Ce que nous refusons"),
+      ul([
+        "Aucun additif nitrité (ni E249, ni E250, ni E251, ni E252)",
+        "Aucune accélération de l'affinage par chaleur ou ventilation forcée",
+        "Aucun fournisseur situé à plus de 80 km de l'atelier",
+        "Aucune commande passée sans visite préalable de la ferme",
+      ])
+    ) as Record<string, unknown>,
+    publish: true,
+  },
+  {
+    slug: "engagements",
+    title: "Nos engagements",
+    locale,
+    excerpt:
+      "Six promesses tenues, vérifiables, et opposables. Le reste, ce sont des mots.",
+    meta_title: "Engagements — Maison Lehena",
+    meta_description:
+      "Six engagements concrets et vérifiables : sans nitrite, traçabilité totale, fournisseurs locaux, emballage recyclable.",
+    content: doc(
+      para(
+        txt(
+          "Nous ne croyons pas aux engagements vagues. Voici les six règles qui orientent chaque décision, depuis l'achat de la matière première jusqu'à la livraison."
+        )
+      ),
+      h2("1. Sans nitrite — pour de vrai"),
+      callout(
+        "warning",
+        "Aucune exception",
+        para(
+          txt(
+            "Cela vaut pour TOUTE notre gamme, y compris les recettes traditionnelles. Aucun produit Lehena ne contient de nitrite ajouté."
+          )
+        )
+      ),
+      h2("2. Affinage long, parce que ça change tout"),
+      para(
+        txt(
+          "Nos jambons sont affinés au minimum 12 mois. Nos saucissons, au minimum 6 semaines. Le temps n'est pas négociable."
+        )
+      ),
+      h2("3. Traçabilité totale"),
+      para(
+        txt(
+          "Chaque pièce porte un code unique permettant de remonter à la ferme, à la date d'abattage, à la chambre d'affinage. Disponible sur demande."
+        )
+      ),
+      h2("4. Fournisseurs locaux exclusivement"),
+      para(
+        txt(
+          "80 km maximum. Aucun fournisseur n'est plus éloigné. Notre liste complète est publiée chaque année."
+        )
+      ),
+      h2("5. Emballage 100 % recyclable"),
+      para(
+        txt(
+          "Depuis 2023, tous nos emballages — y compris les pochettes sous vide — sont compatibles avec les filières de recyclage françaises."
+        )
+      ),
+      h2("6. Prix transparent"),
+      para(
+        txt(
+          "Nos marges sont publiées chaque année dans le rapport annuel. Vous payez ce qui est juste, ni plus ni moins."
+        )
+      )
+    ) as Record<string, unknown>,
+    publish: true,
+  },
+  {
+    slug: "presse",
+    title: "Ils en parlent",
+    locale,
+    excerpt:
+      "Une sélection de ce que la presse — française et étrangère — a écrit sur la maison.",
+    meta_title: "Revue de presse — Lehena",
+    meta_description:
+      "Le Monde, Le Figaro, Le Pays Basque, San Sebastian Gastronomika… Une revue de presse choisie.",
+    content: doc(
+      para(
+        txt(
+          "Nous évitons les communiqués de presse. Quand un journaliste s'intéresse à nous, c'est qu'il a fait le voyage jusqu'à la vallée des Aldudes. Voici ce qu'ils en ont retiré."
+        )
+      ),
+      pressQuote(
+        "Le meilleur jambon non-espagnol que j'aie goûté depuis dix ans. Une obstination familiale qui force le respect.",
+        "Marc Demaison",
+        "Le Monde · Le Goût"
+      ),
+      pressQuote(
+        "Maïté Lehena représente une nouvelle génération d'artisans qui refusent les compromis. Le résultat est dans l'assiette.",
+        "Élise Ferrand",
+        "Le Figaro Magazine"
+      ),
+      pressQuote(
+        "On y va pour le jambon. On en repart en voulant déménager dans la vallée.",
+        "Igor Etxeberria",
+        "San Sebastián Gastronomika"
+      ),
+      pressQuote(
+        "Une maison qui prouve que le sans-nitrite n'est pas un compromis, mais une exigence supérieure.",
+        "Carla Marchetti",
+        "Slow Food · Italia"
+      ),
+      h2("Contact presse"),
+      para(
+        txt("Pour toute demande de visite ou d'interview : "),
+        link("mailto:presse@lehena.com", "presse@lehena.com")
+      )
+    ) as Record<string, unknown>,
+    publish: true,
+  },
+  {
+    slug: "atelier",
+    title: "L'atelier — visites et ateliers",
+    locale,
+    excerpt:
+      "Visites guidées de l'atelier d'origine et ateliers découverte — réservation obligatoire.",
+    meta_title: "Visites et ateliers — Maison Lehena",
+    meta_description:
+      "Visitez notre atelier d'origine dans la vallée des Aldudes. Ateliers découverte affinage, dégustation, et accord vins.",
+    content: doc(
+      callout(
+        "warning",
+        "À VENIR",
+        para(
+          txt("Cette page est en préparation. Les visites reprennent en 2026.")
+        )
+      ),
+      h2("Ce qui vous attend"),
+      ul([
+        "Visite guidée de l'atelier (2 h)",
+        "Atelier dégustation affinage long (1 h)",
+        "Atelier accord patxaran / charcuterie (1 h 30)",
+      ]),
+      h2("Réservation"),
+      para(
+        txt("Les inscriptions se font par email à "),
+        link("mailto:visites@lehena.com", "visites@lehena.com"),
+        txt(" — réservation obligatoire.")
+      )
+    ) as Record<string, unknown>,
+    publish: false,
+  },
+  {
+    slug: "cgv",
+    title: "Conditions générales de vente",
+    locale,
+    excerpt: "Conditions générales applicables aux ventes en ligne.",
+    meta_title: "CGV — Lehena",
+    meta_description:
+      "Conditions générales de vente : commande, paiement, livraison, droit de rétractation.",
+    content: doc(
+      callout(
+        "warning",
+        "CONTENU À FOURNIR",
+        para(
+          txt(
+            "Les CGV définitives seront rédigées par notre conseil juridique avant la mise en production. Ce contenu est un placeholder."
+          )
+        )
+      ),
+      h2("Article 1 — Objet"),
+      para(
+        txt(
+          "Les présentes conditions générales de vente régissent les relations entre Maison Lehena SAS et tout client effectuant un achat sur le site lehena.fr."
+        )
+      ),
+      h2("Article 2 — Commande"),
+      para(txt("[À COMPLÉTER]")),
+      h2("Article 3 — Prix et paiement"),
+      para(txt("[À COMPLÉTER]")),
+      h2("Article 4 — Livraison"),
+      para(txt("[À COMPLÉTER]")),
+      h2("Article 5 — Droit de rétractation"),
+      para(
+        txt(
+          "Conformément à l'article L.121-21-8 du Code de la consommation, le droit de rétractation ne s'applique pas aux denrées alimentaires périssables."
+        )
+      ),
+      h2("Article 6 — Garanties"),
+      para(txt("[À COMPLÉTER]"))
+    ) as Record<string, unknown>,
+    publish: true,
+  },
+  {
+    slug: "politique-confidentialite",
+    title: "Politique de confidentialité",
+    locale,
+    excerpt:
+      "Comment nous collectons, utilisons et protégeons vos données personnelles.",
+    meta_title: "Politique de confidentialité — Lehena",
+    meta_description:
+      "Conforme RGPD : collecte, finalité, durée de conservation, droits, contact DPO.",
+    content: doc(
+      callout(
+        "warning",
+        "CONTENU À FOURNIR",
+        para(
+          txt(
+            "La politique de confidentialité définitive sera rédigée par notre DPO avant la mise en production."
+          )
+        )
+      ),
+      h2("Responsable du traitement"),
+      para(
+        txt(
+          "Maison Lehena SAS, 1 rue du Marché, 64200 Biarritz. Contact DPO : "
+        ),
+        link("mailto:rgpd@lehena.com", "rgpd@lehena.com")
+      ),
+      h2("Données collectées"),
+      ul([
+        "Identité (nom, prénom, adresse, téléphone, email)",
+        "Données de paiement (traitées par Stripe, non stockées par nous)",
+        "Historique de commande",
+        "Données de navigation (cookies — voir bannière)",
+      ]),
+      h2("Finalité du traitement"),
+      ul([
+        "Exécution du contrat de vente",
+        "Gestion de la relation client",
+        "Envoi de la newsletter (consentement explicite)",
+        "Statistiques de fréquentation (anonymisées)",
+      ]),
+      h2("Durée de conservation"),
+      para(
+        txt(
+          "Données client : durée de la relation contractuelle + 5 ans. Newsletter : jusqu'au retrait du consentement."
+        )
+      ),
+      h2("Vos droits"),
+      para(
+        txt(
+          "Vous disposez d'un droit d'accès, de rectification, de portabilité, et d'opposition au traitement. Pour les exercer : "
+        ),
+        link("mailto:rgpd@lehena.com", "rgpd@lehena.com")
+      )
+    ) as Record<string, unknown>,
+    publish: true,
+  },
+  {
+    slug: "contact",
+    title: "Nous écrire",
+    locale,
+    excerpt:
+      "Une question, une suggestion, un projet professionnel ? Le formulaire est en bas de page.",
+    meta_title: "Contact — Maison Lehena",
+    meta_description:
+      "Contactez Maison Lehena par formulaire, email ou téléphone. Réponse sous 48 h ouvrées.",
+    content: doc(
+      h2("Trois façons de nous joindre"),
+      para(
+        txt(
+          "Le plus rapide : le formulaire ci-dessous. Nous lisons chaque message et répondons sous 48 heures ouvrées."
+        )
+      ),
+      h3("Par email"),
+      para(
+        txt("Service client : "),
+        link("mailto:contact@lehena.com", "contact@lehena.com"),
+        txt(" — Presse : "),
+        link("mailto:presse@lehena.com", "presse@lehena.com"),
+        txt(" — Réservations atelier : "),
+        link("mailto:visites@lehena.com", "visites@lehena.com")
+      ),
+      h3("Par téléphone"),
+      para(
+        txt(
+          "05 59 00 00 00 — du lundi au vendredi, 9 h – 18 h. (Fermé jours fériés.)"
+        )
+      ),
+      h3("À l'atelier"),
+      para(
+        txt(
+          "1 rue du Marché, 64200 Biarritz. Boutique ouverte le samedi de 9 h à 13 h (visite guidée uniquement sur rendez-vous)."
+        )
+      )
+    ) as Record<string, unknown>,
+    publish: true,
+  },
 ]
 
 export default async function seedPages({ container }: ExecArgs) {
@@ -260,7 +670,10 @@ export default async function seedPages({ container }: ExecArgs) {
   let removed = 0
 
   for (const seed of SEEDS(locale)) {
-    const existing = await pagesService.listPages({ slug: seed.slug })
+    const existing = await pagesService.listPages({
+      slug: seed.slug,
+      locale: seed.locale ?? locale,
+    })
 
     if (existing.length > 0) {
       if (!force) {

@@ -5,6 +5,14 @@ import Placeholder from "@tiptap/extension-placeholder"
 import Typography from "@tiptap/extension-typography"
 import StarterKit from "@tiptap/starter-kit"
 
+import {
+  CalloutNode,
+  GalleryTerroirNode,
+  PressQuoteNode,
+  ProductEmbedNode,
+  RecipeStepNode,
+} from "./nodes"
+
 import type { Extensions } from "@tiptap/react"
 
 export interface GetEditorExtensionsOptions {
@@ -64,4 +72,10 @@ export const getEditorExtensions = ({
   typeof maxCharacters === "number"
     ? CharacterCount.configure({ limit: maxCharacters })
     : CharacterCount,
+  // Custom Lehena nodes
+  PressQuoteNode,
+  GalleryTerroirNode,
+  ProductEmbedNode,
+  CalloutNode,
+  RecipeStepNode,
 ]

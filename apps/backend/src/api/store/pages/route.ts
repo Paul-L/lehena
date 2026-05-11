@@ -34,7 +34,9 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     meta_title: p.meta_title,
     meta_description: p.meta_description,
     og_image_url: p.og_image_url,
+    noindex: p.noindex,
     locale: p.locale,
+    translation_group_id: p.translation_group_id,
     published_at: p.published_at,
   }))
 

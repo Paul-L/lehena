@@ -116,6 +116,7 @@ module.exports = defineConfig({
     { resolve: "./src/modules/catalog" },
     { resolve: "./src/modules/redirects" },
     { resolve: "./src/modules/faq" },
+    { resolve: "./src/modules/contact" },
   ],
   plugins: [
     {

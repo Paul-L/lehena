@@ -15,7 +15,10 @@ export interface CreatePageStepInput {
   meta_title?: string | null
   meta_description?: string | null
   og_image_url?: string | null
+  noindex?: boolean
+  canonical_override?: string | null
   locale?: string
+  translation_group_id?: string | null
 }
 
 export const createPageStep = createStep(
@@ -41,11 +44,15 @@ export const createPageStep = createStep(
       )
     }
 
-    const existing = await pagesService.listPages({ slug: input.slug })
+    const locale = input.locale ?? "fr"
+    const existing = await pagesService.listPages({
+      slug: input.slug,
+      locale,
+    })
     if (existing.length > 0) {
       throw new MedusaError(
         MedusaError.Types.DUPLICATE_ERROR,
-        `A page with slug "${input.slug}" already exists.`
+        `A page with slug "${input.slug}" already exists for locale "${locale}".`
       )
     }
 

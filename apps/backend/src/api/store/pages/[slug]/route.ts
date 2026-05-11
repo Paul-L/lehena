@@ -51,11 +51,33 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     filters.status = "published"
   }
 
+  const locale = (req as MedusaRequest & { locale?: string }).locale
+  if (locale) {
+    filters.locale = locale
+  }
+
   const [page] = await pagesService.listPages(filters, { take: 1 })
 
   if (!page) {
     throw new MedusaError(MedusaError.Types.NOT_FOUND, "Page not found")
   }
 
-  return res.json({ page })
+  // Sibling translations — used by the storefront to emit hreflang.
+  let translations: { id: string; locale: string; slug: string }[] = []
+  if (page.translation_group_id) {
+    const siblings = await pagesService.listPages(
+      {
+        translation_group_id: page.translation_group_id,
+        status: "published",
+      },
+      { take: 20 }
+    )
+    translations = siblings.map((s) => ({
+      id: s.id,
+      locale: s.locale,
+      slug: s.slug,
+    }))
+  }
+
+  return res.json({ page, translations })
 }

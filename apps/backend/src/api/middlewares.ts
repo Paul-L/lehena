@@ -4,11 +4,16 @@ import {
   validateAndTransformQuery,
 } from "@medusajs/framework/http"
 
+import {
+  ListContactSubmissionsQuerySchema,
+  UpdateContactSubmissionSchema,
+} from "./admin/contact-submissions/validators"
 import { UpdateFaqItemSchema } from "./admin/faq-items/[id]/validators"
 import {
   CreatePageSchema,
   ListPagesQuerySchema,
   ListStorePagesQuerySchema,
+  TranslatePageSchema,
   UpdatePageSchema,
 } from "./admin/pages/validators"
 import {
@@ -19,6 +24,7 @@ import {
   CreateRedirectSchema,
   ListRedirectsQuerySchema,
 } from "./admin/redirects/validators"
+import { SubmitContactSchema } from "./store/contact/validators"
 import { ListFacetedProductsQuerySchema } from "./store/products-faceted/validators"
 
 export default defineMiddlewares({
@@ -37,6 +43,11 @@ export default defineMiddlewares({
       matcher: "/admin/pages/:id",
       method: "POST",
       middlewares: [validateAndTransformBody(UpdatePageSchema)],
+    },
+    {
+      matcher: "/admin/pages/:id/translate",
+      method: "POST",
+      middlewares: [validateAndTransformBody(TranslatePageSchema)],
     },
     {
       matcher: "/store/pages",
@@ -74,6 +85,23 @@ export default defineMiddlewares({
       middlewares: [
         validateAndTransformQuery(ListFacetedProductsQuerySchema, {}),
       ],
+    },
+    {
+      matcher: "/store/contact",
+      method: "POST",
+      middlewares: [validateAndTransformBody(SubmitContactSchema)],
+    },
+    {
+      matcher: "/admin/contact-submissions",
+      method: "GET",
+      middlewares: [
+        validateAndTransformQuery(ListContactSubmissionsQuerySchema, {}),
+      ],
+    },
+    {
+      matcher: "/admin/contact-submissions/:id",
+      method: "POST",
+      middlewares: [validateAndTransformBody(UpdateContactSubmissionSchema)],
     },
   ],
 })

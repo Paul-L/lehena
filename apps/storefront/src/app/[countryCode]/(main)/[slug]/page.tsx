@@ -1,5 +1,17 @@
+import { getLiveProductsByHandle } from "@lib/data/live-products-by-handle"
 import { getAllPublishedPages, getPageBySlug } from "@lib/data/pages"
-import { TiptapContent, type JSONContent } from "@lib/tiptap-renderer"
+import {
+  countryForLocale,
+  hreflangForLocale,
+  localeForCountry,
+  SUPPORTED_LOCALES,
+  type Locale,
+} from "@lib/i18n/locale-map"
+import {
+  extractProductEmbedHandles,
+  TiptapContent,
+  type JSONContent,
+} from "@lib/tiptap-renderer"
 import { getBaseURL } from "@lib/util/env"
 import { notFound } from "next/navigation"
 
@@ -20,9 +32,6 @@ interface Props {
   searchParams: Promise<SearchParams>
 }
 
-// 1h ISR fallback. The backend's /api/revalidate hook also flushes pages
-// on publish/update/unpublish/delete, so this is a safety net for the
-// (rare) cases where the webhook misses.
 export const revalidate = 3600
 export const dynamicParams = true
 
@@ -30,12 +39,10 @@ export async function generateStaticParams(): Promise<Params[]> {
   try {
     const pages = await getAllPublishedPages()
     return pages.map((p) => ({
-      countryCode: p.locale,
+      countryCode: countryForLocale(p.locale as Locale),
       slug: p.slug,
     }))
   } catch {
-    // If the backend is unreachable at build time, return an empty list
-    // and let Next.js render on demand.
     return []
   }
 }
@@ -43,21 +50,46 @@ export async function generateStaticParams(): Promise<Params[]> {
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { countryCode, slug } = await props.params
   const { preview } = await props.searchParams
-  const page = await getPageBySlug(slug, { previewToken: preview })
+  const locale = localeForCountry(countryCode)
+  const result = await getPageBySlug(slug, { previewToken: preview, locale })
 
-  if (!page) {
+  if (!result) {
     return { title: "Page introuvable" }
   }
 
+  const { page, translations } = result
   const title = page.meta_title ?? page.title
   const description = page.meta_description ?? page.excerpt ?? undefined
-  const baseUrl = getBaseURL()
-  const canonical = `${baseUrl.replace(/\/$/, "")}/${countryCode}/${page.slug}`
+  const baseUrl = getBaseURL().replace(/\/$/, "")
+  const canonical =
+    page.canonical_override ?? `${baseUrl}/${countryCode}/${page.slug}`
+
+  // hreflang: one entry per published translation, with x-default → FR.
+  const languages: Record<string, string> = {}
+  for (const t of translations) {
+    const tLocale = t.locale as Locale
+    if (!SUPPORTED_LOCALES.includes(tLocale)) continue
+    languages[hreflangForLocale(tLocale)] = `${baseUrl}/${countryForLocale(
+      tLocale
+    )}/${t.slug}`
+  }
+  // Always include self.
+  languages[hreflangForLocale(page.locale as Locale)] = canonical
+  // x-default → French translation if any, else canonical.
+  const frTranslation = translations.find((t) => t.locale === "fr")
+  languages["x-default"] = frTranslation
+    ? `${baseUrl}/fr/${frTranslation.slug}`
+    : canonical
+
+  const robots =
+    page.status === "draft" || page.noindex
+      ? { index: false, follow: false }
+      : undefined
 
   return {
     title,
     description,
-    alternates: { canonical },
+    alternates: { canonical, languages },
     openGraph: {
       title,
       description,
@@ -66,6 +98,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       images: page.og_image_url
         ? [{ url: page.og_image_url, alt: page.title }]
         : undefined,
+      locale: hreflangForLocale(page.locale as Locale).replace("-", "_"),
     },
     twitter: {
       card: page.og_image_url ? "summary_large_image" : "summary",
@@ -73,20 +106,31 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       description,
       images: page.og_image_url ? [page.og_image_url] : undefined,
     },
-    // Drafts visited via preview token must not be indexed.
-    robots:
-      page.status === "draft" ? { index: false, follow: false } : undefined,
+    robots,
   }
 }
 
 export default async function StorefrontPage(props: Props) {
-  const { slug } = await props.params
+  const { countryCode, slug } = await props.params
   const { preview } = await props.searchParams
-  const page = await getPageBySlug(slug, { previewToken: preview })
+  const locale = localeForCountry(countryCode)
+  const result = await getPageBySlug(slug, { previewToken: preview, locale })
 
-  if (!page) {
+  if (!result) {
     notFound()
   }
+
+  const { page } = result
+
+  // Hydrate product-embed nodes with live product data so the renderer can
+  // show real titles, thumbs and prices instead of stale snapshots.
+  const embedHandles = extractProductEmbedHandles(
+    page.content as JSONContent | null
+  )
+  const liveProducts =
+    embedHandles.length > 0
+      ? await getLiveProductsByHandle(embedHandles, countryCode)
+      : undefined
 
   const isPreview = !!preview
   const isDraft = page.status === "draft"
@@ -110,7 +154,11 @@ export default async function StorefrontPage(props: Props) {
             </p>
           )}
         </header>
-        <TiptapContent content={page.content as JSONContent | null} />
+        <TiptapContent
+          content={page.content as JSONContent | null}
+          liveProducts={liveProducts}
+          countryCode={countryCode}
+        />
       </article>
     </>
   )

@@ -15,6 +15,11 @@ import {
   Image as ImageIcon,
   Undo2,
   Redo2,
+  Newspaper,
+  ImagePlus,
+  Package,
+  Lightbulb,
+  ChefHat,
 } from "lucide-react"
 import * as React from "react"
 
@@ -154,6 +159,91 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         label={imageUploading ? "Upload en cours…" : "Image"}
         disabled={imageUploading}
         onClick={onImageClick}
+      />
+
+      <Divider />
+
+      <ToolbarButton
+        icon={Newspaper}
+        label="Citation presse"
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .insertContent({
+              type: "press-quote",
+              attrs: {
+                quote: "",
+                author: "",
+                outlet: "",
+                outlet_logo_url: null,
+              },
+            })
+            .run()
+        }
+      />
+      <ToolbarButton
+        icon={ImagePlus}
+        label="Galerie terroir"
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .insertContent({
+              type: "gallery-terroir",
+              attrs: { items: [] },
+            })
+            .run()
+        }
+      />
+      <ToolbarButton
+        icon={Package}
+        label="Embed produit"
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .insertContent({
+              type: "product-embed",
+              attrs: {
+                product_id: "",
+                product_handle: "",
+                product_title: "",
+                product_thumbnail: null,
+              },
+            })
+            .run()
+        }
+      />
+      <ToolbarButton
+        icon={Lightbulb}
+        label="Encadré (callout)"
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .insertContent({
+              type: "callout",
+              attrs: { tone: "info", title: "" },
+              content: [{ type: "paragraph" }],
+            })
+            .run()
+        }
+      />
+      <ToolbarButton
+        icon={ChefHat}
+        label="Étape de recette"
+        onClick={() =>
+          editor
+            .chain()
+            .focus()
+            .insertContent({
+              type: "recipe-step",
+              attrs: { step_number: 1, duration_min: null },
+              content: [{ type: "paragraph" }],
+            })
+            .run()
+        }
       />
 
       <Divider />
