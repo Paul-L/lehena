@@ -19,6 +19,7 @@ import {
   CreateRedirectSchema,
   ListRedirectsQuerySchema,
 } from "./admin/redirects/validators"
+import { ListFacetedProductsQuerySchema } from "./store/products-faceted/validators"
 
 export default defineMiddlewares({
   routes: [
@@ -66,6 +67,13 @@ export default defineMiddlewares({
       matcher: "/admin/faq-items/:id",
       method: "POST",
       middlewares: [validateAndTransformBody(UpdateFaqItemSchema)],
+    },
+    {
+      matcher: "/store/products-faceted",
+      method: "GET",
+      middlewares: [
+        validateAndTransformQuery(ListFacetedProductsQuerySchema, {}),
+      ],
     },
   ],
 })
