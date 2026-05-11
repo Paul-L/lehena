@@ -84,5 +84,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Build storefront
-        run: pnpm --filter @lehena/storefront build
+      # NOTE Phase 13: `next build` runs SSG/data collection (fetches from
+      # the Medusa backend at build time for `generateStaticParams` and
+      # category/product prerendering). That needs a reachable backend
+      # which we won't have until staging infra lands in Phase 13. For now,
+      # typecheck + backend build are the source of truth for "the
+      # storefront compiles". Re-enable here once staging is wired.
