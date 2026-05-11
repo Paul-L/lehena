@@ -20,10 +20,39 @@
     "build": "turbo run build",
     "start": "turbo run start",
     "lint": "turbo run lint",
+    "lint:fix": "eslint --fix --no-error-on-unmatched-pattern \"apps/*/src/**/*.{ts,tsx,js,jsx,mjs}\"",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mjs,json,md,yml,yaml}\"",
     "seed": "pnpm --filter @lehena/backend seed",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs}": [
+      "eslint --fix --no-error-on-unmatched-pattern",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
-    "turbo": "^2.3.3"
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/js": "^9.39.4",
+    "@next/eslint-plugin-next": "^15.0.8",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import-x": "^4.16.2",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^15.15.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.8.3",
+    "turbo": "^2.3.3",
+    "typescript-eslint": "^8.59.2"
   }
 }
