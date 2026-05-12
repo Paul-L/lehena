@@ -3,7 +3,10 @@ import { organizationSchema } from "@lib/seo/schemas/organization"
 import { websiteSchema } from "@lib/seo/schemas/website"
 import { getBaseURL } from "@lib/util/env"
 import { type Metadata } from "next"
+import Script from "next/script"
 import "styles/globals.css"
+
+const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -28,6 +31,25 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         />
         <JsonLd id="lehena-organization" schema={organizationSchema()} />
         <JsonLd id="lehena-website" schema={websiteSchema()} />
+        {PLAUSIBLE_DOMAIN ? (
+          <>
+            <Script
+              defer
+              data-domain={PLAUSIBLE_DOMAIN}
+              src="https://plausible.io/js/script.manual.revenue.tagged-events.js"
+              strategy="afterInteractive"
+            />
+            {/*
+              The `manual` variant lets us fire pageviews ourselves so we can
+              skip the storefront's admin/preview pages, plus carry custom
+              props. `revenue` enables monetary tracking on the purchase
+              event; `tagged-events` enables click-tagging via data attrs.
+            */}
+            <Script id="plausible-bootstrap" strategy="afterInteractive">
+              {`window.plausible = window.plausible || function(){(window.plausible.q = window.plausible.q || []).push(arguments)};window.plausible('pageview');`}
+            </Script>
+          </>
+        ) : null}
       </head>
       <body className="lh">
         <main className="relative">{props.children}</main>
