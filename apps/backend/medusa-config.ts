@@ -121,6 +121,7 @@ module.exports = defineConfig({
     { resolve: "./src/modules/invoice" },
     { resolve: "./src/modules/gdpr" },
     { resolve: "./src/modules/notifications" },
+    { resolve: "./src/modules/author" },
     // Payment module: registers the Stripe provider when STRIPE_API_KEY is
     // set. Without the env var we keep the default provider so dev / CI
     // doesn't break — checkout will surface "no payment method available".
