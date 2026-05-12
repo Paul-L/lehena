@@ -4,14 +4,19 @@ import { Radio, RadioGroup } from "@headlessui/react"
 import { setShippingMethod } from "@lib/data/cart"
 import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
 import { convertToLocale } from "@lib/util/money"
+import {
+  classifyCartProfiles,
+  filterShippingOptionsForCart,
+} from "@lib/util/shipping-rules"
 import { CheckCircleSolid, Loader } from "@medusajs/icons"
 import { type HttpTypes } from "@medusajs/types"
 import { Button, clx, Heading, Text } from "@medusajs/ui"
 import ErrorMessage from "@modules/checkout/components/error-message"
+import MixedCartNotice from "@modules/checkout/components/mixed-cart-notice"
 import Divider from "@modules/common/components/divider"
 import MedusaRadio from "@modules/common/components/radio"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 const PICKUP_OPTION_ON = "__PICKUP_ON"
 const PICKUP_OPTION_OFF = "__PICKUP_OFF"
@@ -70,16 +75,32 @@ const Shipping: React.FC<ShippingProps> = ({
 
   const isOpen = searchParams.get("step") === "delivery"
 
-  // TODO Phase 5: rewrite shipping step around Chronofresh/Colissimo providers.
-  // `service_zone` is not exposed on StoreCartShippingOption in current Medusa
-  // types — keeping the read for the legacy template until then.
-  const _shippingMethods = availableShippingMethods?.filter(
+  // Detect mixed cart (fresh + ambient) so we can force the cold chain and
+  // hide Colissimo options entirely. See `lib/util/shipping-rules.ts`.
+  const profiles = useMemo(
+    () =>
+      classifyCartProfiles(
+        (cart.items ?? []) as Parameters<typeof classifyCartProfiles>[0]
+      ),
+    [cart.items]
+  )
+
+  const _rawShippingMethods = availableShippingMethods?.filter(
     (sm) =>
       (
         sm as unknown as {
           service_zone?: { fulfillment_set?: { type?: string } }
         }
       ).service_zone?.fulfillment_set?.type !== "pickup"
+  )
+
+  const _shippingMethods = useMemo(
+    () =>
+      filterShippingOptionsForCart(
+        _rawShippingMethods ?? [],
+        profiles.is_mixed
+      ),
+    [_rawShippingMethods, profiles.is_mixed]
   )
 
   const _pickupMethods = availableShippingMethods?.filter(
@@ -196,6 +217,7 @@ const Shipping: React.FC<ShippingProps> = ({
       </div>
       {isOpen ? (
         <>
+          <MixedCartNotice isMixed={profiles.is_mixed} />
           <div className="grid">
             <div className="flex flex-col">
               <span className="font-medium txt-medium text-ui-fg-base">

@@ -4,6 +4,7 @@ import { updateLineItem } from "@lib/data/cart"
 import { type HttpTypes } from "@medusajs/types"
 import { Table, Text, clx } from "@medusajs/ui"
 import CartItemSelect from "@modules/cart/components/cart-item-select"
+import GiftMessage from "@modules/cart/components/gift-message"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import DeleteButton from "@modules/common/components/delete-button"
 import LineItemOptions from "@modules/common/components/line-item-options"
@@ -70,6 +71,15 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
           {item.product_title}
         </Text>
         <LineItemOptions variant={item.variant} data-testid="product-variant" />
+        <GiftMessage
+          lineId={item.id}
+          initial={
+            typeof item.metadata?.gift_message === "string"
+              ? (item.metadata.gift_message as string)
+              : null
+          }
+          type={type}
+        />
       </Table.Cell>
 
       {type === "full" && (

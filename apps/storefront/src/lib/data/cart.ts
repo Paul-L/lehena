@@ -161,9 +161,16 @@ export async function addToCart({
 export async function updateLineItem({
   lineId,
   quantity,
+  metadata,
 }: {
   lineId: string
-  quantity: number
+  quantity?: number
+  /**
+   * Optional metadata patch — Medusa merges this with the existing metadata
+   * (we do the merge manually so we don't blow away unrelated keys like the
+   * gift_message). Reserved keys: `gift_message` (string, ≤200 chars).
+   */
+  metadata?: Record<string, unknown>
 }) {
   if (!lineId) {
     throw new Error("Missing lineItem ID when updating line item")
@@ -179,8 +186,22 @@ export async function updateLineItem({
     ...(await getAuthHeaders()),
   }
 
+  const payload: Record<string, unknown> = {}
+  if (typeof quantity === "number") payload.quantity = quantity
+  if (metadata) payload.metadata = metadata
+
+  if (Object.keys(payload).length === 0) {
+    return
+  }
+
   await sdk.store.cart
-    .updateLineItem(cartId, lineId, { quantity }, {}, headers)
+    .updateLineItem(
+      cartId,
+      lineId,
+      payload as { quantity: number } & Record<string, unknown>,
+      {},
+      headers
+    )
     .then(async () => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
@@ -189,6 +210,25 @@ export async function updateLineItem({
       revalidateTag(fulfillmentCacheTag)
     })
     .catch(medusaError)
+}
+
+const MAX_GIFT_MESSAGE = 200
+
+/**
+ * Server action to set/clear a per-line-item gift message. Hooks into the
+ * existing updateLineItem flow via the metadata patch path.
+ *
+ * Empty string clears the message (we set null so the admin sees nothing).
+ */
+export async function setLineItemGiftMessage(input: {
+  lineId: string
+  message: string
+}) {
+  const trimmed = input.message.trim().slice(0, MAX_GIFT_MESSAGE)
+  await updateLineItem({
+    lineId: input.lineId,
+    metadata: { gift_message: trimmed.length === 0 ? null : trimmed },
+  })
 }
 
 export async function deleteLineItem(lineId: string) {
