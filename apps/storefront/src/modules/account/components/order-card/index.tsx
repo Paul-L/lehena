@@ -1,6 +1,9 @@
+"use client"
+
 import { convertToLocale } from "@lib/util/money"
 import { type HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
+import ReorderButton from "@modules/account/components/reorder-button"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { useMemo } from "react"
@@ -72,10 +75,17 @@ const OrderCard = ({ order }: OrderCardProps) => {
           </div>
         )}
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        <ReorderButton
+          items={(order.items ?? []).map((it) => ({
+            variant_id: it.variant_id,
+            quantity: it.quantity,
+            title: it.product_title,
+          }))}
+        />
         <LocalizedClientLink href={`/account/orders/details/${order.id}`}>
           <Button data-testid="order-details-link" variant="secondary">
-            See details
+            Détails
           </Button>
         </LocalizedClientLink>
       </div>

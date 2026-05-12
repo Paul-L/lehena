@@ -144,6 +144,108 @@ export async function signout(countryCode: string) {
   redirect(`/${countryCode}/account`)
 }
 
+/**
+ * Triggers a password reset email for the given email. Medusa emits the
+ * `auth.password_reset` event with a 15-minute JWT; the backend subscriber
+ * logs (Phase 6) or emails (Phase 7) the link.
+ *
+ * Always returns success even if the email isn't on file — we don't want to
+ * leak account existence via this endpoint.
+ */
+export async function requestPasswordReset(email: string) {
+  if (!email || !email.includes("@")) {
+    return { success: false, error: "Email invalide." }
+  }
+  try {
+    await sdk.auth.resetPassword("customer", "emailpass", {
+      identifier: email,
+    })
+  } catch (err) {
+    // Swallow "user not found" so we don't leak account existence. Any other
+    // error gets logged server-side via medusaError().
+    if (!(err instanceof Error) || !/not found/i.test(err.message)) {
+      medusaError(err)
+    }
+  }
+  return { success: true }
+}
+
+/**
+ * Sets a new password given the JWT token issued by the reset flow.
+ */
+export async function resetPassword(token: string, password: string) {
+  if (!token || token.length < 10) {
+    return { success: false, error: "Lien invalide." }
+  }
+  if (password.length < 10) {
+    return {
+      success: false,
+      error: "Le mot de passe doit faire au moins 10 caractères.",
+    }
+  }
+  try {
+    await sdk.auth.updateProvider("customer", "emailpass", { password }, token)
+    return { success: true }
+  } catch (err) {
+    return {
+      success: false,
+      error:
+        err instanceof Error
+          ? err.message
+          : "Impossible de réinitialiser le mot de passe.",
+    }
+  }
+}
+
+/**
+ * Requests a magic-link login. The backend logs the URL (Phase 6 stub) and
+ * always returns success regardless of whether the email is on file — we
+ * don't leak account existence.
+ */
+export async function requestMagicLink(email: string) {
+  if (!email || !email.includes("@")) {
+    return { success: false, error: "Email invalide." }
+  }
+  try {
+    await sdk.client.fetch<{ success: boolean }>("/store/auth/magic-link", {
+      method: "POST",
+      body: { email },
+    })
+  } catch {
+    // Swallow — we report success either way.
+  }
+  return { success: true }
+}
+
+/**
+ * Trades a magic-link token for a regular Medusa session JWT. Sets the auth
+ * cookie on success.
+ */
+export async function verifyMagicLink(token: string) {
+  if (!token || token.length < 20) {
+    return { success: false, error: "Lien invalide." }
+  }
+  try {
+    const { token: sessionToken } = await sdk.client.fetch<{ token: string }>(
+      "/store/auth/magic-link/verify",
+      {
+        method: "POST",
+        body: { token },
+      }
+    )
+    await setAuthToken(sessionToken)
+    const customerCacheTag = await getCacheTag("customers")
+    revalidateTag(customerCacheTag)
+    await transferCart()
+    return { success: true }
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Lien expiré ou invalide.",
+    }
+  }
+}
+
 export async function transferCart() {
   const cartId = await getCartId()
 
