@@ -478,35 +478,54 @@ const SEEDS = (locale: string): SeedPage[] => [
   },
   {
     slug: "atelier",
-    title: "L'atelier — visites et ateliers",
+    title: "L'atelier — visites & boutique",
     locale,
     excerpt:
-      "Visites guidées de l'atelier d'origine et ateliers découverte — réservation obligatoire.",
-    meta_title: "Visites et ateliers — Maison Lehena",
+      "L'atelier Lehena est à Laguinge, dans la vallée des Aldudes. Boutique ouverte le samedi matin.",
+    meta_title: "Atelier & boutique — Maison Lehena",
     meta_description:
-      "Visitez notre atelier d'origine dans la vallée des Aldudes. Ateliers découverte affinage, dégustation, et accord vins.",
+      "Visitez notre atelier d'origine dans la vallée des Aldudes. Boutique ouverte le samedi de 9 h à 13 h. Visites guidées sur rendez-vous à partir de 2026.",
     content: doc(
-      callout(
-        "warning",
-        "À VENIR",
-        para(
-          txt("Cette page est en préparation. Les visites reprennent en 2026.")
+      h2("Nous rendre visite"),
+      para(
+        txt(
+          "L'atelier Lehena est niché au cœur de la vallée des Aldudes, à Laguinge. La boutique est ouverte au public le samedi matin de 9 h à 13 h. Le reste de la semaine, l'atelier vit au rythme de l'affinage."
         )
       ),
-      h2("Ce qui vous attend"),
-      ul([
-        "Visite guidée de l'atelier (2 h)",
-        "Atelier dégustation affinage long (1 h)",
-        "Atelier accord patxaran / charcuterie (1 h 30)",
-      ]),
-      h2("Réservation"),
+      h3("Adresse"),
       para(
-        txt("Les inscriptions se font par email à "),
-        link("mailto:visites@lehena.com", "visites@lehena.com"),
-        txt(" — réservation obligatoire.")
+        txt(
+          "Maison Lehena — Bourg, 64470 Laguinge, Pyrénées-Atlantiques, France."
+        )
+      ),
+      h3("Horaires boutique"),
+      ul(["Samedi : 9 h – 13 h", "Du lundi au vendredi : sur rendez-vous"]),
+      h3("Visites guidées"),
+      callout(
+        "note",
+        "À partir de 2026",
+        para(
+          txt(
+            "Les visites guidées de l'atelier (cave d'affinage, salle de désossage, dégustation) reprennent en 2026. Atelier accord patxaran / charcuterie, atelier dégustation affinage long. Inscription par email à "
+          ),
+          link("mailto:visites@lehena.fr", "visites@lehena.fr"),
+          txt(" — places limitées.")
+        )
+      ),
+      h2("Comment venir"),
+      para(
+        txt(
+          "Laguinge est à 45 minutes de Saint-Jean-Pied-de-Port et 1 h 15 de Bayonne. Parking gratuit devant l'atelier. La D 26 traverse le village — l'atelier est situé entre la mairie et l'église."
+        )
+      ),
+      h2("Nous contacter"),
+      para(
+        txt("Email : "),
+        link("mailto:contact@lehena.fr", "contact@lehena.fr"),
+        txt(" — Téléphone : 05 59 00 00 00 (du lundi au vendredi, 9 h – 18 h).")
       )
     ) as Record<string, unknown>,
-    publish: false,
+    publish: true,
   },
   {
     slug: "cgv",

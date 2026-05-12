@@ -18,6 +18,11 @@ export interface Page {
   published_at: string | null
   locale: string
   translation_group_id: string | null
+  /** Editorial type — distinguishes pillar pages from blog articles. */
+  type?: "page" | "article" | "recipe" | "news"
+  author_id?: string | null
+  tags?: string[] | null
+  pillar_slug?: string | null
   created_at: string
   updated_at: string
   deleted_at: string | null
@@ -43,6 +48,8 @@ export type PageSummary = Pick<
 > & {
   noindex?: boolean
   translation_group_id?: string | null
+  /** Editorial type (Phase 9 extension). Defaults to "page" when absent. */
+  type?: "page" | "article" | "recipe" | "news"
 }
 
 const REVALIDATE_SECONDS = 3600

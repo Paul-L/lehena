@@ -7,6 +7,12 @@ import {
   SUPPORTED_LOCALES,
   type Locale,
 } from "@lib/i18n/locale-map"
+import { JsonLd } from "@lib/seo/json-ld"
+import { articleSchema } from "@lib/seo/schemas/article"
+import {
+  LEHENA_WORKSHOP,
+  localBusinessSchema,
+} from "@lib/seo/schemas/local-business"
 import {
   extractProductEmbedHandles,
   TiptapContent,
@@ -134,9 +140,38 @@ export default async function StorefrontPage(props: Props) {
 
   const isPreview = !!preview
   const isDraft = page.status === "draft"
+  const baseUrl = getBaseURL().replace(/\/$/, "")
+  const canonical =
+    page.canonical_override ?? `${baseUrl}/${countryCode}/${page.slug}`
+
+  // Per-slug schema injection. The atelier slug gets LocalBusiness — every
+  // other editorial slug rendering an article gets BlogPosting via the
+  // page.type field.
+  const isAtelier = page.slug === "atelier"
+  const isArticle = (page.type ?? "page") !== "page"
 
   return (
     <>
+      {isAtelier ? (
+        <JsonLd
+          id="lehena-localbusiness"
+          schema={localBusinessSchema(LEHENA_WORKSHOP)}
+        />
+      ) : null}
+      {isArticle ? (
+        <JsonLd
+          id="lehena-article"
+          schema={articleSchema({
+            url: canonical,
+            headline: page.title,
+            description: page.meta_description ?? page.excerpt ?? null,
+            image: page.og_image_url ?? null,
+            date_published: page.published_at ?? new Date(0).toISOString(),
+            section: page.tags?.[0] ?? null,
+            keywords: page.tags ?? [],
+          })}
+        />
+      ) : null}
       {isPreview && <PreviewBanner isDraft={isDraft} />}
       <article className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <header className="mb-8 border-b border-gray-200 pb-6">
