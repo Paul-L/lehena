@@ -33,6 +33,7 @@ import {
   DeleteConfirmSchema,
   DeleteRequestSchema,
 } from "./store/customers/me/gdpr/validators"
+import { UnsubscribeSchema } from "./store/preferences/validators"
 import { ListFacetedProductsQuerySchema } from "./store/products-faceted/validators"
 import { AddWishlistItemSchema } from "./store/wishlist/validators"
 
@@ -124,6 +125,11 @@ export default defineMiddlewares({
       matcher: "/store/customers/me/gdpr/delete-confirm",
       method: "POST",
       middlewares: [validateAndTransformBody(DeleteConfirmSchema)],
+    },
+    {
+      matcher: "/store/preferences/unsubscribe",
+      method: "POST",
+      middlewares: [validateAndTransformBody(UnsubscribeSchema)],
     },
     {
       matcher: "/admin/contact-submissions",

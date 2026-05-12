@@ -1,13 +1,14 @@
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import React from "react"
+
+import PasswordResetEmail from "../emails/password-reset"
+import { renderEmail } from "../emails/render"
+import { sendEmail } from "../modules/notifications/email-sender"
 
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
 
 /**
- * Stubs the password reset email until Phase 7 (Resend) is wired.
- *
- * Medusa's `generateResetPasswordTokenWorkflow` emits `auth.password_reset`
- * with the JWT token. Until Resend is wired, we log the full storefront URL
- * so QA can copy-paste it during testing.
+ * Sends the password reset email when Medusa emits `auth.password_reset`.
+ * Stubs to a console log when RESEND_API_KEY is missing (see email-sender).
  */
 export default async function authPasswordResetHandler({
   event,
@@ -18,20 +19,28 @@ export default async function authPasswordResetHandler({
   token: string
   metadata?: Record<string, unknown>
 }>) {
-  const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const { entity_id, actor_type, token } = event.data
   if (actor_type !== "customer") return
 
   const storefrontUrl =
     process.env.STOREFRONT_URL?.replace(/\/$/, "") ?? "http://localhost:8000"
-  // Default to /fr — locale is purely cosmetic for the reset link.
   const url = `${storefrontUrl}/fr/account/reset-password?email=${encodeURIComponent(
     entity_id
   )}&token=${encodeURIComponent(token)}`
 
-  logger.info(
-    `[auth.password_reset] STUB email to ${entity_id} — open this link to reset:\n  ${url}`
+  const { html, text } = await renderEmail(
+    React.createElement(PasswordResetEmail, { reset_url: url })
   )
+  await sendEmail(container, {
+    template: "password-reset",
+    // Token is in the URL itself; we dedupe on (template, token-tail) so
+    // a redelivered event doesn't trigger a second send.
+    dedupe_key: `token:${token.slice(-32)}`,
+    to: entity_id,
+    subject: "Réinitialisation de votre mot de passe",
+    html,
+    text,
+  })
 }
 
 export const config: SubscriberConfig = {
