@@ -1,6 +1,8 @@
+import { retrieveCustomer } from "@lib/data/customer"
 import { getProductDetails } from "@lib/data/product-details"
 import { listProducts } from "@lib/data/products"
 import { getRegion, listRegions } from "@lib/data/regions"
+import { listWishlist } from "@lib/data/wishlist"
 import { JsonLd } from "@lib/seo/json-ld"
 import { buildMetadata } from "@lib/seo/metadata"
 import { breadcrumbSchema } from "@lib/seo/schemas/breadcrumb"
@@ -102,6 +104,15 @@ export default async function ProductPage(props: Props) {
   const images = getImagesForVariant(product, selectedVariantId) ?? []
   const category = product.categories?.[0]
 
+  // Resolve wishlist state server-side so the heart renders in its correct
+  // state on first paint (no flicker between guest false and customer true).
+  const customer = await retrieveCustomer().catch(() => null)
+  const wishlistItem =
+    customer && product.id
+      ? ((await listWishlist()).find((it) => it.product_id === product.id) ??
+        null)
+      : null
+
   return (
     <>
       <JsonLd
@@ -145,6 +156,8 @@ export default async function ProductPage(props: Props) {
         region={region}
         countryCode={params.countryCode}
         images={images}
+        wishlistItem={wishlistItem}
+        isGuest={!customer}
       />
     </>
   )

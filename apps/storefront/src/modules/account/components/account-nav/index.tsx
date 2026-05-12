@@ -146,7 +146,34 @@ const AccountNav = ({
                   route={route!}
                   data-testid="orders-link"
                 >
-                  Orders
+                  Commandes
+                </AccountNavLink>
+              </li>
+              <li>
+                <AccountNavLink
+                  href="/account/wishlist"
+                  route={route!}
+                  data-testid="wishlist-link"
+                >
+                  Liste d&apos;envies
+                </AccountNavLink>
+              </li>
+              <li>
+                <AccountNavLink
+                  href="/account/preferences"
+                  route={route!}
+                  data-testid="preferences-link"
+                >
+                  Préférences
+                </AccountNavLink>
+              </li>
+              <li>
+                <AccountNavLink
+                  href="/account/data"
+                  route={route!}
+                  data-testid="data-link"
+                >
+                  Mes données (RGPD)
                 </AccountNavLink>
               </li>
               <li className="text-grey-700">
@@ -155,7 +182,7 @@ const AccountNav = ({
                   onClick={handleLogout}
                   data-testid="logout-button"
                 >
-                  Log out
+                  Se déconnecter
                 </button>
               </li>
             </ul>

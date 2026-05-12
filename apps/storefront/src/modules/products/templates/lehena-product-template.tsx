@@ -13,15 +13,20 @@ import LehenaProductTabs, {
   type Tab,
 } from "@modules/products/components/lehena-pdp/tabs"
 import LehenaTrustBadges from "@modules/products/components/lehena-pdp/trust-badges"
+import WishlistToggle from "@modules/wishlist/wishlist-toggle"
 import { Suspense } from "react"
 
 import type { EnrichedProduct } from "@lib/data/product-details"
+import type { WishlistItem } from "@lib/data/wishlist"
 
 interface Props {
   product: EnrichedProduct
   region: HttpTypes.StoreRegion
   countryCode: string
   images: HttpTypes.StoreProductImage[]
+  /** Server-resolved wishlist state for this product; null = guest. */
+  wishlistItem?: WishlistItem | null
+  isGuest: boolean
 }
 
 function splitTitle(title: string): { lead: string; tail: string | null } {
@@ -154,6 +159,8 @@ export default function LehenaProductTemplate({
   region,
   countryCode,
   images,
+  wishlistItem,
+  isGuest,
 }: Props) {
   const { lead, tail } = splitTitle(product.title)
   const category = product.categories?.[0]
@@ -254,7 +261,19 @@ export default function LehenaProductTemplate({
               </p>
             )}
 
-            <LehenaProductActions product={product} region={region} />
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ flex: 1 }}>
+                <LehenaProductActions product={product} region={region} />
+              </div>
+              <WishlistToggle
+                productId={product.id}
+                initiallyIn={!!wishlistItem}
+                itemId={wishlistItem?.id ?? null}
+                isGuest={isGuest}
+                size={22}
+                className="lh-pdp-wishlist"
+              />
+            </div>
 
             <div style={{ marginTop: 24, marginBottom: 28 }}>
               <LehenaPDPDeliveryEstimate

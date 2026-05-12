@@ -24,8 +24,17 @@ import {
   CreateRedirectSchema,
   ListRedirectsQuerySchema,
 } from "./admin/redirects/validators"
+import {
+  RequestMagicLinkSchema,
+  VerifyMagicLinkSchema,
+} from "./store/auth/magic-link/validators"
 import { SubmitContactSchema } from "./store/contact/validators"
+import {
+  DeleteConfirmSchema,
+  DeleteRequestSchema,
+} from "./store/customers/me/gdpr/validators"
 import { ListFacetedProductsQuerySchema } from "./store/products-faceted/validators"
+import { AddWishlistItemSchema } from "./store/wishlist/validators"
 
 export default defineMiddlewares({
   routes: [
@@ -90,6 +99,31 @@ export default defineMiddlewares({
       matcher: "/store/contact",
       method: "POST",
       middlewares: [validateAndTransformBody(SubmitContactSchema)],
+    },
+    {
+      matcher: "/store/auth/magic-link",
+      method: "POST",
+      middlewares: [validateAndTransformBody(RequestMagicLinkSchema)],
+    },
+    {
+      matcher: "/store/auth/magic-link/verify",
+      method: "POST",
+      middlewares: [validateAndTransformBody(VerifyMagicLinkSchema)],
+    },
+    {
+      matcher: "/store/wishlist",
+      method: "POST",
+      middlewares: [validateAndTransformBody(AddWishlistItemSchema)],
+    },
+    {
+      matcher: "/store/customers/me/gdpr/delete-request",
+      method: "POST",
+      middlewares: [validateAndTransformBody(DeleteRequestSchema)],
+    },
+    {
+      matcher: "/store/customers/me/gdpr/delete-confirm",
+      method: "POST",
+      middlewares: [validateAndTransformBody(DeleteConfirmSchema)],
     },
     {
       matcher: "/admin/contact-submissions",

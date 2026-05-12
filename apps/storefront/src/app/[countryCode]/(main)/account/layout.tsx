@@ -1,6 +1,7 @@
 import { retrieveCustomer } from "@lib/data/customer"
 import { Toaster } from "@medusajs/ui"
 import AccountLayout from "@modules/account/templates/account-layout"
+import GuestWishlistMigrator from "@modules/wishlist/guest-migrator"
 
 export default async function AccountPageLayout({
   dashboard,
@@ -14,6 +15,7 @@ export default async function AccountPageLayout({
   return (
     <AccountLayout customer={customer}>
       {customer ? dashboard : login}
+      <GuestWishlistMigrator isAuthenticated={!!customer} />
       <Toaster />
     </AccountLayout>
   )
