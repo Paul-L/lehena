@@ -44,6 +44,10 @@ import {
   SubmitReviewSchema,
 } from "./store/products/[id]/reviews/validators"
 import { ListFacetedProductsQuerySchema } from "./store/products-faceted/validators"
+import {
+  MutateSubscriptionSchema,
+  StartCheckoutSchema,
+} from "./store/subscriptions/validators"
 import { AddWishlistItemSchema } from "./store/wishlist/validators"
 
 export default defineMiddlewares({
@@ -149,6 +153,16 @@ export default defineMiddlewares({
       matcher: "/admin/exports/orders",
       method: "POST",
       middlewares: [validateAndTransformBody(ExportOrdersSchema)],
+    },
+    {
+      matcher: "/store/subscriptions/checkout",
+      method: "POST",
+      middlewares: [validateAndTransformBody(StartCheckoutSchema)],
+    },
+    {
+      matcher: "/store/subscriptions/:id",
+      method: "POST",
+      middlewares: [validateAndTransformBody(MutateSubscriptionSchema)],
     },
     {
       matcher: "/store/customers/me/gdpr/delete-request",

@@ -144,6 +144,9 @@ importers:
       resend:
         specifier: ^6.12.3
         version: 6.12.3(@react-email/render@2.0.8(react-dom@19.0.5(react@19.0.5))(react@19.0.5))
+      stripe:
+        specifier: ^22.1.1
+        version: 22.1.1(@types/node@20.19.40)
       zod:
         specifier: 4.2.0
         version: 4.2.0
@@ -8477,6 +8480,15 @@ packages:
     engines: {node: '>=16'}
     peerDependencies:
       '@types/node': '>=16'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  stripe@22.1.1:
+    resolution: {integrity: sha512-cmodIYP27tBkJ8G7DuGgWw0PFuemlFZbuF3Wwr1TrjFjUa3T7NIgCe6TVwX8BO2ynu+xtTuDGfHafNDCPt9lXA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/node': '>=18'
     peerDependenciesMeta:
       '@types/node':
         optional: true
@@ -18982,6 +18994,10 @@ snapshots:
   stripe@19.1.0(@types/node@20.19.40):
     dependencies:
       qs: 6.15.1
+    optionalDependencies:
+      '@types/node': 20.19.40
+
+  stripe@22.1.1(@types/node@20.19.40):
     optionalDependencies:
       '@types/node': 20.19.40
 
