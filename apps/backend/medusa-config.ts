@@ -117,6 +117,51 @@ module.exports = defineConfig({
     { resolve: "./src/modules/redirects" },
     { resolve: "./src/modules/faq" },
     { resolve: "./src/modules/contact" },
+    // Payment module: registers the Stripe provider when STRIPE_API_KEY is
+    // set. Without the env var we keep the default provider so dev / CI
+    // doesn't break — checkout will surface "no payment method available".
+    ...(process.env.STRIPE_API_KEY
+      ? [
+          {
+            resolve: "@medusajs/medusa/payment",
+            options: {
+              providers: [
+                {
+                  resolve: "@medusajs/medusa/payment-stripe",
+                  id: "stripe",
+                  options: {
+                    apiKey: process.env.STRIPE_API_KEY,
+                    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+                    capture: true,
+                    automatic_payment_methods: true,
+                  },
+                },
+              ],
+            },
+          },
+        ]
+      : []),
+    // Custom fulfillment providers: Chronofresh (cold chain) + Colissimo
+    // (ambient). Both ship in mock mode by default (env CHRONOFRESH_API_KEY
+    // / COLISSIMO_API_KEY unset → grille tarifaire locale only, no external
+    // API calls). Wiring real APIs is post-launch when commercial contracts
+    // are signed.
+    {
+      resolve: "@medusajs/medusa/fulfillment",
+      options: {
+        providers: [
+          { resolve: "@medusajs/medusa/fulfillment-manual", id: "manual" },
+          {
+            resolve: "./src/modules/fulfillment-chronofresh",
+            id: "chronofresh",
+          },
+          {
+            resolve: "./src/modules/fulfillment-colissimo",
+            id: "colissimo",
+          },
+        ],
+      },
+    },
   ],
   plugins: [
     {

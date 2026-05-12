@@ -232,7 +232,12 @@ export async function seedFulfillment(
     }
   }
 
-  // ─── Stub shipping options (real Chronofresh/Colissimo prices Phase 5) ─
+  // ─── Shipping options: calculated pricing via custom providers ──────
+  // Phase 5: prices now computed by the Chronofresh / Colissimo provider
+  // services (grille tarifaire locale; real APIs branchées post-launch).
+  // We keep one option per zone for naming clarity in the storefront, but
+  // every option uses `price_type: "calculated"` so the provider is invoked
+  // at checkout time.
   const { data: existingOptions } = await query.graph({
     entity: "shipping_option",
     fields: ["id", "name"],
@@ -241,45 +246,69 @@ export async function seedFulfillment(
     (existingOptions ?? []).map((o) => o.name)
   )
 
-  const stubOption = (
+  const calcOption = (
     name: string,
     serviceZoneId: string,
     profileId: string,
     code: "fresh" | "ambient",
-    amount: number
+    providerId: "chronofresh_chronofresh" | "colissimo_colissimo"
   ) => ({
     name,
-    price_type: "flat" as const,
-    provider_id: "manual_manual",
+    price_type: "calculated" as const,
+    provider_id: providerId,
     service_zone_id: serviceZoneId,
     shipping_profile_id: profileId,
     type: {
       label: code === "fresh" ? "Frais (24-48h)" : "Standard (48-72h)",
       description:
         code === "fresh"
-          ? "Livraison réfrigérée Chronofresh — stub Phase 1, tarif réel Phase 5."
-          : "Livraison sèche Colissimo — stub Phase 1, tarif réel Phase 5.",
+          ? "Livraison réfrigérée Chronofresh — frais offerts dès 50 €."
+          : "Livraison sèche Colissimo — frais offerts dès 50 €.",
       code,
     },
-    prices: [{ currency_code: "eur", amount }],
     rules: [
       { attribute: "enabled_in_store", value: "true", operator: "eq" as const },
       { attribute: "is_return", value: "false", operator: "eq" as const },
     ],
   })
 
-  const optionsToCreate: ReturnType<typeof stubOption>[] = []
-  const toCreate: [string, string, "fresh" | "ambient", number][] = [
-    ["Chronofresh France", freshSet.fr.id, "fresh", 1500],
-    ["Chronofresh Europe", freshSet.eu.id, "fresh", 2900],
-    ["Colissimo France", ambientSet.fr.id, "ambient", 690],
-    ["Colissimo Europe", ambientSet.eu.id, "ambient", 1490],
-    ["Colissimo Monde", ambientSet.world.id, "ambient", 2900],
+  const optionsToCreate: ReturnType<typeof calcOption>[] = []
+  // Mixed-cart strategy (cf. spec Phase 5 § 2.e): when the cart contains
+  // both fresh and ambient items, we force the entire order into the cold
+  // chain. To make that possible without changing the cart's per-profile
+  // shipping method requirement, we register the Chronofresh provider as
+  // *also available* on the ambient profile zones — labeled "Chronofresh
+  // ambient (mixed cart)". The storefront filters these out of solo-ambient
+  // carts and keeps only Chronofresh options on mixed carts.
+  const toCreate: [
+    string,
+    string,
+    "fresh" | "ambient",
+    "chronofresh_chronofresh" | "colissimo_colissimo",
+  ][] = [
+    ["Chronofresh France", freshSet.fr.id, "fresh", "chronofresh_chronofresh"],
+    ["Chronofresh Europe", freshSet.eu.id, "fresh", "chronofresh_chronofresh"],
+    ["Colissimo France", ambientSet.fr.id, "ambient", "colissimo_colissimo"],
+    ["Colissimo Europe", ambientSet.eu.id, "ambient", "colissimo_colissimo"],
+    ["Colissimo Monde", ambientSet.world.id, "ambient", "colissimo_colissimo"],
+    // Chronofresh-coverage options on the ambient profile (mixed-cart only).
+    [
+      "Chronofresh France (mixed)",
+      ambientSet.fr.id,
+      "ambient",
+      "chronofresh_chronofresh",
+    ],
+    [
+      "Chronofresh Europe (mixed)",
+      ambientSet.eu.id,
+      "ambient",
+      "chronofresh_chronofresh",
+    ],
   ]
-  for (const [name, zoneId, code, amount] of toCreate) {
+  for (const [name, zoneId, code, providerId] of toCreate) {
     if (existingOptionNames.has(name)) continue
     const profileId = code === "fresh" ? freshProfileId : ambientProfileId
-    optionsToCreate.push(stubOption(name, zoneId, profileId, code, amount))
+    optionsToCreate.push(calcOption(name, zoneId, profileId, code, providerId))
   }
   if (optionsToCreate.length > 0) {
     await createShippingOptionsWorkflow(container).run({
