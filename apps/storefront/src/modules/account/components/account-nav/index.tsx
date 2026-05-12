@@ -160,6 +160,15 @@ const AccountNav = ({
               </li>
               <li>
                 <AccountNavLink
+                  href="/account/subscriptions"
+                  route={route!}
+                  data-testid="subscriptions-link"
+                >
+                  Mes abonnements
+                </AccountNavLink>
+              </li>
+              <li>
+                <AccountNavLink
                   href="/account/preferences"
                   route={route!}
                   data-testid="preferences-link"
