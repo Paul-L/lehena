@@ -1,0 +1,49 @@
+# VCS
+.git
+.gitignore
+.gitattributes
+
+# Build artefacts
+**/node_modules
+**/.next
+**/.medusa/server
+**/dist
+**/build
+**/.turbo
+
+# Local env / secrets
+**/.env
+**/.env.local
+**/.env.development
+**/.env.test
+**/.env.production
+**/.env.*.local
+
+# IDE / OS
+**/.DS_Store
+**/.idea
+**/.vscode
+**/Thumbs.db
+
+# Test artefacts
+**/coverage
+**/playwright-report
+**/test-results
+
+# Docs that don't belong in the image
+**/*.md
+docs/
+README.md
+
+# Local infra
+docker-compose*.yml
+docker-compose*.yaml
+
+# Lehena migration outputs
+**/migration-reports
+
+# CI configs
+.github/
+
+# Storybook
+**/storybook-static
