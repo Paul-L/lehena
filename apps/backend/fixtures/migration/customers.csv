@@ -1,0 +1,21 @@
+id,email,first_name,last_name,phone,date_created,billing_company,billing_address_1,billing_address_2,billing_city,billing_state,billing_postcode,billing_country,marketing_opt_in
+1,marie.dupont@example.com,Marie,Dupont,0612345678,2023-04-12T10:00:00Z,,12 rue Lafayette,,Bayonne,,64100,FR,true
+2,jean.lefevre@example.com,Jean,Lefèvre,0623456789,2022-11-03T15:30:00Z,Lefèvre SAS,5 chemin du Petit Bois,Bât. B,Bordeaux,,33000,FR,false
+3,isabelle.martin@example.com,Isabelle,Martin,,2021-08-20T08:15:00Z,,8 cours Sextius,,Aix-en-Provence,,13100,FR,true
+4,pierre.lambert@example.com,Pierre,Lambert,0987654321,2024-01-15T14:00:00Z,,Place Gambetta,,Saint-Jean-de-Luz,,64500,FR,true
+5,nathalie.gomez@example.com,Nathalie,Gomez,,2023-06-22T11:45:00Z,,3 Calle Mayor,,Madrid,,28013,ES,false
+6,thomas.benoit@example.com,Thomas,Benoît,0698765432,2020-12-01T09:00:00Z,,15 rue de la Liberté,,Lille,,59000,FR,true
+7,sophie.roux@example.com,Sophie,Roux,,2022-03-08T16:30:00Z,,72 boulevard Voltaire,,Paris,,75011,FR,true
+8,christophe.morel@example.com,Christophe,Morel,0676543210,2024-05-17T13:20:00Z,,42 rue Saint-Sernin,,Toulouse,,31000,FR,false
+9,helene.faure@example.com,Hélène,Faure,,2021-02-14T07:00:00Z,,9 quai des Brumes,,Nantes,,44000,FR,true
+10,olivier.bernard@example.com,Olivier,Bernard,0654321987,2023-10-30T19:00:00Z,,21 rue du Théâtre,,Strasbourg,,67000,FR,true
+11,laetitia.giraud@example.com,Laetitia,Giraud,,2024-07-09T10:00:00Z,,4 avenue Maréchal Foch,,Grenoble,,38000,FR,true
+12,vincent.bonnet@example.com,Vincent,Bonnet,0612129090,2022-09-19T17:45:00Z,Bonnet & Co,18 rue Pasteur,Étage 2,Marseille,,13002,FR,false
+13,elodie.lacroix@example.com,Élodie,Lacroix,,2025-01-05T08:00:00Z,,Carrer del Born 12,,Barcelone,,08003,ES,true
+14,julien.fontaine@example.com,Julien,Fontaine,0698989898,2021-11-11T12:00:00Z,,77 grand-rue,,Annecy,,74000,FR,true
+15,emilie.charpentier@example.com,Émilie,Charpentier,,2023-03-28T16:00:00Z,,Schillerstr. 4,,Munich,,80336,DE,false
+16,laurent.michel@example.com,Laurent,Michel,0656561010,2022-06-14T13:30:00Z,,Place de la Mairie,,Reims,,51100,FR,true
+17,celine.albert@example.com,Céline Albert,Albert,,2024-09-22T09:15:00Z,,12 rue du Marché,,Biarritz,,64200,FR,true
+18,nicolas.perrin@example.com,Nicolas,Perrin,,2020-05-08T11:00:00Z,,5 cours Berriat,,Lyon,,69002,FR,false
+19,julie.barbier@example.com,Julie,Barbier,0667671234,2024-12-12T20:00:00Z,,Galleria del Corso 8,,Milan,,20122,IT,true
+20,francois.collin@example.com,François,Collin,,2025-02-28T18:00:00Z,,7 avenue de la Plage,,Hossegor,,40150,FR,true
