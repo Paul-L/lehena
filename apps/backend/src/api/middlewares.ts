@@ -8,6 +8,7 @@ import {
   ListContactSubmissionsQuerySchema,
   UpdateContactSubmissionSchema,
 } from "./admin/contact-submissions/validators"
+import { ExportOrdersSchema } from "./admin/exports/orders/validators"
 import { UpdateFaqItemSchema } from "./admin/faq-items/[id]/validators"
 import {
   CreatePageSchema,
@@ -25,6 +26,10 @@ import {
   ListRedirectsQuerySchema,
 } from "./admin/redirects/validators"
 import {
+  ListAdminReviewsQuerySchema,
+  UpdateReviewStatusSchema,
+} from "./admin/reviews/validators"
+import {
   RequestMagicLinkSchema,
   VerifyMagicLinkSchema,
 } from "./store/auth/magic-link/validators"
@@ -34,6 +39,10 @@ import {
   DeleteRequestSchema,
 } from "./store/customers/me/gdpr/validators"
 import { UnsubscribeSchema } from "./store/preferences/validators"
+import {
+  ListReviewsQuerySchema,
+  SubmitReviewSchema,
+} from "./store/products/[id]/reviews/validators"
 import { ListFacetedProductsQuerySchema } from "./store/products-faceted/validators"
 import { AddWishlistItemSchema } from "./store/wishlist/validators"
 
@@ -115,6 +124,31 @@ export default defineMiddlewares({
       matcher: "/store/wishlist",
       method: "POST",
       middlewares: [validateAndTransformBody(AddWishlistItemSchema)],
+    },
+    {
+      matcher: "/store/products/:id/reviews",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(ListReviewsQuerySchema, {})],
+    },
+    {
+      matcher: "/store/products/:id/reviews",
+      method: "POST",
+      middlewares: [validateAndTransformBody(SubmitReviewSchema)],
+    },
+    {
+      matcher: "/admin/reviews",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(ListAdminReviewsQuerySchema, {})],
+    },
+    {
+      matcher: "/admin/reviews/:id",
+      method: "POST",
+      middlewares: [validateAndTransformBody(UpdateReviewStatusSchema)],
+    },
+    {
+      matcher: "/admin/exports/orders",
+      method: "POST",
+      middlewares: [validateAndTransformBody(ExportOrdersSchema)],
     },
     {
       matcher: "/store/customers/me/gdpr/delete-request",

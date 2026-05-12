@@ -300,7 +300,7 @@ export default function LehenaProductTemplate({
         <LehenaPairings product={product} countryCode={countryCode} />
       </Suspense>
 
-      <LehenaReviews />
+      <LehenaReviews productId={product.id} isCustomer={!isGuest} />
     </>
   )
 }
