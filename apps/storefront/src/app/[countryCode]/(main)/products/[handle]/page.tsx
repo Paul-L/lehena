@@ -2,6 +2,7 @@ import { retrieveCustomer } from "@lib/data/customer"
 import { getProductDetails } from "@lib/data/product-details"
 import { listProducts } from "@lib/data/products"
 import { getRegion, listRegions } from "@lib/data/regions"
+import { listProductReviews } from "@lib/data/reviews"
 import { listWishlist } from "@lib/data/wishlist"
 import { JsonLd } from "@lib/seo/json-ld"
 import { buildMetadata } from "@lib/seo/metadata"
@@ -113,6 +114,13 @@ export default async function ProductPage(props: Props) {
         null)
       : null
 
+  // Real aggregateRating from the reviews module (Phase 10). When no
+  // reviews are approved yet, we omit the field entirely so we don't
+  // pollute the schema with a 0/0 placeholder.
+  const { aggregate: reviewsAggregate } = await listProductReviews(product.id, {
+    limit: 0,
+  })
+
   return (
     <>
       <JsonLd
@@ -120,8 +128,13 @@ export default async function ProductPage(props: Props) {
         schema={productSchema({
           product,
           countryCode: params.countryCode,
-          // Mock until reviews land in Phase 10.
-          aggregateRating: { ratingValue: 4.8, reviewCount: 247 },
+          aggregateRating:
+            reviewsAggregate.average && reviewsAggregate.count > 0
+              ? {
+                  ratingValue: reviewsAggregate.average,
+                  reviewCount: reviewsAggregate.count,
+                }
+              : undefined,
         })}
       />
       <JsonLd
