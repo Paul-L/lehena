@@ -1,0 +1,70 @@
+name: Lighthouse CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Override storefront URL (defaults to Vercel preview)"
+        required: false
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    name: Lighthouse — perf · seo · a11y
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only run when a Vercel preview URL is reachable — we look it up on
+    # the PR's `vercel--preview-url` label set by the Vercel GitHub bot.
+    # When the bot isn't configured (early staging) the job is skipped
+    # cleanly rather than failing.
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve preview URL
+        id: preview
+        run: |
+          if [ -n "${{ inputs.base_url }}" ]; then
+            echo "url=${{ inputs.base_url }}" >> "$GITHUB_OUTPUT"
+          else
+            # The Vercel for GitHub integration writes the deployment
+            # URL to a PR comment with a known marker. We grep for it.
+            # If not found, exit 0 (skip) so we don't block PRs before
+            # staging infra is up.
+            URL=$(gh pr view "${{ github.event.pull_request.number }}" --json comments \
+              --jq '.comments[].body' \
+              | grep -oE 'https://lehena-storefront-[^"]+vercel.app' \
+              | head -n1 || true)
+            if [ -z "$URL" ]; then
+              echo "::warning::No Vercel preview URL found yet — skipping Lighthouse run"
+              echo "url=" >> "$GITHUB_OUTPUT"
+            else
+              echo "url=$URL" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Install Lighthouse CI
+        if: steps.preview.outputs.url != ''
+        run: npm install -g @lhci/cli@0.14
+
+      - name: Run Lighthouse CI
+        if: steps.preview.outputs.url != ''
+        env:
+          LH_BASE_URL: ${{ steps.preview.outputs.url }}
+        run: lhci autorun --config=.lighthouserc.cjs
+
+      - name: Upload Lighthouse artifacts
+        if: always() && steps.preview.outputs.url != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          retention-days: 14
