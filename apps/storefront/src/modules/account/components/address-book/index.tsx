@@ -12,15 +12,18 @@ interface AddressBookProps {
 const AddressBook: React.FC<AddressBookProps> = ({ customer, region }) => {
   const { addresses } = customer
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 mt-4">
-        <AddAddress region={region} addresses={addresses} />
-        {addresses.map((address) => {
-          return (
-            <EditAddress region={region} address={address} key={address.id} />
-          )
-        })}
-      </div>
+    <div
+      className="address-grid"
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: 20,
+      }}
+    >
+      {addresses.map((address) => (
+        <EditAddress region={region} address={address} key={address.id} />
+      ))}
+      <AddAddress region={region} addresses={addresses} />
     </div>
   )
 }

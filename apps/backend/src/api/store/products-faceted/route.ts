@@ -2,7 +2,10 @@ import {
   type MedusaRequest,
   type MedusaResponse,
 } from "@medusajs/framework/http"
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import {
+  ContainerRegistrationKeys,
+  QueryContext,
+} from "@medusajs/framework/utils"
 
 import type { ListFacetedProductsQuerySchema } from "./validators"
 
@@ -25,6 +28,35 @@ import type { ListFacetedProductsQuerySchema } from "./validators"
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const params = req.validatedQuery as ListFacetedProductsQuerySchema
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
+
+  // ─── 0. Resolve pricing context ────────────────────────────────────
+  // `variants.calculated_price` requires a currency_code in the query
+  // context. We derive it from the region the storefront sends along.
+  let pricingContext:
+    | { region_id: string; currency_code: string; country_code?: string }
+    | null = null
+  if (params.region_id) {
+    const { data: regions } = await query.graph({
+      entity: "region",
+      fields: ["id", "currency_code"],
+      filters: { id: params.region_id },
+    })
+    const region = regions?.[0] as
+      | { id: string; currency_code: string }
+      | undefined
+    if (!region) {
+      return res
+        .status(400)
+        .json({ message: `Region ${params.region_id} not found` })
+    }
+    pricingContext = {
+      region_id: region.id,
+      currency_code: region.currency_code,
+    }
+    if (params.country_code) {
+      pricingContext.country_code = params.country_code
+    }
+  }
 
   // ─── 1. Pre-filter by product_details ──────────────────────────────
   let detailsProductIdSet: Set<string> | null = null
@@ -153,40 +185,53 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       ? orderMap.created_at
       : orderMap[params.sort]
 
+  const fields = [
+    "id",
+    "title",
+    "handle",
+    "subtitle",
+    "description",
+    "thumbnail",
+    "status",
+    "created_at",
+    "tags.*",
+    "categories.id",
+    "categories.name",
+    "categories.handle",
+    "collection.id",
+    "collection.handle",
+    "collection.title",
+    "variants.id",
+    "variants.title",
+    "variants.sku",
+    "variants.inventory_quantity",
+    "variants.variant_details.id",
+    "variants.variant_details.format",
+    "variants.variant_details.weight_grams",
+    "product_details.*",
+  ]
+  if (pricingContext) {
+    fields.push("variants.calculated_price.*")
+  }
+
   const { data: products, metadata } = await query.graph({
     entity: "product",
-    fields: [
-      "id",
-      "title",
-      "handle",
-      "subtitle",
-      "description",
-      "thumbnail",
-      "status",
-      "created_at",
-      "tags.*",
-      "categories.id",
-      "categories.name",
-      "categories.handle",
-      "collection.id",
-      "collection.handle",
-      "collection.title",
-      "variants.id",
-      "variants.title",
-      "variants.sku",
-      "variants.inventory_quantity",
-      "variants.calculated_price.*",
-      "variants.variant_details.id",
-      "variants.variant_details.format",
-      "variants.variant_details.weight_grams",
-      "product_details.*",
-    ],
+    fields,
     filters: productFilters,
     pagination: {
       take: params.limit,
       skip: params.offset,
       order,
     },
+    ...(pricingContext
+      ? {
+          context: {
+            variants: {
+              calculated_price: QueryContext(pricingContext),
+            },
+          },
+        }
+      : {}),
   })
 
   // Post-sort by price if needed (only over the current page).

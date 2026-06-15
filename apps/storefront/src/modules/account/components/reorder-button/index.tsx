@@ -1,7 +1,8 @@
 "use client"
 
 import { addToCart } from "@lib/data/cart"
-import { Button, toast } from "@medusajs/ui"
+import { LhArrow } from "@modules/common/components/lehena/icons"
+import { toast } from "@medusajs/ui"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 
@@ -15,8 +16,7 @@ interface Props {
   items: OrderItem[]
   /** Optional custom label, defaults to "Recommander". */
   label?: string
-  variant?: "primary" | "secondary"
-  size?: "small" | "base" | "large"
+  variant?: "rouge" | "solid" | "ghost"
 }
 
 /**
@@ -28,8 +28,7 @@ interface Props {
 export default function ReorderButton({
   items,
   label = "Recommander",
-  variant = "secondary",
-  size = "base",
+  variant = "rouge",
 }: Props) {
   const router = useRouter()
   const params = useParams<{ countryCode?: string }>()
@@ -84,15 +83,28 @@ export default function ReorderButton({
     }
   }
 
+  const variantClass =
+    variant === "rouge"
+      ? "btn-rouge"
+      : variant === "solid"
+        ? "btn-solid"
+        : "btn-ghost"
+
   return (
-    <Button
-      variant={variant}
-      size={size}
-      isLoading={busy}
+    <button
+      type="button"
       onClick={onClick}
+      disabled={busy}
+      className={`btn ${variantClass}`}
+      style={{
+        fontSize: 11,
+        padding: "10px 16px",
+        justifyContent: "center",
+      }}
       data-testid="reorder-button"
     >
-      {label}
-    </Button>
+      {busy ? "Un instant…" : label}
+      {!busy && <LhArrow size={14} />}
+    </button>
   )
 }

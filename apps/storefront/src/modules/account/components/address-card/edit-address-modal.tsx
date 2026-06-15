@@ -5,9 +5,8 @@ import {
   updateCustomerAddress,
 } from "@lib/data/customer"
 import useToggleState from "@lib/hooks/use-toggle-state"
-import { PencilSquare as Edit, Trash } from "@medusajs/icons"
 import { type HttpTypes } from "@medusajs/types"
-import { Button, Heading, Text, clx } from "@medusajs/ui"
+import { Button, Heading } from "@medusajs/ui"
 import CountrySelect from "@modules/checkout/components/country-select"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
 import Input from "@modules/common/components/input"
@@ -18,14 +17,9 @@ import React, { useEffect, useState, useActionState } from "react"
 interface EditAddressProps {
   region: HttpTypes.StoreRegion
   address: HttpTypes.StoreCustomerAddress
-  isActive?: boolean
 }
 
-const EditAddress: React.FC<EditAddressProps> = ({
-  region,
-  address,
-  isActive = false,
-}) => {
+const EditAddress: React.FC<EditAddressProps> = ({ region, address }) => {
   const [removing, setRemoving] = useState(false)
   const [successState, setSuccessState] = useState(false)
   const { state, open, close: closeModal } = useToggleState(false)
@@ -60,65 +54,132 @@ const EditAddress: React.FC<EditAddressProps> = ({
     setRemoving(false)
   }
 
+  const isDefault = !!address.is_default_shipping
+  const eyebrowLabel = address.company || (isDefault ? "Adresse principale" : "Adresse")
+
   return (
     <>
-      <div
-        className={clx(
-          "border rounded-rounded p-5 min-h-[220px] h-full w-full flex flex-col justify-between transition-colors",
-          {
-            "border-gray-900": isActive,
-          }
-        )}
+      <article
         data-testid="address-container"
+        style={{
+          border: "1px solid var(--line)",
+          padding: 28,
+          background: isDefault ? "var(--bg-elevated)" : "transparent",
+          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 260,
+        }}
       >
-        <div className="flex flex-col">
-          <Heading
-            className="text-left text-base-semi"
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 16,
+          }}
+        >
+          <div className="eyebrow">{eyebrowLabel}</div>
+          {isDefault && (
+            <span
+              className="mono"
+              style={{
+                fontSize: 10,
+                color: "var(--rouge)",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+              }}
+            >
+              ● Par défaut
+            </span>
+          )}
+        </div>
+        <div
+          style={{
+            fontFamily: "var(--serif)",
+            fontSize: 16,
+            lineHeight: 1.55,
+            color: "var(--ink)",
+            flex: 1,
+          }}
+        >
+          <div
+            style={{ fontWeight: 500 }}
             data-testid="address-name"
           >
             {address.first_name} {address.last_name}
-          </Heading>
-          {address.company && (
-            <Text
-              className="txt-compact-small text-ui-fg-base"
-              data-testid="address-company"
+          </div>
+          <div data-testid="address-address">
+            {address.address_1}
+            {address.address_2 && `, ${address.address_2}`}
+          </div>
+          <div data-testid="address-postal-city">
+            {address.postal_code} {address.city}
+          </div>
+          <div data-testid="address-province-country">
+            {address.province && `${address.province}, `}
+            {address.country_code?.toUpperCase()}
+          </div>
+          {address.phone && (
+            <div
+              className="mono"
+              style={{
+                fontSize: 12,
+                color: "var(--ink-mute)",
+                marginTop: 10,
+                letterSpacing: "0.06em",
+              }}
             >
-              {address.company}
-            </Text>
+              {address.phone}
+            </div>
           )}
-          <Text className="flex flex-col text-left text-base-regular mt-2">
-            <span data-testid="address-address">
-              {address.address_1}
-              {address.address_2 && <span>, {address.address_2}</span>}
-            </span>
-            <span data-testid="address-postal-city">
-              {address.postal_code}, {address.city}
-            </span>
-            <span data-testid="address-province-country">
-              {address.province && `${address.province}, `}
-              {address.country_code?.toUpperCase()}
-            </span>
-          </Text>
         </div>
-        <div className="flex items-center gap-x-4">
+        <div
+          style={{
+            display: "flex",
+            gap: 18,
+            marginTop: 22,
+            paddingTop: 18,
+            borderTop: "1px solid var(--line)",
+          }}
+        >
           <button
-            className="text-small-regular text-ui-fg-base flex items-center gap-x-2"
+            type="button"
             onClick={open}
             data-testid="address-edit-button"
+            className="mono"
+            style={{
+              fontSize: 10,
+              color: "var(--ink)",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              textDecoration: "underline",
+            }}
           >
-            <Edit />
-            Edit
+            Modifier
           </button>
           <button
-            className="text-small-regular text-ui-fg-base flex items-center gap-x-2"
+            type="button"
             onClick={removeAddress}
+            disabled={removing}
             data-testid="address-delete-button"
+            className="mono"
+            style={{
+              fontSize: 10,
+              color: "var(--ink-mute)",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              textDecoration: "underline",
+              marginLeft: "auto",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+            }}
           >
-            {removing ? <Spinner /> : <Trash />}
-            Remove
+            {removing ? <Spinner /> : null} Supprimer
           </button>
         </div>
-      </div>
+      </article>
 
       <Modal isOpen={state} close={close} data-testid="edit-address-modal">
         <Modal.Title>

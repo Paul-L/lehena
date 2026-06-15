@@ -1,6 +1,5 @@
 "use client"
 
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useTransition } from "react"
 
@@ -12,8 +11,6 @@ export interface CategoryOption {
 }
 
 interface Props {
-  categories: CategoryOption[]
-  activeCategory?: string
   sortBy: SortOptions
   view: "compact" | "comfort" | "spacious"
 }
@@ -31,12 +28,7 @@ const SORT_OPTIONS: { value: SortOptions; label: string }[] = [
   { value: "price_desc", label: "Prix décroissant" },
 ]
 
-export default function LehenaStoreControls({
-  categories,
-  activeCategory,
-  sortBy,
-  view,
-}: Props) {
+export default function LehenaStoreControls({ sortBy, view }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -69,52 +61,13 @@ export default function LehenaStoreControls({
         className="lh-wrap"
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "flex-end",
           alignItems: "center",
           padding: "16px 0",
           gap: 24,
           flexWrap: "wrap",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            gap: 4,
-            flexWrap: "wrap",
-            overflowX: "auto",
-          }}
-        >
-          {categories.map((c) => {
-            const isActive = c.slug
-              ? activeCategory === c.slug
-              : !activeCategory
-            return (
-              <LocalizedClientLink
-                key={c.slug ?? "all"}
-                href={c.slug ? `/categories/${c.slug}` : "/store"}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: 999,
-                  fontSize: 13,
-                  fontFamily: "var(--mono)",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  background: isActive ? "var(--ink)" : "transparent",
-                  color: isActive ? "var(--bg)" : "var(--ink)",
-                  border: "1px solid",
-                  borderColor: isActive ? "var(--ink)" : "var(--line-strong)",
-                  whiteSpace: "nowrap",
-                  transition: "all 200ms ease",
-                  display: "inline-block",
-                }}
-                data-testid={`category-tab-${c.slug ?? "all"}`}
-                aria-current={isActive ? "page" : undefined}
-              >
-                {c.label}
-              </LocalizedClientLink>
-            )
-          })}
-        </div>
         <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
           <select
             value={sortBy}

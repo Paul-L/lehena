@@ -1,5 +1,5 @@
 import { LhArrow } from "@modules/common/components/lehena/icons"
-import { Placeholder } from "@modules/common/components/lehena/primitives"
+import { Photo } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 /**
@@ -27,10 +27,11 @@ export default function LehenaNotreAtelier() {
         >
           {/* Visuel atelier + carte minimaliste */}
           <div style={{ position: "relative" }}>
-            <Placeholder
-              label="Atelier Lehena · Laguinge"
+            <Photo
+              src="/images/home-atelier.webp"
+              alt="Atelier de charcuterie Lehena à Laguinge, en Soule — Pays Basque"
               aspect="5/4"
-              tone="argile"
+              sizes="(max-width: 768px) 100vw, 55vw"
             />
             {/* Mini-carte SVG : silhouette Pyrénées-Atlantiques avec point Lehena */}
             <div
@@ -100,7 +101,7 @@ export default function LehenaNotreAtelier() {
             >
               Bourg, 64470 Laguinge.
               <br />
-              <em style={{ fontStyle: "italic", color: "var(--argile)" }}>
+              <em style={{ fontStyle: "italic", color: "var(--argile-ink)" }}>
                 Soule — Pays Basque.
               </em>
             </h2>

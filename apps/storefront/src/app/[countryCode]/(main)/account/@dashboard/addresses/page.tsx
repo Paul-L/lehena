@@ -5,8 +5,9 @@ import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: "Addresses",
-  description: "View your addresses",
+  title: "Mes adresses",
+  description: "Gérez vos adresses de livraison.",
+  robots: { index: false, follow: false },
 }
 
 export default async function Addresses(props: {
@@ -22,13 +23,40 @@ export default async function Addresses(props: {
   }
 
   return (
-    <div className="w-full" data-testid="addresses-page-wrapper">
-      <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Shipping Addresses</h1>
-        <p className="text-base-regular">
-          View and update your shipping addresses, you can add as many as you
-          like. Saving your addresses will make them available during checkout.
-        </p>
+    <div data-testid="addresses-page-wrapper">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "end",
+          justifyContent: "space-between",
+          marginBottom: 28,
+          flexWrap: "wrap",
+          gap: 16,
+        }}
+      >
+        <div>
+          <h2
+            className="serif-display"
+            style={{
+              fontSize: 32,
+              lineHeight: 1,
+              margin: "0 0 8px",
+              letterSpacing: "-0.015em",
+            }}
+          >
+            Mes adresses
+          </h2>
+          <p
+            style={{
+              fontFamily: "var(--serif)",
+              fontSize: 15,
+              color: "var(--ink-soft)",
+              margin: 0,
+            }}
+          >
+            Enregistrez vos adresses pour accélérer le passage en caisse.
+          </p>
+        </div>
       </div>
       <AddressBook customer={customer} region={region} />
     </div>

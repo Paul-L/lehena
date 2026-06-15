@@ -1,0 +1,32 @@
+{
+  "script": "migrate-products",
+  "source": "csv-fixture:migration",
+  "started_at": "2026-05-13T07:25:45.027Z",
+  "finished_at": "2026-05-13T07:25:45.337Z",
+  "dry_run": true,
+  "totals": {
+    "seen": 3,
+    "created": 2,
+    "updated": 0,
+    "skipped": 1,
+    "failed": 0
+  },
+  "entries": [
+    {
+      "legacy_id": 101,
+      "outcome": "skipped",
+      "medusa_id": "prod_01KRBQ3TN092N57B7DFFVJ87B9",
+      "notes": "handle already exists"
+    },
+    {
+      "legacy_id": 102,
+      "outcome": "created",
+      "notes": "would create handle=chorizo-iparralde category=epicerie-basque variants=1"
+    },
+    {
+      "legacy_id": 103,
+      "outcome": "created",
+      "notes": "would create handle=patxaran-aldudes category=patxaran-spiritueux variants=1"
+    }
+  ]
+}

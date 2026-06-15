@@ -1,8 +1,9 @@
 import { type HttpTypes } from "@medusajs/types"
-import UnderlineLink from "@modules/common/components/interactive-link"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import React from "react"
 
 import AccountNav from "../components/account-nav"
+import LogoutButton from "../components/logout-button"
 
 interface AccountLayoutProps {
   customer: HttpTypes.StoreCustomer | null
@@ -13,29 +14,107 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({
   customer,
   children,
 }) => {
+  if (!customer) {
+    return (
+      <div className="lh" data-testid="account-page">
+        {children}
+      </div>
+    )
+  }
+
   return (
-    <div className="flex-1 small:py-12" data-testid="account-page">
-      <div className="flex-1 content-container h-full max-w-5xl mx-auto bg-white flex flex-col">
-        <div className="grid grid-cols-1  small:grid-cols-[240px_1fr] py-12">
-          <div>{customer && <AccountNav customer={customer} />}</div>
-          <div className="flex-1">{children}</div>
-        </div>
-        <div className="flex flex-col small:flex-row items-end justify-between small:border-t border-gray-200 py-12 gap-8">
-          <div>
-            <h3 className="text-xl-semi mb-4">Got questions?</h3>
-            <span className="txt-medium">
-              You can find frequently asked questions and answers on our
-              customer service page.
-            </span>
+    <main
+      className="lh"
+      data-testid="account-page"
+      style={{ padding: "60px 0 120px" }}
+    >
+      <div className="lh-wrap">
+        <header
+          style={{
+            marginBottom: 56,
+            paddingBottom: 32,
+            borderBottom: "1px solid var(--line)",
+          }}
+        >
+          <div
+            className="eyebrow"
+            style={{
+              marginBottom: 14,
+              color: "var(--ink-mute)",
+              display: "flex",
+              gap: 8,
+            }}
+          >
+            <LocalizedClientLink href="/" style={{ color: "var(--ink-mute)" }}>
+              Maison
+            </LocalizedClientLink>
+            <span>/</span>
+            <span style={{ color: "var(--ink)" }}>Espace client</span>
           </div>
-          <div>
-            <UnderlineLink href="/customer-service">
-              Customer Service
-            </UnderlineLink>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "end",
+              justifyContent: "space-between",
+              gap: 32,
+              flexWrap: "wrap",
+            }}
+          >
+            <h1
+              className="serif-display"
+              style={{
+                fontSize: "clamp(40px, 5.5vw, 72px)",
+                lineHeight: 0.95,
+                letterSpacing: "-0.02em",
+                margin: 0,
+              }}
+            >
+              {customer.first_name ?? ""} {customer.last_name ?? ""}
+              <span style={{ color: "var(--rouge)" }}>.</span>
+            </h1>
+            <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+              <div style={{ textAlign: "right" }}>
+                <div
+                  className="mono"
+                  style={{
+                    fontSize: 10,
+                    color: "var(--ink-mute)",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    marginBottom: 4,
+                  }}
+                >
+                  Connecté en tant que
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--serif)",
+                    fontSize: 15,
+                    color: "var(--ink-soft)",
+                  }}
+                >
+                  {customer.email}
+                </div>
+              </div>
+              <LogoutButton />
+            </div>
           </div>
+        </header>
+
+        <div
+          className="dashboard-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "220px 1fr",
+            gap: 64,
+            alignItems: "start",
+          }}
+        >
+          <AccountNav />
+          <section style={{ minWidth: 0 }}>{children}</section>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
 

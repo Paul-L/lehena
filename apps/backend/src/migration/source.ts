@@ -1,7 +1,11 @@
 import path from "node:path"
 
+import { MIGRATION_MODULE } from "../modules/migration"
+
 import { CsvFixtureReader } from "./readers/csv-fixture"
 import { WooCommerceApiReader } from "./readers/woocommerce-api"
+
+import type { MedusaContainer } from "@medusajs/framework/types"
 
 import type { MigrationReader } from "./types"
 
@@ -32,6 +36,39 @@ export function pickReader(
     return WooCommerceApiReader.fromEnv()
   }
   return null
+}
+
+/**
+ * Async resolver used by the workflow runners. Prefers credentials saved
+ * in the `migration` module (admin UI) over env vars — falls back to env
+ * if the module returns nothing. Fixtures sources are loaded sync just
+ * like `pickReader`.
+ *
+ * Use this from anywhere that has a container; `pickReader` stays for
+ * pure env-driven contexts (CLI/local dev without the admin UI).
+ */
+export async function resolveReader(
+  container: MedusaContainer,
+  rawSource: string | undefined
+): Promise<MigrationReader | null> {
+  const source = rawSource ?? "api"
+  if (source.startsWith("fixtures")) return pickReader(source)
+  if (source !== "api") return null
+
+  try {
+    const service = container.resolve(MIGRATION_MODULE)
+    const saved = await service.resolveWcCredentials()
+    if (saved) {
+      return new WooCommerceApiReader({
+        baseUrl: saved.url,
+        consumerKey: saved.consumerKey,
+        consumerSecret: saved.consumerSecret,
+      })
+    }
+  } catch {
+    // Module unavailable — fall through to env.
+  }
+  return WooCommerceApiReader.fromEnv()
 }
 
 /**

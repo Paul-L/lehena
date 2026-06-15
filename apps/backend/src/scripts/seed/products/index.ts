@@ -1,3 +1,6 @@
+import { readFile } from "node:fs/promises"
+import path from "node:path"
+
 import {
   ContainerRegistrationKeys,
   Modules,
@@ -16,11 +19,50 @@ import { ALL_PRODUCTS } from "./data"
 import type { ProductSeed } from "./types"
 import type { MedusaContainer } from "@medusajs/framework/types"
 
+const SEED_ASSETS_DIR = path.resolve(
+  process.cwd(),
+  "seed-assets/products"
+)
+const MIME_BY_EXT: Record<string, string> = {
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".webp": "image/webp",
+}
+
 interface SeedProductsContext {
   defaultSalesChannelId: string
   stockLocationId: string
   productTypeIds: Record<ProductTypeValue, string>
   shippingProfileIds: { fresh: string; ambient: string }
+}
+
+async function uploadSeedImage(
+  container: MedusaContainer,
+  filename: string
+): Promise<string | null> {
+  const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
+  const fileService = container.resolve(Modules.FILE)
+  const ext = path.extname(filename).toLowerCase()
+  const mimeType = MIME_BY_EXT[ext] ?? "application/octet-stream"
+  try {
+    const buf = await readFile(path.join(SEED_ASSETS_DIR, filename))
+    // The local file provider decodes `content` as base64 first; anything
+    // that isn't valid base64 falls back to a UTF-8 decode, which mangles
+    // binary bytes ≥ 0x80 (0xFF → 0xC3 0xBF) and produces a corrupt image.
+    // Always hand it base64 so the bytes round-trip intact.
+    const [uploaded] = await fileService.createFiles([
+      { filename, mimeType, content: buf.toString("base64") },
+    ])
+    return uploaded.url
+  } catch (err) {
+    logger.warn(
+      `[seed.products] could not upload image ${filename}: ${
+        err instanceof Error ? err.message : String(err)
+      }`
+    )
+    return null
+  }
 }
 
 export async function seedProducts(
@@ -77,6 +119,10 @@ export async function seedProducts(
         ? context.shippingProfileIds.fresh
         : context.shippingProfileIds.ambient
 
+    const imageUrl = product.image_filename
+      ? await uploadSeedImage(container, product.image_filename)
+      : null
+
     await createProductsWorkflow(container).run({
       input: {
         products: [
@@ -90,6 +136,9 @@ export async function seedProducts(
             shipping_profile_id: profileId,
             category_ids: categoryIds,
             sales_channels: [{ id: context.defaultSalesChannelId }],
+            ...(imageUrl
+              ? { thumbnail: imageUrl, images: [{ url: imageUrl }] }
+              : {}),
             options: [
               { title: "Format", values: product.variants.map((v) => v.title) },
             ],

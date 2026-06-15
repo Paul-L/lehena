@@ -22,15 +22,6 @@ interface Props {
   onPick?: () => void
 }
 
-const DEFAULT_SUGGESTIONS = [
-  "Jambon Orhi",
-  "Patxaran",
-  "Coffret cadeau",
-  "Chorizo",
-  "Piment d'Espelette",
-  "Axoa",
-]
-
 export function LehenaSearchAutocomplete({ onPick }: Props) {
   const router = useRouter()
   const params = useParams<{ countryCode?: string }>()
@@ -100,7 +91,7 @@ export function LehenaSearchAutocomplete({ onPick }: Props) {
           type="search"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Jambon Orhi, patxaran, axoa…"
+          placeholder="Rechercher"
           aria-label="Recherche dans toute la maison"
           style={{
             flex: 1,
@@ -113,38 +104,7 @@ export function LehenaSearchAutocomplete({ onPick }: Props) {
             minWidth: 0,
           }}
         />
-        <button
-          type="submit"
-          aria-label="Voir tous les résultats"
-          className="mono"
-          style={{
-            color: "var(--ink-mute)",
-            fontSize: 11,
-            letterSpacing: "0.1em",
-          }}
-        >
-          Tous les résultats →
-        </button>
       </form>
-
-      {/* Default suggestions when input is empty */}
-      {value.trim().length < 2 ? (
-        <div
-          className="lh-no-scrollbar"
-          style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}
-        >
-          {DEFAULT_SUGGESTIONS.map((s) => (
-            <button
-              key={s}
-              type="button"
-              className="chip"
-              onClick={() => setValue(s)}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      ) : null}
 
       {/* Live results */}
       {showResults ? (

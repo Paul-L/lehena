@@ -148,7 +148,7 @@ function FreeShippingInline({
           <div>
             {price.target_reached ? (
               <div className="flex items-center gap-1.5">
-                <CheckCircleSolid className="text-green-500 inline-block" />{" "}
+                <CheckCircleSolid className="text-success inline-block" />{" "}
                 Free Shipping unlocked!
               </div>
             ) : (

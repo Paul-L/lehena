@@ -1,0 +1,46 @@
+{
+  "script": "migrate-products",
+  "source": "csv-fixture:migration",
+  "started_at": "2026-05-13T07:26:56.038Z",
+  "finished_at": "2026-05-13T07:27:15.652Z",
+  "dry_run": false,
+  "totals": {
+    "seen": 5,
+    "created": 4,
+    "updated": 0,
+    "skipped": 1,
+    "failed": 0
+  },
+  "entries": [
+    {
+      "legacy_id": 101,
+      "outcome": "skipped",
+      "medusa_id": "prod_01KRBQ3TN092N57B7DFFVJ87B9",
+      "notes": "handle already exists"
+    },
+    {
+      "legacy_id": 102,
+      "outcome": "created",
+      "medusa_id": "prod_01KRG3PHSJJG7BB3PE3NQN5J7K",
+      "notes": "created handle=chorizo-iparralde variants=1"
+    },
+    {
+      "legacy_id": 103,
+      "outcome": "created",
+      "medusa_id": "prod_01KRG3PPS9SC5BBFYVB7N5FM3B",
+      "notes": "created handle=patxaran-aldudes variants=1"
+    },
+    {
+      "legacy_id": 104,
+      "outcome": "created",
+      "medusa_id": "prod_01KRG3PV213Y8VW0X2QVH5QWWB",
+      "notes": "created handle=planche-jambon-chene variants=1"
+    },
+    {
+      "legacy_id": 105,
+      "outcome": "created",
+      "medusa_id": "prod_01KRG3Q01SSQRKAY7BAP9XYRPH",
+      "notes": "created handle=coffret-degustation variants=1"
+    }
+  ]
+}

@@ -1,102 +1,96 @@
-import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
+import fs from "node:fs/promises"
+import path from "node:path"
 
-import { mapProduct } from "../migration/mappers/product"
-import { ReportBuilder } from "../migration/report"
-import { parseArgs, pickReader } from "../migration/source"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+
+import { parseArgs } from "../migration/source"
+import { MIGRATION_MODULE } from "../modules/migration"
+import { runMigrationWorkflow } from "../workflows/migration/run-migration"
+
+import type MigrationModuleService from "../modules/migration/service"
 
 import type { ExecArgs } from "@medusajs/framework/types"
 
 /**
- * Migrates WooCommerce products into Medusa.
- *
- * Important — this script is intentionally **dry-run only in V1**: it
- * exercises the full mapper pipeline (categorisation, variants, product
- * details, redirects), writes a detailed report, but DOES NOT yet invoke
- * `createProductsWorkflow`. The reason: until we see the real Inovesign
- * export, we don't know which custom fields land where (sales channels,
- * region prices, image alt-text, brand association). Running --commit on
- * the wrong shape risks creating thousands of malformed products.
- *
- * Procedure at bascule (Phase 14):
- *   1. Run `--source=api` (or fixtures during staging rehearsals) to
- *      generate `migration-reports/migrate-products-...json`.
- *   2. Manual review of the report on a sample of 50 products.
- *   3. Wire the workflow call below (commented out) once the shape is
- *      validated, behind `--commit`.
+ * Migrates WooCommerce products into Medusa via the shared
+ * `runMigrationWorkflow`. Creates a `migration_run` row tagged
+ * `triggered_by=cli` and awaits the workflow; admin-triggered runs go
+ * through the same workflow but without awaiting.
  *
  * Usage:
- *   medusa exec ./src/scripts/migrate-products.ts [--source=api|fixtures] [--limit=N]
+ *   medusa exec ./src/scripts/migrate-products.ts -- \
+ *     [--source=api|fixtures] [--limit=N] [--commit]
+ *
+ * For backwards compatibility this still writes a JSON report to
+ * `migration-reports/` after the run completes. The same data is also
+ * available in the admin UI under the migration_runs page.
  */
 export default async function migrateProducts({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-  const productService = container.resolve(Modules.PRODUCT)
+  const service = container.resolve(MIGRATION_MODULE)
 
   const args = parseArgs(process.argv.slice(2))
-  const limit = args.limit ? parseInt(args.limit, 10) : Number.POSITIVE_INFINITY
+  const limit = args.limit ? parseInt(args.limit, 10) : null
+  const commit = "commit" in args
+  const source: "api" | "fixtures" =
+    args.source === "fixtures" ? "fixtures" : "api"
 
-  const reader = pickReader(args.source)
-  if (!reader) {
-    logger.error(
-      "[migrate-products] No source. Set WC_API_URL+creds, or pass --source=fixtures."
-    )
-    return
-  }
-
-  const report = new ReportBuilder({
-    script: "migrate-products",
-    source: reader.name,
-    dry_run: true,
+  const created = await service.createMigrationRuns({
+    script: "products",
+    source,
+    dry_run: !commit,
+    limit,
+    triggered_by: "cli",
   })
   logger.info(
-    `[migrate-products] source=${reader.name} dryRun=true limit=${limit}`
+    `[migrate-products] run=${created.id} source=${source} commit=${commit} limit=${limit ?? "∞"}`
   )
 
-  let seen = 0
-  for await (const legacy of reader.listProducts()) {
-    if (seen >= limit) break
-    seen++
-    const mapped = mapProduct(legacy)
-    if (mapped.variants.length === 0) {
-      report.record({
-        legacy_id: legacy.id,
-        outcome: "skipped",
-        notes: "no variants mapped",
-      })
-      continue
-    }
-    try {
-      // Idempotence sentinel: if a Medusa product already exists for the
-      // same handle, mark as `updated` (no-op in V1 dry-run).
-      const existing = await productService.listProducts(
-        { handle: mapped.handle },
-        { take: 1 }
-      )
-      if (existing.length > 0) {
-        report.record({
-          legacy_id: legacy.id,
-          outcome: "updated",
-          medusa_id: existing[0].id,
-          notes: `handle already exists — V1 dry-run skips`,
-        })
-        continue
-      }
-      report.record({
-        legacy_id: legacy.id,
-        outcome: "created",
-        notes: `would create handle=${mapped.handle} category=${mapped.category_handle} variants=${mapped.variants.length}`,
-      })
-    } catch (err) {
-      report.record({
-        legacy_id: legacy.id,
-        outcome: "failed",
-        notes: err instanceof Error ? err.message : String(err),
-      })
-    }
+  await runMigrationWorkflow(container).run({ input: { runId: created.id } })
+
+  const final = await service.retrieveMigrationRun(created.id)
+  const t = (final.totals as Record<string, number> | null) ?? {
+    seen: 0,
+    created: 0,
+    skipped: 0,
+    failed: 0,
+  }
+  logger.info(
+    `[migrate-products] done status=${final.status} seen=${t.seen} created=${t.created} skipped=${t.skipped} failed=${t.failed}`
+  )
+  if (final.error_message) {
+    logger.error(`[migrate-products] error: ${final.error_message}`)
   }
 
-  const { filepath, report: data } = await report.write()
-  logger.info(
-    `[migrate-products] done — seen=${data.totals.seen} created=${data.totals.created} updated=${data.totals.updated} skipped=${data.totals.skipped} failed=${data.totals.failed}`
+  await writeReport(final)
+}
+
+type MigrationRunSnapshot = Awaited<
+  ReturnType<MigrationModuleService["retrieveMigrationRun"]>
+>
+
+async function writeReport(row: MigrationRunSnapshot): Promise<void> {
+  const dir = path.resolve(process.cwd(), "migration-reports")
+  await fs.mkdir(dir, { recursive: true })
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-")
+  const filename = `migration-report-products-${stamp}${row.dry_run ? "-dryrun" : ""}.json`
+  await fs.writeFile(
+    path.join(dir, filename),
+    JSON.stringify(
+      {
+        run_id: row.id,
+        script: row.script,
+        source: row.source,
+        dry_run: row.dry_run,
+        status: row.status,
+        started_at: row.started_at,
+        finished_at: row.finished_at,
+        totals: row.totals,
+        entries: row.entries,
+        error_message: row.error_message,
+      },
+      null,
+      2
+    )
   )
-  logger.info(`[migrate-products] report → ${filepath}`)
 }

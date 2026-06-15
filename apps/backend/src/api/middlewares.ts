@@ -26,6 +26,11 @@ import {
   ListRedirectsQuerySchema,
 } from "./admin/redirects/validators"
 import {
+  CreateMigrationRunSchema,
+  ListMigrationRunsQuerySchema,
+} from "./admin/migration-runs/validators"
+import { SaveWcCredentialsSchema } from "./admin/migration/wc-credentials/validators"
+import {
   ListAdminReviewsQuerySchema,
   UpdateReviewStatusSchema,
 } from "./admin/reviews/validators"
@@ -190,6 +195,21 @@ export default defineMiddlewares({
       matcher: "/admin/contact-submissions/:id",
       method: "POST",
       middlewares: [validateAndTransformBody(UpdateContactSubmissionSchema)],
+    },
+    {
+      matcher: "/admin/migration-runs",
+      method: "GET",
+      middlewares: [validateAndTransformQuery(ListMigrationRunsQuerySchema, {})],
+    },
+    {
+      matcher: "/admin/migration-runs",
+      method: "POST",
+      middlewares: [validateAndTransformBody(CreateMigrationRunSchema)],
+    },
+    {
+      matcher: "/admin/migration/wc-credentials",
+      method: "POST",
+      middlewares: [validateAndTransformBody(SaveWcCredentialsSchema)],
     },
   ],
 })

@@ -107,17 +107,27 @@ export async function seedFulfillment(
     },
   })
 
-  // The fulfillment provider link is required so Medusa knows manual
-  // fulfillments can be issued from this location.
-  try {
-    await link.create({
-      [Modules.STOCK_LOCATION]: { stock_location_id: stockLocationId },
-      [Modules.FULFILLMENT]: { fulfillment_provider_id: "manual_manual" },
-    })
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e)
-    if (!/exists|duplicate|unique/i.test(msg)) {
-      throw e
+  // Every fulfillment provider that will back a shipping option from this
+  // location must be linked here, otherwise `createShippingOptionsWorkflow`
+  // rejects the option with "Providers (…) are not enabled for the service
+  // location". `manual_manual` covers in-store pickup; the chronofresh /
+  // colissimo providers back the calculated shipping options created below.
+  const LOCATION_PROVIDERS = [
+    "manual_manual",
+    "chronofresh_chronofresh",
+    "colissimo_colissimo",
+  ] as const
+  for (const fulfillment_provider_id of LOCATION_PROVIDERS) {
+    try {
+      await link.create({
+        [Modules.STOCK_LOCATION]: { stock_location_id: stockLocationId },
+        [Modules.FULFILLMENT]: { fulfillment_provider_id },
+      })
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      if (!/exists|duplicate|unique/i.test(msg)) {
+        throw e
+      }
     }
   }
 

@@ -108,7 +108,7 @@ export default async function LehenaCoffrets({ countryCode }: Props) {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <LocalizedClientLink
             href="/categories/coffrets-cadeaux"
-            className="btn btn-solid"
+            className="btn btn-rouge"
           >
             Voir tous les coffrets <LhArrow />
           </LocalizedClientLink>

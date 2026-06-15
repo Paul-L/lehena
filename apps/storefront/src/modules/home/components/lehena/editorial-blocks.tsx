@@ -1,32 +1,36 @@
-import { Placeholder } from "@modules/common/components/lehena/primitives"
+import { Photo } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const CARDS: {
   title: string
   subtitle: string
   desc: string
-  tone: "encre" | "argile" | "olive"
+  src: string
+  alt: string
   href: string
 }[] = [
   {
     title: "Patxaran",
     subtitle: "Liqueur de prunelles sauvages",
     desc: "Macération 8 mois selon la recette des Laminak.",
-    tone: "encre",
+    src: "/images/home-patxaran.webp",
+    alt: "Bouteille de Patxaran Lehena et son verre, prunelles sauvages",
     href: "/categories/patxaran",
   },
   {
     title: "Salaisons",
     subtitle: "Chorizo, lomo, ventrêche",
     desc: "Hachage à la main, embossage en boyaux naturels.",
-    tone: "argile",
+    src: "/images/home-salaisons.webp",
+    alt: "Chiffonade de salaisons du Pays Basque sur planche en bois",
     href: "/categories/salaisons",
   },
   {
     title: "Épicerie fine",
     subtitle: "Plats cuisinés du Pays Basque",
     desc: "Axoa, piperade, mijotés à l'ancienne.",
-    tone: "olive",
+    src: "/images/home-epicerie.webp",
+    alt: "Plat cuisiné du Pays Basque mijoté à l'ancienne, servi en cocotte",
     href: "/categories/epicerie",
   },
 ]
@@ -48,7 +52,12 @@ export default function LehenaEditorialBlocks() {
               href={card.href}
               style={{ display: "block" }}
             >
-              <Placeholder label={card.title} aspect="4/5" tone={card.tone} />
+              <Photo
+                src={card.src}
+                alt={card.alt}
+                aspect="4/5"
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
               <div style={{ padding: "20px 4px 0" }}>
                 <h3
                   className="serif-display"

@@ -99,6 +99,54 @@ export const Placeholder = ({
   )
 }
 
+interface PhotoProps {
+  /** Path under /public, e.g. "/images/home-atelier.webp" */
+  src: string
+  /** Descriptive alt text (SEO + a11y). Empty string = decorative. */
+  alt: string
+  aspect?: string
+  /** Responsive sizes hint for next/image. Defaults to a sensible full-width value. */
+  sizes?: string
+  /** Eager-load above-the-fold images. */
+  priority?: boolean
+  style?: React.CSSProperties
+  className?: string
+}
+
+/**
+ * Editorial photo frame — drop-in replacement for <Placeholder>.
+ * Renders an optimized next/image with object-fit: cover inside a sized,
+ * relatively-positioned container (mirrors Placeholder's style/className API).
+ */
+export const Photo = ({
+  src,
+  alt,
+  aspect,
+  sizes = "(max-width: 768px) 100vw, 50vw",
+  priority = false,
+  style,
+  className,
+}: PhotoProps) => (
+  <div
+    className={className}
+    style={{
+      position: "relative",
+      overflow: "hidden",
+      ...(aspect && aspect !== "auto" ? { aspectRatio: aspect } : {}),
+      ...style,
+    }}
+  >
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes={sizes}
+      priority={priority}
+      style={{ objectFit: "cover" }}
+    />
+  </div>
+)
+
 interface LogoProps {
   height?: number
   invert?: boolean
@@ -115,16 +163,15 @@ export const Logo = ({ height = 36, invert = false }: LogoProps) => (
     }}
   >
     <Image
-      src="/assets/logo-lehena.jpg"
+      src="/assets/logo-lehena.png"
       alt="Maison Lehena"
-      width={300}
-      height={140}
+      width={600}
+      height={191}
       priority
       style={{
         height: "100%",
         width: "auto",
         display: "block",
-        mixBlendMode: invert ? "screen" : "multiply",
       }}
     />
   </div>

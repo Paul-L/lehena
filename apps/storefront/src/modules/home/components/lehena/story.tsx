@@ -1,5 +1,5 @@
 import { LhArrow } from "@modules/common/components/lehena/icons"
-import { Placeholder } from "@modules/common/components/lehena/primitives"
+import { Photo } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 export default function LehenaStory() {
@@ -15,7 +15,12 @@ export default function LehenaStory() {
         }}
       >
         <div style={{ position: "relative" }}>
-          <Placeholder label="L'artisan · Atelier" aspect="3/4" tone="encre" />
+          <Photo
+            src="/images/home-artisan-portrait.webp"
+            alt="Bénat Petit, maître artisan charcutier de la Maison Lehena, dans sa boutique"
+            aspect="3/4"
+            sizes="(max-width: 768px) 100vw, 40vw"
+          />
           <div
             style={{
               position: "absolute",

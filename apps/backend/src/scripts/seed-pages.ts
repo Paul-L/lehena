@@ -87,6 +87,8 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "À propos — Lehena",
     meta_description:
       "Maison Lehena est une charcuterie artisanale du Pays Basque. Découvrez notre histoire, nos valeurs et l'équipe derrière les produits.",
+    og_image_url:
+      "https://lehena.fr/wp-content/uploads/2022/02/MRL05870.jpg",
     content: doc(
       h2("Notre histoire"),
       para(
@@ -127,6 +129,8 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "FAQ — Lehena",
     meta_description:
       "Toutes les réponses aux questions fréquentes : conservation, livraison, retours, paiement.",
+    og_image_url:
+      "https://lehena.fr/wp-content/uploads/2020/04/Patxaran-basque-artisanal.jpg",
     content: doc(
       h3("Combien de temps puis-je conserver un jambon entier ?"),
       para(
@@ -269,6 +273,8 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "Notre histoire — Lehena",
     meta_description:
       "Depuis 1974, Maison Lehena perpétue les techniques de salaison ancestrales du Pays Basque. Quatre générations, une même obsession : la qualité.",
+    og_image_url:
+      "https://lehena.fr/wp-content/uploads/2022/02/MRL05787.jpg",
     content: doc(
       h2("Au commencement, une obstination"),
       para(
@@ -331,6 +337,8 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "De la ferme à l'assiette — Lehena",
     meta_description:
       "Tous nos cochons proviennent de six élevages partenaires dans un rayon de 80 km. Race basque, plein air, alimentation locale.",
+    og_image_url:
+      "https://lehena.fr/wp-content/uploads/2022/02/iStock-1205500981-1.jpg",
     content: doc(
       h2("La race basque, et rien d'autre"),
       para(
@@ -384,6 +392,8 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "Engagements — Maison Lehena",
     meta_description:
       "Six engagements concrets et vérifiables : sans nitrite, traçabilité totale, fournisseurs locaux, emballage recyclable.",
+    og_image_url:
+      "https://lehena.fr/wp-content/uploads/2022/02/MRL05798.jpg",
     content: doc(
       para(
         txt(
@@ -442,6 +452,7 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "Revue de presse — Lehena",
     meta_description:
       "Le Monde, Le Figaro, Le Pays Basque, San Sebastian Gastronomika… Une revue de presse choisie.",
+    og_image_url: "https://lehena.fr/wp-content/uploads/2020/04/99.jpg",
     content: doc(
       para(
         txt(
@@ -485,6 +496,8 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "Atelier & boutique — Maison Lehena",
     meta_description:
       "Visitez notre atelier d'origine dans la vallée des Aldudes. Boutique ouverte le samedi de 9 h à 13 h. Visites guidées sur rendez-vous à partir de 2026.",
+    og_image_url:
+      "https://lehena.fr/wp-content/uploads/2022/02/iStock-1192465356-1.jpg",
     content: doc(
       h2("Nous rendre visite"),
       para(
@@ -633,6 +646,8 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "Contact — Maison Lehena",
     meta_description:
       "Contactez Maison Lehena par formulaire, email ou téléphone. Réponse sous 48 h ouvrées.",
+    og_image_url:
+      "https://lehena.fr/wp-content/uploads/2022/01/lehenaecommerce-solidairefr-logo-1600954710-300x90.jpg",
     content: doc(
       h2("Trois façons de nous joindre"),
       para(

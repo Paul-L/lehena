@@ -33,4 +33,7 @@ export interface ProductSeed {
   category_handles: string[]
   variants: VariantSeed[]
   details: ProductDetailsInputShape
+  // Filename (relative to apps/backend/seed-assets/products/) of the main
+  // product image. Uploaded to Medusa's file backend at seed time.
+  image_filename?: string
 }

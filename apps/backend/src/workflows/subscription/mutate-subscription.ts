@@ -1,5 +1,6 @@
 import {
   createWorkflow,
+  transform,
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk"
 import { emitEventStep } from "@medusajs/medusa/core-flows"
@@ -15,14 +16,15 @@ export const mutateSubscriptionWorkflow = createWorkflow(
   "mutate-subscription",
   function (input: MutateSubscriptionInput) {
     const result = mutateSubscriptionStep(input)
-    emitEventStep({
+    const eventInput = transform({ input, result }, ({ input, result }) => ({
       eventName: `subscription.${input.kind}d`,
       data: {
         id: result.id,
         customer_id: result.customer_id,
         status: result.status,
       },
-    })
+    }))
+    emitEventStep(eventInput)
     return new WorkflowResponse(result)
   }
 )

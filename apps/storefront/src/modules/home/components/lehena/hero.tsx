@@ -5,8 +5,8 @@ import {
   LhSparkle,
   LhTruck,
 } from "@modules/common/components/lehena/icons"
-import { Placeholder } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Image from "next/image"
 
 const TRUST = [
   {
@@ -113,40 +113,35 @@ export default function LehenaHero() {
             </div>
           </div>
 
-          <div className="reveal" style={{ position: "relative" }}>
-            <div
+          <div
+            className="reveal"
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 600,
+            }}
+          >
+            <Image
+              src="/images/hero-jambon-cutout.webp"
+              alt="Jambon Orhi entier de la Maison Lehena sur son porte-jambon, affiné 24 mois sans nitrite"
+              width={1100}
+              height={816}
+              priority
+              sizes="(max-width: 768px) 92vw, 46vw"
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gridTemplateRows: "1fr 1fr",
-                gap: 12,
-                height: 600,
+                width: "100%",
+                height: "auto",
+                objectFit: "contain",
+                filter: "drop-shadow(0 34px 42px rgba(28,20,16,0.24))",
               }}
-            >
-              <Placeholder
-                label="Jambon · Détail"
-                aspect="auto"
-                tone="rouge"
-                style={{ height: "100%", gridRow: "span 2" }}
-              />
-              <Placeholder
-                label="Cave d'affinage"
-                aspect="auto"
-                tone="encre"
-                style={{ height: "100%" }}
-              />
-              <Placeholder
-                label="Pays Basque"
-                aspect="auto"
-                tone="olive"
-                style={{ height: "100%" }}
-              />
-            </div>
+            />
             <div
               style={{
                 position: "absolute",
-                top: -20,
-                right: -20,
+                top: 0,
+                right: -10,
                 background: "var(--rouge)",
                 color: "#fff",
                 padding: "16px 22px",

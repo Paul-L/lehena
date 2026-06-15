@@ -1,10 +1,11 @@
 import type { ProductSeed } from "./types"
 
-// ─── Jambons d'Iparralde (6 produits) ────────────────────────────────
+// ─── Jambons d'Iparralde (5 produits) ────────────────────────────────
 
 const JAMBONS: ProductSeed[] = [
   {
     handle: "jambon-orhi-24-mois",
+    image_filename: "orhi-entier-os.jpg",
     title: "Jambon Orhi 24 mois",
     subtitle: "Race Duroc · Iparralde · sans nitrite",
     description:
@@ -84,6 +85,7 @@ const JAMBONS: ProductSeed[] = [
   },
   {
     handle: "jambon-orhi-18-mois",
+    image_filename: "orhi-entier-os.jpg",
     title: "Jambon Orhi 18 mois",
     subtitle: "Race Duroc · sans nitrite",
     description:
@@ -146,6 +148,7 @@ const JAMBONS: ProductSeed[] = [
   },
   {
     handle: "jambon-orhi-15-mois",
+    image_filename: "orhi-entier-os.jpg",
     title: "Jambon Orhi 15 mois",
     subtitle: "Première cuvée · sans nitrite",
     description:
@@ -207,6 +210,7 @@ const JAMBONS: ProductSeed[] = [
   },
   {
     handle: "selection-chef-jambon-orhi-24",
+    image_filename: "orhi-tranches.jpg",
     title: "Sélection du Chef · Orhi 24 mois 200g tranches",
     description:
       "Sachet tranché finement de notre Orhi 24 mois, sélectionné par notre maître affineur.",
@@ -242,109 +246,47 @@ const JAMBONS: ProductSeed[] = [
     },
   },
   {
-    handle: "jambon-kintoa-aoc",
-    title: "Jambon Kintoa AOC 24 mois",
-    subtitle: "Race basque · AOC · sans nitrite",
+    handle: "os-de-jambon",
+    image_filename: "os-jambon.jpg",
+    title: "Os de jambon",
     description:
-      "Élevé en Pays Basque, le porc Kintoa (race locale autrefois menacée d'extinction) bénéficie de l'AOC. Persillage marqué, gras fondant, mâche dense. Une pièce rare.",
+      "Os de jambon Orhi, parfait pour parfumer un bouillon, un pot-au-feu, une garbure ou une soupe de haricots. Conservez au réfrigérateur après ouverture du sachet.",
     product_type: "alimentaire",
-    shipping_kind: "fresh",
-    category_handles: ["jambons-iparralde/orhi-entier", "jambons-iparralde"],
+    shipping_kind: "ambient",
+    category_handles: ["jambons-iparralde"],
     variants: [
       {
-        title: "Entier avec os",
-        sku: "KINTOA-ENT-OS",
-        price_eur: 420,
-        weight_grams: 7000,
-        format: "entier_os",
-        initial_stock: 4,
-      },
-      {
-        title: "Demi",
-        sku: "KINTOA-DEMI",
-        price_eur: 240,
-        weight_grams: 2800,
-        format: "demi",
-        initial_stock: 6,
-      },
-      {
-        title: "Tranches 100g",
-        sku: "KINTOA-TR-100",
-        price_eur: 22,
-        weight_grams: 100,
-        format: "tranches_100g",
-        initial_stock: 30,
-      },
-    ],
-    details: {
-      aging_months: 24,
-      origin: "Pays Basque",
-      breed: "Kintoa",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "fresh",
-      conservation_days_after_opening: 30,
-      ddm_days: 60,
-      cure_method: "Sel sec de Salies-de-Béarn",
-      pairings_tags: ["irouleguy", "vin-rouge"],
-      seo_title: "Jambon Kintoa AOC 24 mois | Race basque | Lehena",
-      seo_description:
-        "Jambon de Kintoa AOC affiné 24 mois. Race basque autrefois menacée, élevée en plein air. Sans nitrite. Pièce rare.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "jambon-bigorre-noir",
-    title: "Jambon Noir de Bigorre 20 mois",
-    subtitle: "Race Bigorre · sans nitrite",
-    description:
-      "Cochon Noir de Bigorre élevé en liberté au piémont pyrénéen. Gras crémeux, viande sombre, persillage très fin. Affinage 20 mois.",
-    product_type: "alimentaire",
-    shipping_kind: "fresh",
-    category_handles: ["jambons-iparralde/orhi-entier", "jambons-iparralde"],
-    variants: [
-      {
-        title: "Entier avec os",
-        sku: "BIGO-ENT-OS",
-        price_eur: 395,
-        weight_grams: 7200,
-        format: "entier_os",
-        initial_stock: 5,
-      },
-      {
-        title: "Tranches 100g",
-        sku: "BIGO-TR-100",
-        price_eur: 19,
-        weight_grams: 100,
-        format: "tranches_100g",
+        title: "Pièce",
+        sku: "OS-JAMBON",
+        price_eur: 6,
+        weight_grams: 800,
+        format: "piece",
         initial_stock: 40,
       },
     ],
     details: {
-      aging_months: 20,
-      origin: "Sud-Ouest",
-      breed: "Bigorre",
+      origin: "Pays Basque",
+      breed: "Duroc",
       allergens: [],
       nitrite_free: true,
-      conservation_temp: "fresh",
-      conservation_days_after_opening: 30,
-      ddm_days: 60,
-      cure_method: "Sel sec",
-      seo_title: "Jambon Noir de Bigorre 20 mois sans nitrite | Lehena",
+      conservation_temp: "ambient",
+      ddm_days: 180,
+      ingredients: "Os de jambon de porc Duroc, sel de Salies-de-Béarn.",
+      seo_title: "Os de jambon basque · pour bouillons | Lehena",
       seo_description:
-        "Jambon de Noir de Bigorre, race rare élevée au piémont pyrénéen, affiné 20 mois sans nitrite. Lehena.",
+        "Os de jambon Orhi pour parfumer bouillons, soupes, garbures et pot-au-feu. Conservation longue à température ambiante.",
       og_image_url: null,
       noindex: false,
     },
   },
 ]
 
-// ─── Salaisons (6 produits) ──────────────────────────────────────────
+// ─── Salaisons (3 produits) ──────────────────────────────────────────
 
 const SALAISONS: ProductSeed[] = [
   {
     handle: "ventreche-roulee",
+    image_filename: "ventreche-roulee.jpg",
     title: "Ventrêche roulée 6 mois",
     subtitle: "Poitrine séchée · sans nitrite",
     description:
@@ -395,29 +337,22 @@ const SALAISONS: ProductSeed[] = [
     },
   },
   {
-    handle: "saucisson-sec-pays-basque",
-    title: "Saucisson sec du Pays Basque",
-    subtitle: "Séchage long · sans nitrite",
+    handle: "ttipini-piment-espelette",
+    image_filename: "ttipini.jpg",
+    title: "Ttipiñi au piment d'Espelette",
+    subtitle: "Saucisse sèche au piment d'Espelette",
     description:
-      "Notre saucisson sec emblématique. Viande de Duroc, poivre, sel de Salies. Séchage long sans accélérateur ni nitrite. Mâche dense, parfum profond.",
+      "Spécialité charcutière basque : petite saucisse sèche relevée au piment d'Espelette AOP. À déguster en tranches fines à l'apéritif, en tapas, ou avec un verre de patxaran.",
     product_type: "alimentaire",
     shipping_kind: "ambient",
     category_handles: ["salaisons/secs", "salaisons"],
     variants: [
       {
-        title: "Pièce 250g",
-        sku: "SAUC-250",
-        price_eur: 12,
-        weight_grams: 250,
+        title: "Pièce 200g",
+        sku: "TTIPINI-200",
+        price_eur: 9.5,
+        weight_grams: 200,
         format: "piece",
-        initial_stock: 60,
-      },
-      {
-        title: "Tranches 100g",
-        sku: "SAUC-TR-100",
-        price_eur: 7,
-        weight_grams: 100,
-        format: "tranches_100g",
         initial_stock: 80,
       },
     ],
@@ -427,183 +362,62 @@ const SALAISONS: ProductSeed[] = [
       allergens: [],
       nitrite_free: true,
       conservation_temp: "ambient",
-      conservation_days_after_opening: 21,
-      ddm_days: 120,
-      ingredients: "Porc Duroc, sel de Salies-de-Béarn, poivre, ail.",
-      seo_title: "Saucisson sec Pays Basque sans nitrite | Lehena",
-      seo_description:
-        "Saucisson sec artisanal du Pays Basque, race Duroc, sans nitrite. Séchage long traditionnel.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "chorizo-doux",
-    title: "Chorizo doux du Pays Basque",
-    description:
-      "Saucisson au piment d'Espelette AOP, doux et fumé. Idéal en tapas, à la planche ou dans une piperade.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["salaisons/secs", "salaisons"],
-    variants: [
-      {
-        title: "Pièce 250g",
-        sku: "CHOR-DOUX-250",
-        price_eur: 13,
-        weight_grams: 250,
-        format: "piece",
-        initial_stock: 50,
-      },
-      {
-        title: "Tranches 100g",
-        sku: "CHOR-DOUX-TR-100",
-        price_eur: 8,
-        weight_grams: 100,
-        format: "tranches_100g",
-        initial_stock: 70,
-      },
-    ],
-    details: {
-      origin: "Pays Basque",
-      breed: "Duroc",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "ambient",
       ddm_days: 90,
-      ingredients: "Porc Duroc, sel de Salies, piment d'Espelette AOP, ail.",
-      pairings_tags: ["piment-espelette", "irouleguy"],
-      seo_title: "Chorizo doux au piment d'Espelette AOP | Lehena",
+      ingredients:
+        "Porc Duroc, sel de Salies-de-Béarn, piment d'Espelette AOP, poivre, ail.",
+      pairings_tags: ["patxaran", "piment-espelette"],
+      seo_title: "Ttipiñi au piment d'Espelette AOP | Lehena",
       seo_description:
-        "Chorizo doux artisanal au piment d'Espelette AOP, sans nitrite. Saucisson basque idéal en tapas.",
+        "Ttipiñi, petite saucisse sèche basque au piment d'Espelette AOP. Sans nitrite, séchage traditionnel.",
       og_image_url: null,
       noindex: false,
     },
   },
   {
-    handle: "coppa-traditionnelle",
-    title: "Coppa traditionnelle",
+    handle: "saucisses-mouton-piperade",
+    image_filename: "saucisses-mouton.jpg",
+    title: "Saucisses de Mouton à la Piperade",
+    subtitle: "Mouton Bürü Beltza · à cuire",
     description:
-      "Échine de porc séchée et roulée, poivrée, affinée 4 mois. Tranches fines à l'apéritif.",
+      "Trois saucisses fraîches de mouton Bürü Beltza, farcies à la piperade basque. À poêler quelques minutes de chaque côté, à accompagner de pommes de terre sautées ou d'un riz parfumé.",
     product_type: "alimentaire",
     shipping_kind: "fresh",
-    category_handles: ["salaisons/secs", "salaisons"],
+    category_handles: ["salaisons"],
     variants: [
       {
-        title: "Pièce 500g",
-        sku: "COPPA-500",
-        price_eur: 28,
-        weight_grams: 500,
+        title: "Sachet 360g · 3 pièces",
+        sku: "SAUC-MOUTON-360",
+        price_eur: 12,
+        weight_grams: 360,
         format: "piece",
-        initial_stock: 25,
-      },
-      {
-        title: "Tranches 100g",
-        sku: "COPPA-TR-100",
-        price_eur: 9,
-        weight_grams: 100,
-        format: "tranches_100g",
         initial_stock: 50,
       },
     ],
     details: {
-      aging_months: 4,
       origin: "Pays Basque",
-      breed: "Duroc",
+      breed: "Autre",
       allergens: [],
       nitrite_free: true,
       conservation_temp: "fresh",
-      ddm_days: 45,
-      ingredients: "Échine de porc Duroc, sel de Salies, poivre.",
-      seo_title: "Coppa traditionnelle Pays Basque | Lehena",
+      conservation_days_after_opening: 2,
+      ddm_days: 14,
+      ingredients:
+        "Mouton Bürü Beltza (70%), poivron, tomate, oignon, ail, piment d'Espelette AOP, sel.",
+      seo_title: "Saucisses de mouton Bürü Beltza à la piperade | Lehena",
       seo_description:
-        "Coppa de porc Duroc séchée 4 mois sans nitrite. À l'apéritif, en planche ou dans une salade.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "lonzo-basque",
-    title: "Lonzo basque",
-    description:
-      "Filet de porc séché entier, doux et tendre. Le caviar des salaisons. À déguster en tranches très fines.",
-    product_type: "alimentaire",
-    shipping_kind: "fresh",
-    category_handles: ["salaisons/secs", "salaisons"],
-    variants: [
-      {
-        title: "Pièce 400g",
-        sku: "LONZO-400",
-        price_eur: 34,
-        weight_grams: 400,
-        format: "piece",
-        initial_stock: 20,
-      },
-      {
-        title: "Tranches 100g",
-        sku: "LONZO-TR-100",
-        price_eur: 11,
-        weight_grams: 100,
-        format: "tranches_100g",
-        initial_stock: 40,
-      },
-    ],
-    details: {
-      aging_months: 5,
-      origin: "Pays Basque",
-      breed: "Duroc",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "fresh",
-      ddm_days: 45,
-      ingredients: "Filet de porc Duroc, sel de Salies, poivre.",
-      seo_title: "Lonzo basque traditionnel sans nitrite | Lehena",
-      seo_description:
-        "Lonzo, filet de porc séché 5 mois, sans nitrite. Tendreté exceptionnelle, parfum subtil. Lehena.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "lard-sec-poivre",
-    title: "Lard sec au poivre",
-    description:
-      "Lard de poitrine pressé, frotté au poivre noir et séché. Idéal en cuisine ou tranché à l'apéritif.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["salaisons/ventreches", "salaisons"],
-    variants: [
-      {
-        title: "Pièce 500g",
-        sku: "LARD-500",
-        price_eur: 17,
-        weight_grams: 500,
-        format: "piece",
-        initial_stock: 35,
-      },
-    ],
-    details: {
-      aging_months: 3,
-      origin: "Pays Basque",
-      breed: "Duroc",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "ambient",
-      ddm_days: 90,
-      ingredients: "Poitrine de porc Duroc, sel de Salies, poivre noir.",
-      seo_title: "Lard sec au poivre Pays Basque | Lehena",
-      seo_description:
-        "Lard de poitrine pressé et frotté au poivre, séché 3 mois. Sans nitrite. Pour la cuisine et l'apéro.",
+        "Saucisses fraîches de mouton Bürü Beltza farcies à la piperade basque. Sachet 360g (3 pièces), à poêler.",
       og_image_url: null,
       noindex: false,
     },
   },
 ]
 
-// ─── Patxaran & spiritueux (3 produits) ──────────────────────────────
+// ─── Patxaran & spiritueux (2 produits) ──────────────────────────────
 
 const PATXARAN: ProductSeed[] = [
   {
     handle: "patxaran-traditionnel-50cl",
+    image_filename: "patxaran.jpg",
     title: "Patxaran des Laminak 50cl",
     subtitle: "Recette traditionnelle basque",
     description:
@@ -638,6 +452,7 @@ const PATXARAN: ProductSeed[] = [
   },
   {
     handle: "patxaran-reserve-70cl",
+    image_filename: "patxaran.jpg",
     title: "Patxaran Réserve 70cl",
     subtitle: "Vieillissement long",
     description:
@@ -669,460 +484,93 @@ const PATXARAN: ProductSeed[] = [
       noindex: false,
     },
   },
-  {
-    handle: "eau-de-vie-poire-50cl",
-    title: "Eau-de-vie de poire 50cl",
-    description:
-      "Distillation artisanale de poires Williams. Notes franches et nettes, idéal en digestif.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["patxaran-spiritueux"],
-    variants: [
-      {
-        title: "Bouteille 50cl",
-        sku: "EAU-POIRE-50",
-        price_eur: 38,
-        weight_grams: 800,
-        format: "bouteille_500ml",
-        initial_stock: 30,
-      },
-    ],
-    details: {
-      origin: "Sud-Ouest",
-      allergens: [],
-      nitrite_free: false,
-      conservation_temp: "ambient",
-      ddm_days: 1825,
-      ingredients: "Distillat de poires Williams (40%).",
-      seo_title: "Eau-de-vie de poire Williams 50cl | Lehena",
-      seo_description:
-        "Eau-de-vie de poire Williams, distillation artisanale. Format 50cl. À déguster glacée en digestif.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
 ]
 
-// ─── Épicerie fine (6 produits) ──────────────────────────────────────
-
-const EPICERIE: ProductSeed[] = [
-  {
-    handle: "piment-espelette-aop-poudre",
-    title: "Piment d'Espelette AOP en poudre",
-    description:
-      "Le piment d'Espelette AOP, séché et moulu au moulin de pierre. Récolte de l'année précédente, conservée à l'abri de la lumière. Pouvoir piquant moyen, parfum solaire.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["epicerie-fine"],
-    variants: [
-      {
-        title: "Pot 40g",
-        sku: "ESPE-POT-40",
-        price_eur: 9,
-        weight_grams: 60,
-        format: "pot_180g",
-        initial_stock: 200,
-      },
-    ],
-    details: {
-      origin: "Pays Basque",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "ambient",
-      ddm_days: 730,
-      ingredients: "Piment d'Espelette AOP (100%).",
-      seo_title: "Piment d'Espelette AOP en poudre · pot 40g | Lehena",
-      seo_description:
-        "Piment d'Espelette AOP en poudre, pot 40g. Séché et moulu au moulin de pierre. Pouvoir piquant moyen.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "piment-espelette-entier-cordon",
-    title: "Cordon de piments d'Espelette AOP",
-    description:
-      "Tresse traditionnelle de piments d'Espelette AOP entiers. Décoratif et culinaire.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["epicerie-fine"],
-    variants: [
-      {
-        title: "Cordon 8 piments",
-        sku: "ESPE-CORD-8",
-        price_eur: 18,
-        weight_grams: 250,
-        format: "piece",
-        initial_stock: 60,
-      },
-    ],
-    details: {
-      origin: "Pays Basque",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "ambient",
-      ddm_days: 365,
-      ingredients: "Piment d'Espelette AOP entier (100%).",
-      seo_title: "Cordon de piments d'Espelette AOP | Lehena",
-      seo_description:
-        "Tresse de piments d'Espelette AOP entiers, présentation traditionnelle décorative et culinaire.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "sel-salies-de-bearn-250g",
-    title: "Sel de Salies-de-Béarn 250g",
-    description:
-      "Le sel emblématique de notre terroir, qui assaisonne tous nos jambons. Sel sec à grain fin.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["epicerie-fine"],
-    variants: [
-      {
-        title: "Sachet 250g",
-        sku: "SEL-SAL-250",
-        price_eur: 5.5,
-        weight_grams: 280,
-        format: "sachet_250g",
-        initial_stock: 250,
-      },
-      {
-        title: "Sachet 1kg",
-        sku: "SEL-SAL-1KG",
-        price_eur: 17,
-        weight_grams: 1030,
-        format: "sachet_500g",
-        initial_stock: 100,
-      },
-    ],
-    details: {
-      origin: "Sud-Ouest",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "ambient",
-      ddm_days: 1825,
-      ingredients: "Sel de Salies-de-Béarn (100%).",
-      seo_title: "Sel de Salies-de-Béarn 250g & 1kg | Lehena",
-      seo_description:
-        "Sel de Salies-de-Béarn, le sel sec qui assaisonne nos jambons. Sachet 250g ou 1kg.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "piperade-artisanale",
-    title: "Piperade artisanale 330g",
-    description:
-      "Notre piperade mijotée à l'atelier, en bocal verre stérilisé. Tomates, piments doux, oignons et piment d'Espelette.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["epicerie-fine"],
-    variants: [
-      {
-        title: "Bocal 330g",
-        sku: "PIPE-330",
-        price_eur: 7.5,
-        weight_grams: 400,
-        format: "pot_330g",
-        initial_stock: 90,
-      },
-    ],
-    details: {
-      origin: "Pays Basque",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "ambient",
-      conservation_days_after_opening: 5,
-      ddm_days: 540,
-      ingredients:
-        "Tomates, poivrons verts et rouges, oignons, ail, huile d'olive, sel, piment d'Espelette AOP.",
-      seo_title: "Piperade artisanale en bocal 330g | Lehena",
-      seo_description:
-        "Piperade basque mijotée à l'atelier, bocal 330g. Tomates, poivrons, oignon, piment d'Espelette AOP.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "confiture-cerise-noire-itxassou",
-    title: "Confiture de cerise noire d'Itxassou",
-    description:
-      "La fameuse cerise noire d'Itxassou, partenaire incontournable du fromage de brebis et accompagnement idéal du jambon.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["epicerie-fine"],
-    variants: [
-      {
-        title: "Pot 180g",
-        sku: "CERISE-180",
-        price_eur: 8.5,
-        weight_grams: 240,
-        format: "pot_180g",
-        initial_stock: 100,
-      },
-    ],
-    details: {
-      origin: "Pays Basque",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "ambient",
-      conservation_days_after_opening: 14,
-      ddm_days: 540,
-      ingredients: "Cerise noire d'Itxassou (55%), sucre, pectine.",
-      pairings_tags: ["fromage-brebis", "jambon-orhi-24-mois"],
-      seo_title: "Confiture cerise noire d'Itxassou 180g | Lehena",
-      seo_description:
-        "Confiture artisanale de cerise noire d'Itxassou. Compagne du fromage de brebis et du jambon basque.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "huile-olive-aoc",
-    title: "Huile d'olive AOC Vallée des Baux 500ml",
-    description:
-      "Huile d'olive vierge extra de Provence, sélectionnée pour accompagner notre piperade et nos plats cuisinés.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["epicerie-fine"],
-    variants: [
-      {
-        title: "Bouteille 500ml",
-        sku: "HUILE-AOC-500",
-        price_eur: 22,
-        weight_grams: 800,
-        format: "bouteille_500ml",
-        initial_stock: 40,
-      },
-    ],
-    details: {
-      origin: "France",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "ambient",
-      ddm_days: 730,
-      ingredients: "Huile d'olive vierge extra AOC Vallée des Baux (100%).",
-      seo_title: "Huile d'olive AOC Vallée des Baux 500ml | Lehena",
-      seo_description:
-        "Huile d'olive vierge extra AOC Vallée des Baux 500ml. Sélection Lehena pour la cuisine méditerranéenne.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-]
-
-// ─── Plats cuisinés (3 produits) ─────────────────────────────────────
+// ─── Plats cuisinés (2 produits) ─────────────────────────────────────
 
 const PLATS: ProductSeed[] = [
   {
-    handle: "axoa-de-veau",
-    title: "Axoa de veau",
+    handle: "navarin-agneau-buru-beltza",
+    title: "Navarin d'Agneau Bürü Beltza",
+    subtitle: "Agneau Bürü Beltza · plat mijoté",
     description:
-      "Notre axoa, plat traditionnel basque : veau émincé mijoté longuement avec poivrons d'Anglet et piment d'Espelette.",
+      "Navarin d'agneau Bürü Beltza (race basque à tête noire) mijoté lentement avec petits légumes du Sud-Ouest. Bocal verre stérilisé, à réchauffer doucement.",
     product_type: "alimentaire",
     shipping_kind: "ambient",
     category_handles: ["plats-cuisines"],
     variants: [
       {
-        title: "Bocal 400g · 1-2 pers.",
-        sku: "AXOA-400",
+        title: "Bocal 360g · 1 pers.",
+        sku: "NAVARIN-360",
         price_eur: 14,
-        weight_grams: 460,
+        weight_grams: 420,
         format: "boite_400g",
         initial_stock: 60,
       },
     ],
     details: {
       origin: "Pays Basque",
+      breed: "Autre",
       allergens: [],
       nitrite_free: true,
       conservation_temp: "ambient",
       conservation_days_after_opening: 2,
       ddm_days: 540,
       ingredients:
-        "Veau (55%), poivrons doux, oignons, tomates, ail, piment d'Espelette AOP, huile d'olive, sel.",
-      seo_title: "Axoa de veau Pays Basque en bocal | Lehena",
+        "Agneau Bürü Beltza (50%), pomme de terre, carotte, oignon, ail, bouquet garni, vin blanc, sel, poivre.",
+      seo_title: "Navarin d'agneau Bürü Beltza en bocal | Lehena",
       seo_description:
-        "Axoa de veau, plat traditionnel basque mijoté à l'atelier. Bocal 400g, 1 à 2 personnes.",
+        "Navarin d'agneau Bürü Beltza, race basque à tête noire, mijoté à l'atelier en bocal 360g.",
       og_image_url: null,
       noindex: false,
     },
+    image_filename: "navarin-agneau.jpg",
   },
   {
-    handle: "poulet-basquaise",
-    title: "Poulet basquaise",
+    handle: "tajine-mouton-buru-beltza",
+    title: "Tajine de Mouton Bürü Beltza",
+    subtitle: "Mouton Bürü Beltza · plat mijoté",
     description:
-      "Cuisses de poulet fermier mijotées avec la sauce basquaise maison (tomates, poivrons, piment d'Espelette).",
+      "Tajine de mouton Bürü Beltza aux épices douces et fruits secs. Mijoté longuement au gingembre, cannelle et cumin. Bocal verre stérilisé.",
     product_type: "alimentaire",
     shipping_kind: "ambient",
     category_handles: ["plats-cuisines"],
     variants: [
       {
-        title: "Bocal 400g · 1-2 pers.",
-        sku: "PB-400",
-        price_eur: 12,
-        weight_grams: 450,
+        title: "Bocal 360g · 1 pers.",
+        sku: "TAJINE-360",
+        price_eur: 14,
+        weight_grams: 420,
         format: "boite_400g",
         initial_stock: 60,
       },
     ],
     details: {
       origin: "Pays Basque",
+      breed: "Autre",
       allergens: [],
       nitrite_free: true,
       conservation_temp: "ambient",
+      conservation_days_after_opening: 2,
       ddm_days: 540,
       ingredients:
-        "Poulet fermier (55%), tomates, poivrons, oignons, ail, piment d'Espelette AOP, huile d'olive, sel.",
-      seo_title: "Poulet basquaise en bocal artisanal | Lehena",
+        "Mouton Bürü Beltza (50%), oignon, tomate, abricot sec, raisin, gingembre, cannelle, cumin, ail, huile d'olive, sel.",
+      seo_title: "Tajine de mouton Bürü Beltza en bocal | Lehena",
       seo_description:
-        "Poulet basquaise mijoté à l'atelier Lehena, en bocal 400g. Sauce basquaise traditionnelle.",
+        "Tajine de mouton Bürü Beltza aux épices douces et fruits secs, mijoté en bocal 360g.",
       og_image_url: null,
       noindex: false,
     },
-  },
-  {
-    handle: "garbure-bearnaise",
-    title: "Garbure béarnaise",
-    description:
-      "La soupe paysanne du Sud-Ouest, riche en chou, haricot tarbais, jarret de porc et confit.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["plats-cuisines"],
-    variants: [
-      {
-        title: "Bocal 750ml · 2 pers.",
-        sku: "GARB-750",
-        price_eur: 15,
-        weight_grams: 850,
-        format: "boite_400g",
-        initial_stock: 40,
-      },
-    ],
-    details: {
-      origin: "Sud-Ouest",
-      allergens: ["sulfites"],
-      nitrite_free: true,
-      conservation_temp: "ambient",
-      ddm_days: 540,
-      ingredients:
-        "Bouillon, chou, haricots tarbais, jarret de porc, confit de canard, oignons, ail, sel, sulfites.",
-      seo_title: "Garbure béarnaise en bocal 750ml | Lehena",
-      seo_description:
-        "Garbure béarnaise traditionnelle, soupe paysanne riche en confit et haricots. Bocal 750ml.",
-      og_image_url: null,
-      noindex: false,
-    },
+    image_filename: "tajine-mouton.jpg",
   },
 ]
 
-// ─── Coffrets cadeaux (3 produits) ───────────────────────────────────
-
-const COFFRETS: ProductSeed[] = [
-  {
-    handle: "coffret-decouverte",
-    title: "Coffret Découverte",
-    description:
-      "Trois pièces phares Lehena : chorizo doux, ventrêche tranchée 100g, patxaran 50cl. Présenté en boîte cartonnée signée.",
-    product_type: "alimentaire",
-    shipping_kind: "fresh",
-    category_handles: ["coffrets-cadeaux"],
-    variants: [
-      {
-        title: "Coffret 1",
-        sku: "COFF-DECOUV",
-        price_eur: 49,
-        weight_grams: 1200,
-        format: "coffret",
-        initial_stock: 30,
-      },
-    ],
-    details: {
-      origin: "Pays Basque",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "fresh",
-      ddm_days: 45,
-      ingredients: "Voir les composants individuels du coffret.",
-      seo_title: "Coffret cadeau Découverte Pays Basque | Lehena",
-      seo_description:
-        "Coffret cadeau Lehena : chorizo doux, ventrêche 100g, patxaran 50cl. Présenté en boîte signée.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "coffret-tradition",
-    title: "Coffret Tradition",
-    description:
-      "Le coffret signature : Orhi 18 mois tranches 200g, ventrêche entière 500g, saucisson sec, patxaran 50cl, piment d'Espelette AOP.",
-    product_type: "alimentaire",
-    shipping_kind: "fresh",
-    category_handles: ["coffrets-cadeaux"],
-    variants: [
-      {
-        title: "Coffret Tradition",
-        sku: "COFF-TRAD",
-        price_eur: 95,
-        weight_grams: 2200,
-        format: "coffret",
-        initial_stock: 20,
-      },
-    ],
-    details: {
-      origin: "Pays Basque",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "fresh",
-      ddm_days: 45,
-      ingredients: "Voir les composants individuels du coffret.",
-      seo_title: "Coffret cadeau Tradition Lehena Pays Basque",
-      seo_description:
-        "Coffret Tradition Lehena : tranches Orhi 18 mois, ventrêche, saucisson, patxaran, piment Espelette. Idéal cadeau.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "coffret-prestige",
-    title: "Coffret Prestige",
-    description:
-      "L'expérience complète : Orhi 24 mois sur planche (1 demi), planche à jambon, couteau et patxaran Réserve 70cl. Le cadeau d'exception.",
-    product_type: "alimentaire",
-    shipping_kind: "fresh",
-    category_handles: ["coffrets-cadeaux"],
-    variants: [
-      {
-        title: "Coffret Prestige",
-        sku: "COFF-PRES",
-        price_eur: 380,
-        weight_grams: 5000,
-        format: "coffret",
-        initial_stock: 10,
-      },
-    ],
-    details: {
-      origin: "Pays Basque",
-      allergens: [],
-      nitrite_free: true,
-      conservation_temp: "fresh",
-      ddm_days: 60,
-      ingredients: "Voir les composants individuels du coffret.",
-      seo_title: "Coffret Prestige Lehena · Orhi 24 mois + planche",
-      seo_description:
-        "Coffret Prestige Lehena : demi jambon Orhi 24 mois, planche à jambon, couteau, patxaran Réserve 70cl.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-]
-
-// ─── Accessoires (3 produits) ────────────────────────────────────────
+// ─── Accessoires (4 produits) ────────────────────────────────────────
 
 const ACCESSOIRES: ProductSeed[] = [
   {
     handle: "planche-jambon-bois",
+    image_filename: "planche-jambon.jpg",
     title: "Planche à jambon en hêtre",
     description:
       "Planche en bois de hêtre massif, gravée du logo Lehena. Surface de découpe robuste, dimensions 50 × 25 cm.",
@@ -1155,6 +603,7 @@ const ACCESSOIRES: ProductSeed[] = [
   },
   {
     handle: "support-jambon-metal",
+    image_filename: "support-jambon.jpg",
     title: "Support à jambon métal",
     description:
       "Support métallique avec griffe ajustable. Stabilité maximale pour la découpe au couteau.",
@@ -1187,6 +636,7 @@ const ACCESSOIRES: ProductSeed[] = [
   },
   {
     handle: "couteau-jambon",
+    image_filename: "planche-jambon.jpg",
     title: "Couteau à jambon professionnel",
     description:
       "Lame longue, fine et flexible. Manche en bois. Le couteau dédié aux jambons entiers.",
@@ -1217,14 +667,45 @@ const ACCESSOIRES: ProductSeed[] = [
       noindex: false,
     },
   },
+  {
+    handle: "aerateur-vin-patxaran",
+    image_filename: "aerateur.jpg",
+    title: "Aérateur pour vin ou patxaran",
+    description:
+      "Aérateur conçu pour les vins puissants et le patxaran. À placer directement sur le goulot : aère et révèle les arômes au moment du service.",
+    product_type: "accessoire",
+    shipping_kind: "ambient",
+    category_handles: ["accessoires"],
+    variants: [
+      {
+        title: "Pièce",
+        sku: "ACC-AERA",
+        price_eur: 18,
+        weight_grams: 90,
+        format: "unite",
+        initial_stock: 80,
+      },
+    ],
+    details: {
+      origin: "France",
+      allergens: [],
+      nitrite_free: true,
+      conservation_temp: "ambient",
+      ddm_days: 3650,
+      ingredients: "Verre borosilicate.",
+      seo_title: "Aérateur pour vin ou patxaran | Lehena",
+      seo_description:
+        "Aérateur à placer sur le goulot, pour vins puissants et patxaran. Révèle les arômes au service.",
+      og_image_url: null,
+      noindex: false,
+    },
+  },
 ]
 
 export const ALL_PRODUCTS: ProductSeed[] = [
   ...JAMBONS,
   ...SALAISONS,
   ...PATXARAN,
-  ...EPICERIE,
   ...PLATS,
-  ...COFFRETS,
   ...ACCESSOIRES,
 ]

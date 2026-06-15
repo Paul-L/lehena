@@ -48,6 +48,8 @@ module.exports = {
           DEFAULT: "var(--bg)",
           elevated: "var(--bg-elevated)",
         },
+        // Semantic success green (text-success) — AA-compliant on light bg.
+        success: "var(--success)",
         terroir: {
           paper: "var(--paper)",
           terre: "var(--terre)",

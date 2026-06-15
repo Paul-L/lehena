@@ -124,6 +124,13 @@ module.exports = defineConfig({
     { resolve: "./src/modules/author" },
     { resolve: "./src/modules/review" },
     { resolve: "./src/modules/subscription" },
+    // Migration module is opt-in. Default off — the WP→Medusa migration has
+    // already been run and the module's auto-generated migration is known to
+    // be destructive (cf. incident 2026-05-13). Set ENABLE_MIGRATION_MODULE=true
+    // only to re-run a partial migration or audit the historical runs.
+    ...(process.env.ENABLE_MIGRATION_MODULE === "true"
+      ? [{ resolve: "./src/modules/migration" }]
+      : []),
     // Payment module: registers the Stripe provider when STRIPE_API_KEY is
     // set. Without the env var we keep the default provider so dev / CI
     // doesn't break — checkout will surface "no payment method available".
@@ -171,16 +178,22 @@ module.exports = defineConfig({
     },
   ],
   plugins: [
-    {
-      resolve: "medusa-ai-assistant",
-      options: {
-        defaultModel:
-          process.env.ASSISTANT_DEFAULT_MODEL ?? "claude-sonnet-4-6",
-        maxTokens: process.env.ASSISTANT_MAX_TOKENS
-          ? Number(process.env.ASSISTANT_MAX_TOKENS)
-          : 4096,
-      },
-    },
+    // AI assistant plugin is opt-in (out-of-scope refonte, yalc-linked).
+    // Set ENABLE_AI_ASSISTANT=true to load it.
+    ...(process.env.ENABLE_AI_ASSISTANT === "true"
+      ? [
+          {
+            resolve: "medusa-ai-assistant",
+            options: {
+              defaultModel:
+                process.env.ASSISTANT_DEFAULT_MODEL ?? "claude-sonnet-4-6",
+              maxTokens: process.env.ASSISTANT_MAX_TOKENS
+                ? Number(process.env.ASSISTANT_MAX_TOKENS)
+                : 4096,
+            },
+          },
+        ]
+      : []),
     // MeiliSearch plugin only registered when a host is configured. This
     // keeps CI (and any env without Meili running) from crashing on every
     // product save. The plugin auto-indexes via its own subscribers.

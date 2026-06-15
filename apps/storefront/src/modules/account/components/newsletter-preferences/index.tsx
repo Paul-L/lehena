@@ -2,7 +2,7 @@
 
 import { updateCustomer } from "@lib/data/customer"
 import { type HttpTypes } from "@medusajs/types"
-import { Button, Switch, Text, toast } from "@medusajs/ui"
+import { toast } from "@medusajs/ui"
 import { useState } from "react"
 
 interface Props {
@@ -16,19 +16,106 @@ const KEY_DOB = "date_of_birth"
 const bool = (v: unknown, fallback: boolean): boolean =>
   typeof v === "boolean" ? v : fallback
 
-/**
- * Toggle which non-transactional emails the customer wants to receive.
- * Persists in `customer.metadata` to avoid an extra DB schema for V1; a
- * future custom-notifications module (Phase 7) can migrate the keys.
- *
- * Transactional emails (orders, shipments, password reset, account
- * security) are not user-toggleable — legally and operationally required.
- */
+interface ToggleProps {
+  id: string
+  checked: boolean
+  onChange: (next: boolean) => void
+  disabled?: boolean
+  label: string
+}
+
+function Toggle({ id, checked, onChange, disabled, label }: ToggleProps) {
+  return (
+    <button
+      type="button"
+      onClick={() => !disabled && onChange(!checked)}
+      aria-pressed={checked}
+      aria-label={label}
+      disabled={disabled}
+      data-testid={id}
+      style={{
+        width: 46,
+        height: 26,
+        borderRadius: 999,
+        background: checked
+          ? disabled
+            ? "var(--line-strong)"
+            : "var(--rouge)"
+          : "var(--line-strong)",
+        position: "relative",
+        border: 0,
+        cursor: disabled ? "not-allowed" : "pointer",
+        transition: "background 200ms ease",
+        flexShrink: 0,
+        opacity: disabled ? 0.6 : 1,
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 3,
+          left: checked ? 22 : 3,
+          width: 20,
+          height: 20,
+          borderRadius: "50%",
+          background: "var(--bg)",
+          transition: "left 200ms cubic-bezier(0.32, 0.72, 0.2, 1)",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+        }}
+      />
+    </button>
+  )
+}
+
+interface ItemProps {
+  title: string
+  desc: string
+  toggle: React.ReactNode
+}
+
+function PrefRow({ title, desc, toggle }: ItemProps) {
+  return (
+    <li style={{ borderTop: "1px solid var(--line)", padding: "22px 0" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr auto",
+          gap: 24,
+          alignItems: "start",
+        }}
+      >
+        <div>
+          <div
+            style={{
+              fontFamily: "var(--serif-display)",
+              fontSize: 20,
+              fontStyle: "italic",
+              marginBottom: 6,
+            }}
+          >
+            {title}
+          </div>
+          <div
+            style={{
+              fontFamily: "var(--serif)",
+              fontSize: 14.5,
+              color: "var(--ink-soft)",
+              lineHeight: 1.5,
+              maxWidth: 540,
+            }}
+          >
+            {desc}
+          </div>
+        </div>
+        {toggle}
+      </div>
+    </li>
+  )
+}
+
 export default function NewsletterPreferences({ customer }: Props) {
   const metadata = (customer.metadata as Record<string, unknown> | null) ?? {}
-  const [marketing, setMarketing] = useState(
-    bool(metadata[KEY_MARKETING], true)
-  )
+  const [marketing, setMarketing] = useState(bool(metadata[KEY_MARKETING], true))
   const [recipes, setRecipes] = useState(bool(metadata[KEY_RECIPES], false))
   const [dob, setDob] = useState(
     typeof metadata[KEY_DOB] === "string" ? (metadata[KEY_DOB] as string) : ""
@@ -57,71 +144,165 @@ export default function NewsletterPreferences({ customer }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-y-8 max-w-2xl">
-      <section className="flex flex-col gap-y-4">
-        <h2 className="text-base-semi">Newsletter</h2>
-        <div className="flex items-start justify-between gap-4 py-3 border-t border-ui-border-base">
-          <div>
-            <Text className="text-ui-fg-base">Offres & nouveautés</Text>
-            <Text size="small" className="text-ui-fg-subtle">
-              Lancements de produits, événements, ventes privées (~2 emails /
-              mois).
-            </Text>
-          </div>
-          <Switch
-            checked={marketing}
-            onCheckedChange={setMarketing}
-            data-testid="pref-marketing-toggle"
-          />
+    <div>
+      {/* Coordonnées */}
+      <section
+        style={{
+          padding: "28px 0",
+          borderTop: "1px solid var(--line)",
+          borderBottom: "1px solid var(--line)",
+          marginBottom: 32,
+        }}
+      >
+        <div className="eyebrow" style={{ marginBottom: 18 }}>
+          Coordonnées
         </div>
-        <div className="flex items-start justify-between gap-4 py-3 border-t border-ui-border-base">
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
           <div>
-            <Text className="text-ui-fg-base">Recettes & accords</Text>
-            <Text size="small" className="text-ui-fg-subtle">
-              Idées d&apos;accords, recettes de saison, contenus longs (1 email
-              / mois).
-            </Text>
+            <div
+              className="mono"
+              style={{
+                fontSize: 10,
+                color: "var(--ink-mute)",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                marginBottom: 6,
+              }}
+            >
+              Email
+            </div>
+            <div style={{ fontFamily: "var(--serif)", fontSize: 17 }}>
+              {customer.email}
+            </div>
           </div>
-          <Switch
-            checked={recipes}
-            onCheckedChange={setRecipes}
-            data-testid="pref-recipes-toggle"
-          />
-        </div>
-        <div className="flex items-start justify-between gap-4 py-3 border-t border-b border-ui-border-base">
           <div>
-            <Text className="text-ui-fg-base">Commandes & expéditions</Text>
-            <Text size="small" className="text-ui-fg-subtle">
-              Confirmation de commande, suivi colis, factures. Non désactivable.
-            </Text>
+            <div
+              className="mono"
+              style={{
+                fontSize: 10,
+                color: "var(--ink-mute)",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                marginBottom: 6,
+              }}
+            >
+              Téléphone
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--serif)",
+                fontSize: 17,
+                color: customer.phone ? "var(--ink)" : "var(--ink-soft)",
+                fontStyle: customer.phone ? "normal" : "italic",
+              }}
+            >
+              {customer.phone || "Non renseigné"}
+            </div>
           </div>
-          <Switch
-            checked
-            disabled
-            aria-label="Transactionnel — non désactivable"
-          />
         </div>
       </section>
 
-      <section className="flex flex-col gap-y-2">
-        <h2 className="text-base-semi">Date de naissance (optionnelle)</h2>
-        <Text size="small" className="text-ui-fg-subtle">
+      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+        <PrefRow
+          title="Offres & nouveautés"
+          desc="Lancements de produits, événements, ventes privées (~2 emails / mois)."
+          toggle={
+            <Toggle
+              id="pref-marketing-toggle"
+              checked={marketing}
+              onChange={setMarketing}
+              label="Offres & nouveautés"
+            />
+          }
+        />
+        <PrefRow
+          title="Recettes & accords"
+          desc="Idées d'accords, recettes de saison, contenus longs (1 email / mois)."
+          toggle={
+            <Toggle
+              id="pref-recipes-toggle"
+              checked={recipes}
+              onChange={setRecipes}
+              label="Recettes & accords"
+            />
+          }
+        />
+        <PrefRow
+          title="Commandes & expéditions"
+          desc="Confirmation de commande, suivi colis, factures. Non désactivable."
+          toggle={
+            <Toggle
+              id="pref-transactional-toggle"
+              checked
+              onChange={() => undefined}
+              disabled
+              label="Transactionnel — non désactivable"
+            />
+          }
+        />
+      </ul>
+
+      <section
+        style={{
+          marginTop: 32,
+          paddingTop: 28,
+          borderTop: "1px solid var(--line)",
+        }}
+      >
+        <div className="eyebrow" style={{ marginBottom: 12 }}>
+          Date de naissance (optionnelle)
+        </div>
+        <p
+          style={{
+            fontFamily: "var(--serif)",
+            fontSize: 14,
+            color: "var(--ink-soft)",
+            margin: "0 0 14px",
+            lineHeight: 1.5,
+          }}
+        >
           Pour recevoir une attention le jour de votre anniversaire. Aucune
           obligation.
-        </Text>
+        </p>
         <input
           type="date"
           value={dob}
           onChange={(e) => setDob(e.target.value)}
-          className="max-w-xs mt-2 px-3 py-2 border border-ui-border-base rounded text-sm"
           data-testid="pref-dob-input"
+          style={{
+            border: 0,
+            borderBottom: "1px solid var(--ink)",
+            background: "transparent",
+            padding: "8px 0",
+            fontFamily: "var(--serif)",
+            fontSize: 16,
+            color: "var(--ink)",
+            outline: "none",
+            maxWidth: 220,
+          }}
         />
       </section>
 
-      <div>
-        <Button onClick={save} isLoading={saving} data-testid="pref-save">
-          Enregistrer
-        </Button>
+      <div
+        style={{
+          marginTop: 32,
+          paddingTop: 24,
+          borderTop: "1px solid var(--line)",
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 12,
+        }}
+      >
+        <button
+          type="button"
+          onClick={save}
+          disabled={saving}
+          data-testid="pref-save"
+          className="btn btn-rouge"
+          style={{ padding: "12px 22px", fontSize: 11 }}
+        >
+          {saving ? "Enregistrement…" : "Enregistrer"}
+        </button>
       </div>
     </div>
   )

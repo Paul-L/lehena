@@ -1,0 +1,31 @@
+{
+  "run_id": "01KRG57CY9QSYVKTXCB54M5B81",
+  "script": "products",
+  "source": "fixtures",
+  "dry_run": true,
+  "status": "completed",
+  "started_at": "2026-05-13T07:53:37.290Z",
+  "finished_at": "2026-05-13T07:53:37.843Z",
+  "totals": {
+    "seen": 2,
+    "failed": 0,
+    "created": 0,
+    "skipped": 2,
+    "updated": 0
+  },
+  "entries": [
+    {
+      "notes": "handle already exists",
+      "outcome": "skipped",
+      "legacy_id": 101,
+      "medusa_id": "prod_01KRBQ3TN092N57B7DFFVJ87B9"
+    },
+    {
+      "notes": "handle already exists",
+      "outcome": "skipped",
+      "legacy_id": 102,
+      "medusa_id": "prod_01KRG3PHSJJG7BB3PE3NQN5J7K"
+    }
+  ],
+  "error_message": null
+}

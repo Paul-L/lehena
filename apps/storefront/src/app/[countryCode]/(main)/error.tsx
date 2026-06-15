@@ -42,7 +42,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
         >
           Pardon,
           <br />
-          <em style={{ fontStyle: "italic", color: "var(--argile)" }}>
+          <em style={{ fontStyle: "italic", color: "var(--argile-ink)" }}>
             l'atelier a hoqueté.
           </em>
         </h1>
@@ -78,7 +78,7 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
       <Frieze color="var(--line-strong)" size={8} opacity={0.6} />
 
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        <button type="button" onClick={() => reset()} className="btn btn-solid">
+        <button type="button" onClick={() => reset()} className="btn btn-rouge">
           Réessayer
         </button>
         <LocalizedClientLink href="/" className="btn">

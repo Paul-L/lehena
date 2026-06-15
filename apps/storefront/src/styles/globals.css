@@ -16,14 +16,22 @@
   --rouge-deep: #7a2818;
   --terre: #8b3a2a;
   --argile: #c08a6b;
+  /* Contrast-safe clay for text on the LIGHT cream bg (--argile fails WCAG
+     there at 2.54:1). Use --argile only on dark backgrounds. 4.88:1 on --bg. */
+  --argile-ink: #8f5a3c;
   --grain: #e9dcc1;
   --ink: #1c1410;
   --ink-soft: #4a3a2e;
-  --ink-mute: #7a685a;
+  /* Darkened from #7a685a so muted text clears WCAG AA on every light surface,
+     incl. the darker --paper (#ede2ce): 5.52:1 on --bg, 5.01:1 on --paper. */
+  --ink-mute: #6f5b49;
   --line: rgba(28, 20, 16, 0.14);
   --line-strong: rgba(28, 20, 16, 0.28);
   --cuivre: #b07b4a;
   --olive: #5a5a3a;
+  /* Semantic success green — WCAG AA on light surfaces (5.45:1 on --bg,
+     6.34:1 on white). Replaces Tailwind text-emerald/green-500 (fail). */
+  --success: #2f6b46;
 
   --serif: "Cormorant Garamond", "EB Garamond", Georgia, serif;
   --serif-display: "Fraunces", "Cormorant Garamond", Georgia, serif;
@@ -53,8 +61,14 @@ html.lehena, html.lehena body {
   text-rendering: optimizeLegibility;
 }
 
-.lh a { color: inherit; text-decoration: none; }
-.lh button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+/* Plain links inherit ink; buttons keep their own color (.btn-rouge=#fff,
+   .btn-solid=cream). Without :not(.btn) this rule's specificity (0,1,1)
+   beats .btn-rouge (0,1,0) and forces dark text on the red button. */
+.lh a:not(.btn) { color: inherit; text-decoration: none; }
+/* Reset bare buttons only. Without :not(.btn) this (0,1,1) beats .btn-rouge
+   (0,1,0) and strips background/color/padding from every <button> styled as
+   a .btn (form submits, add-to-cart, checkout) — leaving plain ink text. */
+.lh button:not(.btn) { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
 .lh img { max-width: 100%; display: block; }
 
 .serif { font-family: var(--serif); }
@@ -187,7 +201,9 @@ html.lehena, html.lehena body {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 16px 0;
+  /* Match the site wrapper's horizontal gutter so the nav lines up with
+     page content (.lh-wrap uses `padding: 0 var(--gutter)`). */
+  padding: 16px var(--gutter);
   gap: 24px;
 }
 .header-burger {
@@ -220,7 +236,7 @@ html.lehena, html.lehena body {
   padding: 18px 0;
   background: var(--bg-elevated);
 }
-.announce-row { padding-left: clamp(16px, 4vw, 56px); padding-right: clamp(16px, 4vw, 56px); }
+.announce-row { padding-left: var(--gutter); padding-right: var(--gutter); }
 
 .mobile-menu {
   position: fixed; inset: 0;
@@ -268,6 +284,46 @@ html.lehena, html.lehena body {
   font-family: var(--mono); letter-spacing: 0.06em;
 }
 
+/* DASHBOARD — address grid */
+@media (max-width: 720px) {
+  .address-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* DASHBOARD — responsive */
+@media (max-width: 820px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  .dashboard-nav {
+    position: static !important;
+    flex-direction: row !important;
+    gap: 4px !important;
+    flex-wrap: wrap;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .dashboard-nav .eyebrow {
+    flex-basis: 100%;
+    margin-bottom: 8px !important;
+  }
+  .dashboard-nav a {
+    padding: 8px 12px !important;
+    border-bottom: 0 !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 999px;
+    font-size: 13px !important;
+  }
+  .dashboard-nav a[aria-current="page"] {
+    background: var(--ink);
+    color: var(--bg) !important;
+    border-color: var(--ink) !important;
+    font-style: normal !important;
+  }
+}
+
 /* RESPONSIVE */
 @media (max-width: 1180px) {
   .header-nav-left { gap: 18px; }
@@ -277,7 +333,7 @@ html.lehena, html.lehena body {
 @media (max-width: 960px) {
   :root { --gutter: clamp(18px, 4vw, 32px); }
   .header-burger { display: inline-flex; }
-  .header-row { grid-template-columns: auto 1fr auto; padding: 12px 0; gap: 12px; }
+  .header-row { grid-template-columns: auto 1fr auto; padding: 12px var(--gutter); gap: 12px; }
   .header-nav-left { display: none; }
   .header-nav-right { display: none; }
   .header-logo { justify-self: center; }
@@ -307,7 +363,7 @@ html.lehena, html.lehena body {
   .lh main [style*="60px 1fr auto"] > :last-child { display: none; }
   .lh footer [style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 36px !important; }
   .lh footer [style*="paddingTop: 80"] { padding-top: 56px !important; padding-bottom: 32px !important; }
-  .announce-row { gap: 14px !important; padding-left: 16px !important; padding-right: 16px !important; }
+  .announce-row { gap: 14px !important; padding-left: var(--gutter) !important; padding-right: var(--gutter) !important; }
   .announce-item { font-size: 10px !important; gap: 14px !important; }
   .announce-dot { display: none !important; }
   .announce-row > .announce-item:nth-child(n+3) { display: none; }

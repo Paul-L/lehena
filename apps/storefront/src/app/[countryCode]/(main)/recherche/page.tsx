@@ -72,7 +72,7 @@ export default async function SearchPage(props: Props) {
           />
           <button
             type="submit"
-            className="btn btn-solid"
+            className="btn btn-rouge"
             style={{ flexShrink: 0 }}
           >
             Chercher
@@ -119,7 +119,7 @@ export default async function SearchPage(props: Props) {
             Essayez « jambon », « patxaran », « coffret », ou parcourez toute la
             maison.
           </p>
-          <LocalizedClientLink href="/store" className="btn btn-solid">
+          <LocalizedClientLink href="/store" className="btn btn-rouge">
             Voir toute la boutique <LhArrow />
           </LocalizedClientLink>
         </div>

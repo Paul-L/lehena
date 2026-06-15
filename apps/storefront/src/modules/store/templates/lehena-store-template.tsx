@@ -49,8 +49,7 @@ export default async function LehenaStoreTemplate({
     ...topLevel.map((c) => ({ slug: c.handle, label: c.name })),
   ]
 
-  const heading = title ?? "Toute la maison,"
-  const headingItalic = "en un seul endroit."
+  const heading = title ?? category?.name ?? "Boutique"
   const description =
     subtitle ??
     "Jambons, salaisons, patxaran et épicerie fine. Sélectionnés, affinés et expédiés depuis le Pays Basque."
@@ -97,14 +96,16 @@ export default async function LehenaStoreTemplate({
           >
             <h1
               className="serif-display"
-              style={{ fontSize: "var(--step-6)", lineHeight: 0.95 }}
+              style={{
+                fontSize: "clamp(40px, 5.2vw, 64px)",
+                lineHeight: 1,
+                letterSpacing: "-0.02em",
+                margin: 0,
+              }}
               data-testid="store-page-title"
             >
               {heading}
-              <br />
-              <em style={{ fontStyle: "italic", color: "var(--rouge)" }}>
-                {headingItalic}
-              </em>
+              <span style={{ color: "var(--rouge)" }}>.</span>
             </h1>
             <p
               style={{
@@ -121,8 +122,6 @@ export default async function LehenaStoreTemplate({
       </section>
 
       <LehenaStoreControls
-        categories={categoryOptions}
-        activeCategory={category?.handle}
         sortBy={facets.sort ?? "created_at"}
         view={view}
       />
@@ -138,6 +137,45 @@ export default async function LehenaStoreTemplate({
           }}
         >
           <aside style={{ position: "sticky", top: 160 }}>
+            <div className="eyebrow" style={{ marginBottom: 14 }}>
+              Catégories
+            </div>
+            <ul
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: "0 0 32px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+              }}
+            >
+              {categoryOptions.map((c) => {
+                const isActive = c.slug
+                  ? category?.handle === c.slug
+                  : !category
+                return (
+                  <li key={c.slug ?? "all"}>
+                    <LocalizedClientLink
+                      href={c.slug ? `/categories/${c.slug}` : "/store"}
+                      style={{
+                        display: "block",
+                        padding: "4px 0",
+                        fontSize: 14,
+                        fontFamily: "var(--serif)",
+                        color: isActive ? "var(--ink)" : "var(--ink-soft)",
+                        fontWeight: isActive ? 500 : 400,
+                        fontStyle: isActive ? "italic" : "normal",
+                      }}
+                      aria-current={isActive ? "page" : undefined}
+                    >
+                      {c.label}
+                    </LocalizedClientLink>
+                  </li>
+                )
+              })}
+            </ul>
+
             <LehenaFacetFilters
               applied={{
                 aging_bucket: agingBucketId,
@@ -148,45 +186,6 @@ export default async function LehenaStoreTemplate({
                 format: facets.format,
               }}
             />
-
-            <div
-              style={{
-                marginTop: 32,
-                padding: 20,
-                background: "var(--bg-elevated)",
-                border: "1px solid var(--line)",
-              }}
-            >
-              <div className="eyebrow" style={{ marginBottom: 8 }}>
-                Conseil
-              </div>
-              <p
-                style={{
-                  fontSize: 13,
-                  fontFamily: "var(--serif)",
-                  color: "var(--ink-soft)",
-                  lineHeight: 1.5,
-                }}
-              >
-                Vous hésitez ? Notre équipe vous guide pour trouver la pièce qui
-                vous correspond.
-              </p>
-              <a
-                href="mailto:contact@lehena.fr"
-                style={{
-                  marginTop: 12,
-                  display: "inline-block",
-                  fontSize: 12,
-                  fontFamily: "var(--mono)",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: "var(--rouge)",
-                  textDecoration: "underline",
-                }}
-              >
-                Nous contacter
-              </a>
-            </div>
           </aside>
 
           <div>

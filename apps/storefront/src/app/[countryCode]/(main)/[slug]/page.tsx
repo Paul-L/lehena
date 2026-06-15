@@ -179,7 +179,7 @@ export default async function StorefrontPage(props: Props) {
             {page.title}
           </h1>
           {page.published_at && (
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-3 text-sm text-ink-mute">
               Publié le{" "}
               {new Date(page.published_at).toLocaleDateString("fr-FR", {
                 day: "2-digit",

@@ -1,6 +1,6 @@
 import { LhArrow } from "@modules/common/components/lehena/icons"
-import { Placeholder } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Image from "next/image"
 
 const FACTS: [string, string][] = [
   ["Race", "Duroc"],
@@ -86,16 +86,31 @@ export default function LehenaJambonOrhi() {
           </ul>
           <LocalizedClientLink
             href="/products/jambon-orhi-24-mois"
-            className="btn btn-solid"
+            className="btn btn-rouge"
           >
             Voir le produit · 195 € <LhArrow />
           </LocalizedClientLink>
         </div>
-        <div style={{ position: "relative" }}>
-          <Placeholder
-            label="Jambon Orhi · 24 mois"
-            aspect="4/5"
-            tone="rouge"
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Image
+            src="/images/jambon-orhi-cutout.webp"
+            alt="Chiffonade de jambon Orhi tranché sur planche en bois, affiné 24 mois sans nitrite"
+            width={941}
+            height={535}
+            sizes="(max-width: 768px) 100vw, 48vw"
+            style={{
+              width: "100%",
+              height: "auto",
+              objectFit: "contain",
+              filter: "drop-shadow(0 28px 38px rgba(28,20,16,0.22))",
+            }}
           />
           <div
             style={{

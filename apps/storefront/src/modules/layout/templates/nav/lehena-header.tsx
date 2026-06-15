@@ -9,15 +9,13 @@ import {
 } from "@modules/common/components/lehena/icons"
 import { Frieze, Logo } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { LehenaLanguageSwitcher } from "@modules/layout/components/lehena-language-switcher"
+// import { LehenaLanguageSwitcher } from "@modules/layout/components/lehena-language-switcher"
 import { LehenaSearchAutocomplete } from "@modules/layout/components/lehena-search-autocomplete"
 import { useEffect, useState, type ReactNode } from "react"
 
 const ANNOUNCE = [
   "Livraison Chronofresh 24–48h",
   "Frais de port offerts dès 50 €",
-  "Maître Artisan Charcutier — Pays Basque",
-  "Sans nitrite · Affinage minimum 15 mois",
 ]
 
 const NAV_LINKS: { label: string; href: string }[] = [
@@ -25,8 +23,7 @@ const NAV_LINKS: { label: string; href: string }[] = [
   { label: "Jambons", href: "/categories/jambons-iparralde" },
   { label: "Salaisons", href: "/categories/salaisons" },
   { label: "Patxaran", href: "/categories/patxaran-spiritueux" },
-  { label: "Coffrets", href: "/categories/coffrets-cadeaux" },
-  { label: "Histoire", href: "/notre-histoire" },
+  { label: "Épicerie", href: "/categories/epicerie" },
   { label: "La ferme", href: "/la-ferme" },
 ]
 
@@ -205,18 +202,16 @@ export default function LehenaHeader({ cartButton }: LehenaHeaderProps) {
             >
               <LhUser size={18} />
             </LocalizedClientLink>
+            {/*
             <span
               aria-hidden
               className="hidden small:inline-block"
-              style={{
-                width: 1,
-                height: 18,
-                background: "var(--line-strong)",
-              }}
+              style={{ width: 1, height: 18, background: "var(--line-strong)" }}
             />
             <div className="hidden small:inline-flex">
               <LehenaLanguageSwitcher variant="header" />
             </div>
+            */}
             {cartButton}
           </div>
         </div>
@@ -282,9 +277,11 @@ export default function LehenaHeader({ cartButton }: LehenaHeaderProps) {
               <LhUser size={16} /> Mon compte
             </LocalizedClientLink>
             <a href="mailto:contact@lehena.fr">contact@lehena.fr</a>
+            {/*
             <div className="pt-3 border-t border-line">
               <LehenaLanguageSwitcher variant="menu" />
             </div>
+            */}
           </div>
         </aside>
       </div>

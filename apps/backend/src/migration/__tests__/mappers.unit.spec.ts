@@ -120,8 +120,8 @@ describe("mapProduct", () => {
   it("emits one variant per legacy variation", () => {
     const m = mapProduct(baseProduct)
     expect(m.variants).toHaveLength(2)
-    expect(m.variants[0].price_cents).toBe(12900)
-    expect(m.variants[1].price_cents).toBe(29900)
+    expect(m.variants[0].price).toBe(129)
+    expect(m.variants[1].price).toBe(299)
   })
   it("creates a synthetic variant for simple products", () => {
     const p: LegacyProduct = {
@@ -132,7 +132,7 @@ describe("mapProduct", () => {
     }
     const m = mapProduct(p)
     expect(m.variants).toHaveLength(1)
-    expect(m.variants[0].price_cents).toBe(1890)
+    expect(m.variants[0].price).toBe(18.9)
     expect(m.variants[0].options.format).toBe("Unique")
   })
   it("strips HTML from description", () => {

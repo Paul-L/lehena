@@ -13,13 +13,30 @@ export default async function PreferencesPage() {
   const customer = await retrieveCustomer()
   if (!customer) notFound()
   return (
-    <div className="w-full">
-      <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Préférences</h1>
-        <p className="text-sm text-ui-fg-subtle max-w-2xl">
-          Choisissez ce que vous voulez recevoir de notre part. Les emails
-          transactionnels (commandes, expéditions) ne peuvent pas être
-          désactivés.
+    <div>
+      <div style={{ marginBottom: 32 }}>
+        <h2
+          className="serif-display"
+          style={{
+            fontSize: 32,
+            lineHeight: 1,
+            margin: "0 0 8px",
+            letterSpacing: "-0.015em",
+          }}
+        >
+          Préférences
+        </h2>
+        <p
+          style={{
+            fontFamily: "var(--serif)",
+            fontSize: 15,
+            color: "var(--ink-soft)",
+            margin: 0,
+          }}
+        >
+          Choisissez ce que vous voulez recevoir — et ce que vous préférez
+          ignorer. Les emails transactionnels (commandes, expéditions) ne
+          peuvent pas être désactivés.
         </p>
       </div>
       <NewsletterPreferences customer={customer} />

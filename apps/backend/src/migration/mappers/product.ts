@@ -98,8 +98,8 @@ export interface MappedProduct {
 export interface MappedVariant {
   title: string
   sku: string | null
-  /** Cents, EUR — Medusa's storage unit. */
-  price_cents: number | null
+  /** EUR amount, stored as-is in Medusa (49.99 = 49.99). */
+  price: number | null
   weight_grams: number | null
   options: Record<string, string>
 }
@@ -111,7 +111,7 @@ export function mapProduct(p: LegacyProduct): MappedProduct {
       ? p.variations.map((v) => ({
           title: variationTitle(v.attributes),
           sku: v.sku,
-          price_cents: priceToCents(v.price),
+          price: parsePrice(v.price),
           weight_grams: v.weight_grams,
           options: v.attributes,
         }))
@@ -119,7 +119,7 @@ export function mapProduct(p: LegacyProduct): MappedProduct {
           {
             title: "Format unique",
             sku: p.sku,
-            price_cents: priceToCents(p.price ?? null),
+            price: parsePrice(p.price ?? null),
             weight_grams: p.weight_grams,
             options: { format: "Unique" },
           },
@@ -155,11 +155,12 @@ function humanize(s: string): string {
     .replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
-function priceToCents(raw: string | null): number | null {
+function parsePrice(raw: string | null): number | null {
   if (!raw) return null
   const n = parseFloat(raw)
   if (!Number.isFinite(n)) return null
-  return Math.round(n * 100)
+  // Medusa v2 stores prices as-is — round to 2 decimal places.
+  return Math.round(n * 100) / 100
 }
 
 function pickNumber(v: unknown): number | null {

@@ -62,7 +62,7 @@ export default function NotFound() {
         >
           Cette page
           <br />
-          <em style={{ fontStyle: "italic", color: "var(--argile)" }}>
+          <em style={{ fontStyle: "italic", color: "var(--argile-ink)" }}>
             n'existe plus.
           </em>
         </h1>
@@ -148,7 +148,7 @@ export default function NotFound() {
           borderTop: "1px solid var(--line)",
         }}
       >
-        <LocalizedClientLink href="/" className="btn btn-solid">
+        <LocalizedClientLink href="/" className="btn btn-rouge">
           Retour à l'accueil
         </LocalizedClientLink>
         <LocalizedClientLink href="/store" className="btn">

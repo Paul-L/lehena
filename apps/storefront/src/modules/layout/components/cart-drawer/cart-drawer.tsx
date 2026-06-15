@@ -253,7 +253,7 @@ export default function CartDrawer({
               <LocalizedClientLink
                 href="/store"
                 onClick={() => setOpen(false)}
-                className="btn btn-solid"
+                className="btn btn-rouge"
               >
                 Visiter la boutique
               </LocalizedClientLink>
