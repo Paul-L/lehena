@@ -208,6 +208,37 @@ const Shipping: React.FC<ShippingProps> = ({
     whiteSpace: "nowrap",
   }
 
+  // Description + délai dérivés du nom du transporteur (sans date fabriquée).
+  const describeOption = (
+    name?: string | null
+  ): { desc?: string; eta?: string } => {
+    const n = (name ?? "").toLowerCase()
+    if (n.includes("express") || n.includes("j+1") || n.includes("13h"))
+      return { desc: "Livraison réfrigérée le lendemain matin.", eta: "J+1 avant 13 h" }
+    if (n.includes("chronofresh") || n.includes("frais") || n.includes("réfrig"))
+      return { desc: "Livraison réfrigérée à domicile, jours ouvrés.", eta: "24–48 h" }
+    if (n.includes("colissimo") || n.includes("poste"))
+      return { desc: "Colis suivi La Poste, à domicile.", eta: "48–72 h" }
+    if (n.includes("relais") || n.includes("pickup") || n.includes("point"))
+      return { desc: "Retrait dans un point partenaire.", eta: "sous 48 h" }
+    return {}
+  }
+  const descStyle: React.CSSProperties = {
+    fontFamily: "var(--serif)",
+    fontSize: 13.5,
+    color: "var(--ink-soft)",
+    lineHeight: 1.4,
+    marginTop: 3,
+  }
+  const etaStyle: React.CSSProperties = {
+    fontFamily: "var(--mono)",
+    fontSize: 10,
+    letterSpacing: "0.06em",
+    textTransform: "uppercase",
+    color: "var(--rouge)",
+    marginTop: 6,
+  }
+
   return (
     <section style={{ borderTop: "1px solid var(--line)", paddingTop: 24 }}>
       <StepHeading
@@ -292,22 +323,39 @@ const Shipping: React.FC<ShippingProps> = ({
                         value={option.id}
                         data-testid="delivery-option-radio"
                         disabled={isDisabled}
-                        style={cardStyle(
-                          option.id === shippingMethodId,
-                          isDisabled
-                        )}
+                        style={{
+                          ...cardStyle(
+                            option.id === shippingMethodId,
+                            isDisabled
+                          ),
+                          alignItems: "flex-start",
+                        }}
                       >
                         <div
                           style={{
                             display: "flex",
-                            alignItems: "center",
+                            alignItems: "flex-start",
                             gap: 14,
                           }}
                         >
-                          <MedusaRadio
-                            checked={option.id === shippingMethodId}
-                          />
-                          <span style={methodLabelStyle}>{option.name}</span>
+                          <span style={{ marginTop: 2 }}>
+                            <MedusaRadio
+                              checked={option.id === shippingMethodId}
+                            />
+                          </span>
+                          <div>
+                            <span style={methodLabelStyle}>{option.name}</span>
+                            {describeOption(option.name).desc && (
+                              <div style={descStyle}>
+                                {describeOption(option.name).desc}
+                              </div>
+                            )}
+                            {describeOption(option.name).eta && (
+                              <div style={etaStyle}>
+                                Estimé · {describeOption(option.name).eta}
+                              </div>
+                            )}
+                          </div>
                         </div>
                         <span
                           style={{

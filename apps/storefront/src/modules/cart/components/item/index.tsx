@@ -1,15 +1,12 @@
 "use client"
 
-import { updateLineItem } from "@lib/data/cart"
+import { deleteLineItem, updateLineItem } from "@lib/data/cart"
+import { convertToLocale } from "@lib/util/money"
 import { type HttpTypes } from "@medusajs/types"
-import { Table, Text, clx } from "@medusajs/ui"
-import CartItemSelect from "@modules/cart/components/cart-item-select"
 import GiftMessage from "@modules/cart/components/gift-message"
 import ErrorMessage from "@modules/checkout/components/error-message"
-import DeleteButton from "@modules/common/components/delete-button"
+import { LhClose, LhMinus, LhPlus } from "@modules/common/components/lehena/icons"
 import LineItemOptions from "@modules/common/components/line-item-options"
-import LineItemPrice from "@modules/common/components/line-item-price"
-import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
@@ -26,52 +23,159 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const [error, setError] = useState<string | null>(null)
 
   const changeQuantity = async (quantity: number) => {
+    if (quantity < 1) return
     setError(null)
     setUpdating(true)
-
-    await updateLineItem({
-      lineId: item.id,
-      quantity,
-    })
-      .catch((err) => {
-        setError(err.message)
-      })
-      .finally(() => {
-        setUpdating(false)
-      })
+    await updateLineItem({ lineId: item.id, quantity })
+      .catch((err) => setError(err.message))
+      .finally(() => setUpdating(false))
   }
 
-  // TODO: Update this to grab the actual max inventory
-  const maxQtyFromInventory = 10
-  const maxQuantity = item.variant?.manage_inventory ? 10 : maxQtyFromInventory
+  const remove = async () => {
+    setError(null)
+    setUpdating(true)
+    await deleteLineItem(item.id)
+      .catch((err) => setError(err.message))
+      .finally(() => setUpdating(false))
+  }
 
+  const lineTotal = convertToLocale({
+    amount: item.total ?? 0,
+    currency_code: currencyCode,
+  })
+  const unitPrice = convertToLocale({
+    amount: (item.total ?? 0) / (item.quantity || 1),
+    currency_code: currencyCode,
+  })
+
+  // ─── Compact preview (checkout recap) ───
+  if (type === "preview") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          gap: 12,
+          padding: "14px 0",
+          borderBottom: "1px solid var(--line)",
+        }}
+        data-testid="product-row"
+      >
+        <div style={{ width: 52, height: 52, flexShrink: 0, position: "relative" }}>
+          <Thumbnail thumbnail={item.thumbnail} images={item.variant?.product?.images} size="square" />
+          <span
+            style={{
+              position: "absolute",
+              top: -7,
+              right: -7,
+              width: 20,
+              height: 20,
+              borderRadius: "50%",
+              background: "var(--ink)",
+              color: "var(--bg)",
+              fontSize: 11,
+              display: "grid",
+              placeItems: "center",
+              fontFamily: "var(--mono)",
+            }}
+          >
+            {item.quantity}
+          </span>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="serif-display" style={{ fontSize: 15, lineHeight: 1.15 }} data-testid="product-title">
+            {item.product_title}
+          </div>
+          <div style={{ fontSize: 11, color: "var(--ink-mute)", marginTop: 2 }}>
+            <LineItemOptions variant={item.variant} data-testid="product-variant" />
+          </div>
+        </div>
+        <div className="serif" style={{ fontSize: 15, whiteSpace: "nowrap" }}>
+          {lineTotal}
+        </div>
+      </div>
+    )
+  }
+
+  // ─── Full cart row (maquette style) ───
   return (
-    <Table.Row className="w-full" data-testid="product-row">
-      <Table.Cell className="!pl-0 p-4 w-24">
-        <LocalizedClientLink
-          href={`/products/${item.product_handle}`}
-          className={clx("flex", {
-            "w-16": type === "preview",
-            "small:w-24 w-12": type === "full",
-          })}
-        >
-          <Thumbnail
-            thumbnail={item.thumbnail}
-            images={item.variant?.product?.images}
-            size="square"
-          />
-        </LocalizedClientLink>
-      </Table.Cell>
+    <div
+      style={{
+        display: "flex",
+        gap: 16,
+        padding: "20px 0",
+        borderBottom: "1px solid var(--line)",
+      }}
+      data-testid="product-row"
+    >
+      <LocalizedClientLink
+        href={`/products/${item.product_handle}`}
+        style={{ width: 88, flexShrink: 0 }}
+      >
+        <Thumbnail thumbnail={item.thumbnail} images={item.variant?.product?.images} size="square" />
+      </LocalizedClientLink>
 
-      <Table.Cell className="text-left">
-        <Text
-          className="serif-display"
-          style={{ fontSize: 16, lineHeight: 1.2 }}
-          data-testid="product-title"
-        >
-          {item.product_title}
-        </Text>
-        <LineItemOptions variant={item.variant} data-testid="product-variant" />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+          <div className="serif-display" style={{ fontSize: 18, lineHeight: 1.2 }} data-testid="product-title">
+            {item.product_title}
+          </div>
+          <button
+            onClick={remove}
+            aria-label="Retirer"
+            data-testid="product-delete-button"
+            style={{ color: "var(--ink-mute)", flexShrink: 0 }}
+          >
+            <LhClose size={16} />
+          </button>
+        </div>
+        <div style={{ fontSize: 13, color: "var(--ink-mute)", margin: "4px 0 12px" }}>
+          <LineItemOptions variant={item.variant} data-testid="product-variant" />
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              border: "1px solid var(--line-strong)",
+              borderRadius: 999,
+            }}
+          >
+            <button
+              onClick={() => changeQuantity(item.quantity - 1)}
+              disabled={updating || item.quantity <= 1}
+              aria-label="Diminuer la quantité"
+              data-testid="product-decrease-button"
+              style={{ width: 32, height: 32, display: "grid", placeItems: "center", opacity: item.quantity <= 1 ? 0.4 : 1 }}
+            >
+              <LhMinus />
+            </button>
+            <span style={{ width: 30, textAlign: "center", fontFamily: "var(--mono)", fontSize: 13 }} data-testid="product-quantity">
+              {updating ? <Spinner /> : item.quantity}
+            </span>
+            <button
+              onClick={() => changeQuantity(item.quantity + 1)}
+              disabled={updating}
+              aria-label="Augmenter la quantité"
+              data-testid="product-increase-button"
+              style={{ width: 32, height: 32, display: "grid", placeItems: "center" }}
+            >
+              <LhPlus />
+            </button>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+            {item.quantity > 1 && (
+              <span style={{ fontSize: 12, color: "var(--ink-mute)", fontFamily: "var(--mono)" }}>
+                {unitPrice} × {item.quantity}
+              </span>
+            )}
+            <span className="serif" style={{ fontSize: 18 }} data-testid="product-price">
+              {lineTotal}
+            </span>
+          </div>
+        </div>
+
         <GiftMessage
           lineId={item.id}
           initial={
@@ -81,74 +185,9 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
           }
           type={type}
         />
-      </Table.Cell>
-
-      {type === "full" && (
-        <Table.Cell>
-          <div className="flex gap-2 items-center w-28">
-            <DeleteButton id={item.id} data-testid="product-delete-button" />
-            <CartItemSelect
-              value={item.quantity}
-              onChange={(value) => changeQuantity(parseInt(value.target.value))}
-              className="w-14 h-10 p-4"
-              data-testid="product-select-button"
-            >
-              {/* TODO: Update this with the v2 way of managing inventory */}
-              {Array.from(
-                {
-                  length: Math.min(maxQuantity, 10),
-                },
-                (_, i) => (
-                  <option value={i + 1} key={i}>
-                    {i + 1}
-                  </option>
-                )
-              )}
-
-              <option value={1} key={1}>
-                1
-              </option>
-            </CartItemSelect>
-            {updating && <Spinner />}
-          </div>
-          <ErrorMessage error={error} data-testid="product-error-message" />
-        </Table.Cell>
-      )}
-
-      {type === "full" && (
-        <Table.Cell className="hidden small:table-cell">
-          <LineItemUnitPrice
-            item={item}
-            style="tight"
-            currencyCode={currencyCode}
-          />
-        </Table.Cell>
-      )}
-
-      <Table.Cell className="!pr-0">
-        <span
-          className={clx("!pr-0", {
-            "flex flex-col items-end h-full justify-center": type === "preview",
-          })}
-        >
-          {type === "preview" && (
-            <span className="flex gap-x-1 ">
-              <Text className="text-ui-fg-muted">{item.quantity}x </Text>
-              <LineItemUnitPrice
-                item={item}
-                style="tight"
-                currencyCode={currencyCode}
-              />
-            </span>
-          )}
-          <LineItemPrice
-            item={item}
-            style="tight"
-            currencyCode={currencyCode}
-          />
-        </span>
-      </Table.Cell>
-    </Table.Row>
+        <ErrorMessage error={error} data-testid="product-error-message" />
+      </div>
+    </div>
   )
 }
 
