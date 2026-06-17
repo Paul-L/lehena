@@ -1,6 +1,6 @@
 import { Radio as RadioGroupOption } from "@headlessui/react"
 import { isManual } from "@lib/constants"
-import { Text, clx } from "@medusajs/ui"
+import { Text } from "@medusajs/ui"
 import Radio from "@modules/common/components/radio"
 import SkeletonCardDetails from "@modules/skeletons/components/skeleton-card-details"
 import { CardElement } from "@stripe/react-stripe-js"
@@ -32,25 +32,47 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
       key={paymentProviderId}
       value={paymentProviderId}
       disabled={disabled}
-      className={clx(
-        "flex flex-col gap-y-2 text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
-        {
-          "border-ui-border-interactive":
-            selectedPaymentOptionId === paymentProviderId,
-        }
-      )}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 8,
+        cursor: "pointer",
+        padding: 16,
+        marginBottom: 10,
+        border:
+          selectedPaymentOptionId === paymentProviderId
+            ? "1px solid var(--ink)"
+            : "1px solid var(--line)",
+        background:
+          selectedPaymentOptionId === paymentProviderId
+            ? "var(--bg-elevated)"
+            : "transparent",
+        transition: "all 160ms ease",
+      }}
     >
-      <div className="flex items-center justify-between ">
-        <div className="flex items-center gap-x-4">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <Radio checked={selectedPaymentOptionId === paymentProviderId} />
-          <Text className="text-base-regular">
+          <span
+            style={{
+              fontFamily: "var(--serif-display)",
+              fontStyle: "italic",
+              fontSize: 18,
+            }}
+          >
             {paymentInfoMap[paymentProviderId]?.title || paymentProviderId}
-          </Text>
+          </span>
           {isManual(paymentProviderId) && isDevelopment && (
             <PaymentTest className="hidden small:block" />
           )}
         </div>
-        <span className="justify-self-end text-ui-fg-base">
+        <span style={{ color: "var(--ink-soft)" }}>
           {paymentInfoMap[paymentProviderId]?.icon}
         </span>
       </div>
@@ -106,9 +128,9 @@ export const StripeCardContainer = ({
       {selectedPaymentOptionId === paymentProviderId &&
         (stripeReady ? (
           <div className="my-4 transition-all duration-150 ease-in-out">
-            <Text className="txt-medium-plus text-ui-fg-base mb-1">
-              Enter your card details:
-            </Text>
+            <div className="mono" style={{ fontSize: 10, color: "var(--ink-mute)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 8 }}>
+              Coordonnées de la carte
+            </div>
             <CardElement
               options={useOptions as StripeCardElementOptions}
               onChange={(e) => {

@@ -15,7 +15,7 @@ const CARDS: {
     desc: "Macération 8 mois selon la recette des Laminak.",
     src: "/images/home-patxaran.webp",
     alt: "Bouteille de Patxaran Lehena et son verre, prunelles sauvages",
-    href: "/categories/patxaran",
+    href: "/categories/patxaran-spiritueux",
   },
   {
     title: "Salaisons",
@@ -31,7 +31,7 @@ const CARDS: {
     desc: "Axoa, piperade, mijotés à l'ancienne.",
     src: "/images/home-epicerie.webp",
     alt: "Plat cuisiné du Pays Basque mijoté à l'ancienne, servi en cocotte",
-    href: "/categories/epicerie",
+    href: "/categories/epicerie-fine",
   },
 ]
 

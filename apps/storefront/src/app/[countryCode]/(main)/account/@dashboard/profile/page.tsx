@@ -9,8 +9,9 @@ import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 
 export const metadata: Metadata = {
-  title: "Profile",
-  description: "View and edit your Medusa Store profile.",
+  title: "Mon profil",
+  description: "Consultez et modifiez votre profil Maison Lehena.",
+  robots: { index: false, follow: false },
 }
 
 export default async function Profile() {

@@ -2,10 +2,8 @@
 
 import { setAddresses } from "@lib/data/cart"
 import compareAddresses from "@lib/util/compare-addresses"
-import { CheckCircleSolid } from "@medusajs/icons"
 import { type HttpTypes } from "@medusajs/types"
-import { Heading, Text, useToggleState } from "@medusajs/ui"
-import Divider from "@modules/common/components/divider"
+import { useToggleState } from "@medusajs/ui"
 import Spinner from "@modules/common/icons/spinner"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useActionState } from "react"
@@ -13,6 +11,7 @@ import { useActionState } from "react"
 import BillingAddress from "../billing_address"
 import ErrorMessage from "../error-message"
 import ShippingAddress from "../shipping-address"
+import StepHeading from "../step-heading"
 import { SubmitButton } from "../submit-button"
 
 const Addresses = ({
@@ -40,31 +39,21 @@ const Addresses = ({
 
   const [message, formAction] = useActionState(setAddresses, null)
 
+  const done = !isOpen && Boolean(cart?.shipping_address)
+
   return (
-    <div className="bg-white">
-      <div className="flex flex-row items-center justify-between mb-6">
-        <Heading
-          level="h2"
-          className="flex flex-row text-3xl-regular gap-x-2 items-baseline"
-        >
-          Shipping Address
-          {!isOpen && <CheckCircleSolid />}
-        </Heading>
-        {!isOpen && cart?.shipping_address && (
-          <Text>
-            <button
-              onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
-              data-testid="edit-address-button"
-            >
-              Edit
-            </button>
-          </Text>
-        )}
-      </div>
+    <section style={{ borderTop: "1px solid var(--line)", paddingTop: 24 }}>
+      <StepHeading
+        num={1}
+        label="Livraison"
+        done={done}
+        active={isOpen}
+        onEdit={handleEdit}
+        editTestId="edit-address-button"
+      />
       {isOpen ? (
         <form action={formAction}>
-          <div className="pb-8">
+          <div style={{ paddingLeft: 44, paddingBottom: 8 }}>
             <ShippingAddress
               customer={customer}
               checked={sameAsBilling}
@@ -73,112 +62,96 @@ const Addresses = ({
             />
 
             {!sameAsBilling && (
-              <div>
-                <Heading
-                  level="h2"
-                  className="text-3xl-regular gap-x-4 pb-6 pt-8"
-                >
-                  Billing address
-                </Heading>
-
+              <div style={{ marginTop: 32 }}>
+                <div className="eyebrow" style={{ marginBottom: 18 }}>
+                  Adresse de facturation
+                </div>
                 <BillingAddress cart={cart} />
               </div>
             )}
-            <SubmitButton className="mt-6" data-testid="submit-address-button">
-              Continue to delivery
+            <SubmitButton
+              className="mt-6"
+              data-testid="submit-address-button"
+            >
+              Continuer vers la livraison
             </SubmitButton>
             <ErrorMessage error={message} data-testid="address-error-message" />
           </div>
         </form>
       ) : (
-        <div>
-          <div className="text-small-regular">
-            {cart && cart.shipping_address ? (
-              <div className="flex items-start gap-x-8">
-                <div className="flex items-start gap-x-1 w-full">
-                  <div
-                    className="flex flex-col w-1/3"
-                    data-testid="shipping-address-summary"
-                  >
-                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                      Shipping Address
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.first_name}{" "}
-                      {cart.shipping_address.last_name}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.address_1}{" "}
-                      {cart.shipping_address.address_2}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.postal_code},{" "}
-                      {cart.shipping_address.city}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.country_code?.toUpperCase()}
-                    </Text>
-                  </div>
-
-                  <div
-                    className="flex flex-col w-1/3 "
-                    data-testid="shipping-contact-summary"
-                  >
-                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                      Contact
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.shipping_address.phone}
-                    </Text>
-                    <Text className="txt-medium text-ui-fg-subtle">
-                      {cart.email}
-                    </Text>
-                  </div>
-
-                  <div
-                    className="flex flex-col w-1/3"
-                    data-testid="billing-address-summary"
-                  >
-                    <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                      Billing Address
-                    </Text>
-
-                    {sameAsBilling ? (
-                      <Text className="txt-medium text-ui-fg-subtle">
-                        Billing and delivery address are the same.
-                      </Text>
-                    ) : (
-                      <>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.first_name}{" "}
-                          {cart.billing_address?.last_name}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.address_1}{" "}
-                          {cart.billing_address?.address_2}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.postal_code},{" "}
-                          {cart.billing_address?.city}
-                        </Text>
-                        <Text className="txt-medium text-ui-fg-subtle">
-                          {cart.billing_address?.country_code?.toUpperCase()}
-                        </Text>
-                      </>
-                    )}
-                  </div>
+        <div style={{ paddingLeft: 44, marginTop: 8 }}>
+          {cart && cart.shipping_address ? (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: 24,
+                fontFamily: "var(--serif)",
+                fontSize: 15,
+                color: "var(--ink-soft)",
+                lineHeight: 1.5,
+              }}
+            >
+              <div data-testid="shipping-address-summary">
+                <div className="eyebrow" style={{ marginBottom: 8 }}>
+                  Adresse de livraison
                 </div>
+                <div>
+                  {cart.shipping_address.first_name}{" "}
+                  {cart.shipping_address.last_name}
+                </div>
+                <div>
+                  {cart.shipping_address.address_1}{" "}
+                  {cart.shipping_address.address_2}
+                </div>
+                <div>
+                  {cart.shipping_address.postal_code},{" "}
+                  {cart.shipping_address.city}
+                </div>
+                <div>{cart.shipping_address.country_code?.toUpperCase()}</div>
               </div>
-            ) : (
-              <div>
-                <Spinner />
+
+              <div data-testid="shipping-contact-summary">
+                <div className="eyebrow" style={{ marginBottom: 8 }}>
+                  Contact
+                </div>
+                <div>{cart.shipping_address.phone}</div>
+                <div>{cart.email}</div>
               </div>
-            )}
-          </div>
+
+              <div data-testid="billing-address-summary">
+                <div className="eyebrow" style={{ marginBottom: 8 }}>
+                  Adresse de facturation
+                </div>
+                {sameAsBilling ? (
+                  <div>Identique à l&apos;adresse de livraison.</div>
+                ) : (
+                  <>
+                    <div>
+                      {cart.billing_address?.first_name}{" "}
+                      {cart.billing_address?.last_name}
+                    </div>
+                    <div>
+                      {cart.billing_address?.address_1}{" "}
+                      {cart.billing_address?.address_2}
+                    </div>
+                    <div>
+                      {cart.billing_address?.postal_code},{" "}
+                      {cart.billing_address?.city}
+                    </div>
+                    <div>
+                      {cart.billing_address?.country_code?.toUpperCase()}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          ) : (
+            <Spinner />
+          )}
         </div>
       )}
-      <Divider className="mt-8" />
-    </div>
+    </section>
   )
 }
 

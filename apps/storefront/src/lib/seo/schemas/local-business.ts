@@ -104,9 +104,8 @@ export const LEHENA_WORKSHOP: LocalBusinessSchemaInput = {
   url: "https://lehena.fr/fr/atelier",
   name: "Maison Lehena — Atelier & boutique",
   description:
-    "Atelier d'affinage et boutique de la Maison Lehena, dans la vallée des Aldudes. Visites guidées à venir en 2026.",
+    "Atelier d'affinage et boutique de la Maison Lehena, à Laguinge, en Soule (Pays Basque). Visites sur rendez-vous.",
   image: "https://lehena.fr/atelier-cover.jpg",
-  telephone: "+33559000000",
   email: "contact@lehena.fr",
   price_range: "€€€",
   address: {

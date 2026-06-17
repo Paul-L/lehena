@@ -17,7 +17,7 @@ import { type Metadata } from "next"
 export const metadata: Metadata = buildMetadata({
   // Home: the default title (with the brand) is exactly what we want — no override.
   description:
-    "Maître Artisan Charcutier au Pays Basque depuis 1974. Jambons affinés 24 mois, salaisons sans nitrite, patxaran et épicerie fine du Sud-Ouest.",
+    "Maître Artisan Charcutier au Pays Basque. Jambons affinés 15 mois minimum, salaisons sans nitrite, patxaran et épicerie fine du Sud-Ouest.",
 })
 
 interface HomeProps {

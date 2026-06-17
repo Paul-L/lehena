@@ -65,7 +65,8 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
 
       <Table.Cell className="text-left">
         <Text
-          className="txt-medium-plus text-ui-fg-base"
+          className="serif-display"
+          style={{ fontSize: 16, lineHeight: 1.2 }}
           data-testid="product-title"
         >
           {item.product_title}

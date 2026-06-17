@@ -2,7 +2,6 @@
 
 import { convertToLocale } from "@lib/util/money"
 import {
-  freeShippingApplies,
   freeShippingThresholdCents,
   vatBreakdown,
 } from "@lib/util/shipping-rules"
@@ -35,8 +34,9 @@ interface CartTotalsProps {
 }
 
 const formatRate = (rate: number) => {
-  // 0.055 → "5,5 %"; 0.2 → "20 %".
-  const pct = (rate * 100).toFixed(rate === Math.round(rate) ? 0 : 1)
+  // Medusa exposes the tax rate already as a percentage (5.5, 20) — NOT a
+  // fraction. Do not multiply by 100 (that produced "550 %").
+  const pct = Number.isInteger(rate) ? rate.toFixed(0) : rate.toFixed(1)
   return `${pct.replace(".", ",")} %`
 }
 
@@ -55,101 +55,130 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
   const showSplitVat = vatRows.length > 0
 
   // Free-shipping copy: shown until the customer crosses the threshold.
-  const subtotalCents = item_subtotal ?? 0
-  const threshold = freeShippingThresholdCents()
-  const fsApplies = freeShippingApplies({ item_subtotal: subtotalCents })
-  const remainingToFreeShip = Math.max(0, threshold - subtotalCents)
+  // Cart amounts are in major units (euros); the threshold helper returns
+  // cents, so convert to euros before comparing (avoids the "4 990,50 €" bug).
+  const subtotalEur = item_subtotal ?? 0
+  const thresholdEur = freeShippingThresholdCents() / 100
+  const fsApplies = subtotalEur >= thresholdEur
+  const remainingToFreeShip = Math.max(0, thresholdEur - subtotalEur)
+
+  const rowStyle: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "space-between",
+    fontFamily: "var(--serif)",
+    fontSize: 14,
+    color: "var(--ink-soft)",
+    padding: "5px 0",
+  }
+  const subRowStyle: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "space-between",
+    fontFamily: "var(--mono)",
+    fontSize: 11,
+    letterSpacing: "0.04em",
+    color: "var(--ink-mute)",
+    padding: "2px 0",
+  }
 
   return (
     <div>
-      <div className="flex flex-col gap-y-2 txt-medium text-ui-fg-subtle ">
-        <div className="flex items-center justify-between">
-          <span>Sous-total (hors livraison)</span>
-          <span data-testid="cart-subtotal" data-value={item_subtotal || 0}>
-            {convertToLocale({ amount: item_subtotal ?? 0, currency_code })}
-          </span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span>Livraison</span>
-          <span data-testid="cart-shipping" data-value={shipping_subtotal || 0}>
-            {fsApplies && (shipping_subtotal ?? 0) === 0
-              ? "Offerte"
-              : convertToLocale({
-                  amount: shipping_subtotal ?? 0,
-                  currency_code,
-                })}
-          </span>
-        </div>
-        {!fsApplies && remainingToFreeShip > 0 ? (
-          <div className="text-xs text-ui-fg-muted italic">
-            Plus que{" "}
-            {convertToLocale({
-              amount: remainingToFreeShip,
-              currency_code,
-            })}{" "}
-            pour la livraison offerte.
-          </div>
-        ) : null}
-        {!!discount_subtotal && (
-          <div className="flex items-center justify-between">
-            <span>Promotion</span>
-            <span
-              className="text-ui-fg-interactive"
-              data-testid="cart-discount"
-              data-value={discount_subtotal || 0}
-            >
-              -{" "}
-              {convertToLocale({
-                amount: discount_subtotal ?? 0,
+      <div style={rowStyle}>
+        <span>Sous-total (hors livraison)</span>
+        <span data-testid="cart-subtotal" data-value={item_subtotal || 0}>
+          {convertToLocale({ amount: item_subtotal ?? 0, currency_code })}
+        </span>
+      </div>
+      <div style={rowStyle}>
+        <span>Livraison</span>
+        <span
+          data-testid="cart-shipping"
+          data-value={shipping_subtotal || 0}
+          style={{
+            color:
+              fsApplies && (shipping_subtotal ?? 0) === 0
+                ? "var(--olive)"
+                : "var(--ink-soft)",
+          }}
+        >
+          {fsApplies && (shipping_subtotal ?? 0) === 0
+            ? "Offerte"
+            : convertToLocale({
+                amount: shipping_subtotal ?? 0,
                 currency_code,
               })}
-            </span>
-          </div>
-        )}
-        {showSplitVat ? (
-          <div
-            className="flex flex-col gap-y-1"
-            data-testid="cart-vat-breakdown"
+        </span>
+      </div>
+      {!fsApplies && remainingToFreeShip > 0 ? (
+        <div
+          style={{
+            fontFamily: "var(--serif)",
+            fontStyle: "italic",
+            fontSize: 13,
+            color: "var(--ink-mute)",
+            padding: "2px 0",
+          }}
+        >
+          Plus que{" "}
+          {convertToLocale({ amount: remainingToFreeShip, currency_code })} pour
+          la livraison offerte.
+        </div>
+      ) : null}
+      {!!discount_subtotal && (
+        <div style={rowStyle}>
+          <span>Promotion</span>
+          <span
+            data-testid="cart-discount"
+            data-value={discount_subtotal || 0}
+            style={{ color: "var(--olive)" }}
           >
-            {vatRows.map((row) => (
-              <div
-                key={row.rate}
-                className="flex justify-between text-xs text-ui-fg-muted"
-              >
-                <span>dont TVA {formatRate(row.rate)}</span>
-                <span data-rate={row.rate}>
-                  {convertToLocale({ amount: row.amount, currency_code })}
-                </span>
-              </div>
-            ))}
-            <div className="flex justify-between">
-              <span>Total TVA</span>
-              <span data-testid="cart-taxes" data-value={tax_total || 0}>
-                {convertToLocale({ amount: tax_total ?? 0, currency_code })}
+            −{" "}
+            {convertToLocale({ amount: discount_subtotal ?? 0, currency_code })}
+          </span>
+        </div>
+      )}
+      {showSplitVat ? (
+        <div data-testid="cart-vat-breakdown">
+          {vatRows.map((row) => (
+            <div key={row.rate} style={subRowStyle}>
+              <span>dont TVA {formatRate(row.rate)}</span>
+              <span data-rate={row.rate}>
+                {convertToLocale({ amount: row.amount, currency_code })}
               </span>
             </div>
-          </div>
-        ) : (
-          <div className="flex justify-between">
-            <span>TVA</span>
+          ))}
+          <div style={rowStyle}>
+            <span>Total TVA</span>
             <span data-testid="cart-taxes" data-value={tax_total || 0}>
               {convertToLocale({ amount: tax_total ?? 0, currency_code })}
             </span>
           </div>
-        )}
-      </div>
-      <div className="h-px w-full border-b border-gray-200 my-4" />
-      <div className="flex items-center justify-between text-ui-fg-base mb-2 txt-medium ">
-        <span>Total</span>
+        </div>
+      ) : (
+        <div style={rowStyle}>
+          <span>TVA</span>
+          <span data-testid="cart-taxes" data-value={tax_total || 0}>
+            {convertToLocale({ amount: tax_total ?? 0, currency_code })}
+          </span>
+        </div>
+      )}
+      <div className="hr-strong" style={{ margin: "14px 0" }} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+        }}
+      >
+        <span className="eyebrow">Total TTC</span>
         <span
-          className="txt-xlarge-plus"
+          className="serif-display"
+          style={{ fontSize: 30 }}
           data-testid="cart-total"
           data-value={total || 0}
         >
           {convertToLocale({ amount: total ?? 0, currency_code })}
         </span>
       </div>
-      <div className="h-px w-full border-b border-gray-200 mt-4" />
     </div>
   )
 }

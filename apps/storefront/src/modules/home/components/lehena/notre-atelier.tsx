@@ -119,7 +119,7 @@ export default function LehenaNotreAtelier() {
               Notre atelier d'affinage est niché dans un hameau de Soule, à
               mi-chemin entre les pâturages d'Iparralde et l'océan. C'est ici
               que nos jambons mûrissent à l'air des montagnes, parfois jusqu'à
-              trente mois.
+              vingt-quatre mois.
             </p>
             <p
               style={{

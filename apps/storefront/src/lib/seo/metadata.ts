@@ -23,7 +23,7 @@ export const SITE_NAME = "Maison Lehena"
 export const SITE_TAGLINE = "Maître artisan charcutier au Pays Basque"
 export const DEFAULT_TITLE = `${SITE_NAME} · ${SITE_TAGLINE}`
 export const DEFAULT_DESCRIPTION =
-  "Maître Artisan Charcutier au Pays Basque depuis 1974. Jambons affinés 24 mois, salaisons sans nitrite, patxaran et épicerie fine du Sud-Ouest."
+  "Maître Artisan Charcutier au Pays Basque. Jambons affinés 15 mois minimum, salaisons sans nitrite, patxaran et épicerie fine du Sud-Ouest."
 export const DEFAULT_OG_IMAGE = "/og/lehena-default.jpg"
 
 /**

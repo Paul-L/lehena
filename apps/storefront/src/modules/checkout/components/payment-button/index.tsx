@@ -2,8 +2,8 @@
 
 import { isManual, isStripeLike } from "@lib/constants"
 import { placeOrder } from "@lib/data/cart"
+import { convertToLocale } from "@lib/util/money"
 import { type HttpTypes } from "@medusajs/types"
-import { Button } from "@medusajs/ui"
 import { useElements, useStripe } from "@stripe/react-stripe-js"
 import React, { useState } from "react"
 
@@ -13,6 +13,52 @@ interface PaymentButtonProps {
   cart: HttpTypes.StoreCart
   "data-testid": string
 }
+
+const LockIcon = () => (
+  <svg
+    width={14}
+    height={14}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinejoin="round"
+  >
+    <rect x="4" y="10" width="16" height="11" rx="1.5" />
+    <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+  </svg>
+)
+
+const OrderButton = ({
+  disabled,
+  loading,
+  onClick,
+  label,
+  "data-testid": dataTestId,
+}: {
+  disabled?: boolean
+  loading?: boolean
+  onClick?: () => void
+  label: React.ReactNode
+  "data-testid"?: string
+}) => (
+  <button
+    type="button"
+    className="btn btn-rouge"
+    disabled={disabled || loading}
+    onClick={onClick}
+    data-testid={dataTestId}
+    style={{
+      width: "100%",
+      justifyContent: "center",
+      padding: 18,
+      opacity: disabled || loading ? 0.45 : 1,
+      cursor: disabled || loading ? "not-allowed" : "pointer",
+    }}
+  >
+    {loading ? "Traitement…" : label}
+  </button>
+)
 
 const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
@@ -38,10 +84,16 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
       )
     case isManual(paymentSession?.provider_id):
       return (
-        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+        <ManualTestPaymentButton
+          notReady={notReady}
+          cart={cart}
+          data-testid={dataTestId}
+        />
       )
     default:
-      return <Button disabled>Select a payment method</Button>
+      return (
+        <OrderButton disabled label="Choisissez un moyen de paiement" />
+      )
   }
 }
 
@@ -135,15 +187,22 @@ const StripePaymentButton = ({
 
   return (
     <>
-      <Button
+      <OrderButton
         disabled={disabled || notReady}
+        loading={submitting}
         onClick={handlePayment}
-        size="large"
-        isLoading={submitting}
         data-testid={dataTestId}
-      >
-        Place order
-      </Button>
+        label={
+          <>
+            Payer{" "}
+            {convertToLocale({
+              amount: cart.total ?? 0,
+              currency_code: cart.currency_code,
+            })}{" "}
+            <LockIcon />
+          </>
+        }
+      />
       <ErrorMessage
         error={errorMessage}
         data-testid="stripe-payment-error-message"
@@ -152,7 +211,15 @@ const StripePaymentButton = ({
   )
 }
 
-const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
+const ManualTestPaymentButton = ({
+  notReady,
+  cart,
+  "data-testid": dataTestId,
+}: {
+  notReady: boolean
+  cart: HttpTypes.StoreCart
+  "data-testid"?: string
+}) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -174,15 +241,22 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
 
   return (
     <>
-      <Button
+      <OrderButton
         disabled={notReady}
-        isLoading={submitting}
+        loading={submitting}
         onClick={handlePayment}
-        size="large"
-        data-testid="submit-order-button"
-      >
-        Place order
-      </Button>
+        data-testid={dataTestId}
+        label={
+          <>
+            Payer{" "}
+            {convertToLocale({
+              amount: cart.total ?? 0,
+              currency_code: cart.currency_code,
+            })}{" "}
+            <LockIcon />
+          </>
+        }
+      />
       <ErrorMessage
         error={errorMessage}
         data-testid="manual-payment-error-message"

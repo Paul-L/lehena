@@ -325,6 +325,9 @@ html.lehena, html.lehena body {
 }
 
 /* RESPONSIVE */
+/* Hero: image column reserves height on desktop so it balances the headline. */
+.hero-visual { min-height: 600px; }
+
 @media (max-width: 1180px) {
   .header-nav-left { gap: 18px; }
   .header-nav-left a { font-size: 12px !important; letter-spacing: 0.08em !important; }
@@ -341,6 +344,11 @@ html.lehena, html.lehena body {
   .header-account { display: none; }
   .header-cart { padding: 6px 10px; }
   .lh main [style*="repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
+  /* Hero stacks on mobile: drop the 2-col grid and the reserved image height,
+     and keep the cutout within the viewport (no horizontal overflow). */
+  .hero-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+  .hero-visual { min-height: 0 !important; }
+  .hero-visual img { max-width: 100% !important; height: auto !important; }
   .lh main section > .lh-wrap > [style*="grid"][style*="1.1fr 1fr"],
   .lh main section > .lh-wrap > [style*="grid"][style*="1.2fr 1fr"],
   .lh main section > .lh-wrap > [style*="grid"][style*="1.3fr"],

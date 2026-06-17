@@ -45,7 +45,7 @@ const timeline = [
 const steps = [
   { n: "01", t: "Naissance", d: "Ferme Iratzia · Julien Guénard. Race Duroc, sélection rigoureuse." },
   { n: "02", t: "Élevage plein air", d: "Vingt fermes en Iparralde. Céréales sans OGM, glands, châtaignes." },
-  { n: "03", t: "Salaison", d: "Atelier Sainte-Engrâce. Sel sec, gestes hérités, zéro additif." },
+  { n: "03", t: "Salaison", d: "Atelier de Laguinge. Sel sec, gestes hérités, zéro additif." },
   { n: "04", t: "Affinage 15–24 mois", d: "Séchoir naturel, air des Pyrénées. Maturation lente." },
 ] as const
 
@@ -390,7 +390,7 @@ export default function LaFerme() {
             <p style={{ margin: 0 }}>
               Pour assurer la qualité optimale de la viande, les porcs sont nourris avec des céréales non traitées et
               sans OGM, issues de la propre culture d'exploitation : blé, orge et maïs. Ils sont élevés dans une
-              vingtaine de fermes situées en Pays Basque Nord (<em>Iparralde</em>), dont la mienne, à Sainte-Engrâce.
+              vingtaine de fermes situées en Pays Basque Nord (<em>Iparralde</em>). Notre atelier d'affinage, lui, est à Laguinge, en Soule.
             </p>
           </div>
           <div style={{ position: "sticky", top: 100, textAlign: "right" }}>

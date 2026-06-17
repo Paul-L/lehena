@@ -23,7 +23,7 @@ const NAV_LINKS: { label: string; href: string }[] = [
   { label: "Jambons", href: "/categories/jambons-iparralde" },
   { label: "Salaisons", href: "/categories/salaisons" },
   { label: "Patxaran", href: "/categories/patxaran-spiritueux" },
-  { label: "Épicerie", href: "/categories/epicerie" },
+  { label: "Épicerie", href: "/categories/epicerie-fine" },
   { label: "La ferme", href: "/la-ferme" },
 ]
 

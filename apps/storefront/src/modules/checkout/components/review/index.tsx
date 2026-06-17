@@ -1,9 +1,9 @@
 "use client"
 
-import { Heading, Text, clx } from "@medusajs/ui"
 import { useSearchParams } from "next/navigation"
 
 import PaymentButton from "../payment-button"
+import StepHeading from "../step-heading"
 
 const Review = ({ cart }: { cart: any }) => {
   const searchParams = useSearchParams()
@@ -19,36 +19,27 @@ const Review = ({ cart }: { cart: any }) => {
     (cart.payment_collection || paidByGiftcard)
 
   return (
-    <div className="bg-white">
-      <div className="flex flex-row items-center justify-between mb-6">
-        <Heading
-          level="h2"
-          className={clx(
-            "flex flex-row text-3xl-regular gap-x-2 items-baseline",
-            {
-              "opacity-50 pointer-events-none select-none": !isOpen,
-            }
-          )}
-        >
-          Review
-        </Heading>
-      </div>
+    <section style={{ borderTop: "1px solid var(--line)", paddingTop: 24 }}>
+      <StepHeading num={4} label="Récapitulatif" active={isOpen} locked={!isOpen} />
       {isOpen && previousStepsCompleted && (
-        <>
-          <div className="flex items-start gap-x-1 w-full mb-6">
-            <div className="w-full">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                By clicking the Place Order button, you confirm that you have
-                read, understand and accept our Terms of Use, Terms of Sale and
-                Returns Policy and acknowledge that you have read Medusa
-                Store&apos;s Privacy Policy.
-              </Text>
-            </div>
-          </div>
+        <div style={{ paddingLeft: 44 }}>
+          <p
+            style={{
+              fontFamily: "var(--serif)",
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: "var(--ink-soft)",
+              marginBottom: 22,
+            }}
+          >
+            En validant la commande, vous confirmez avoir lu et accepté nos
+            conditions générales de vente, notre politique de retours et notre
+            politique de conservation de la chaîne du froid.
+          </p>
           <PaymentButton cart={cart} data-testid="submit-order-button" />
-        </>
+        </div>
       )}
-    </div>
+    </section>
   )
 }
 

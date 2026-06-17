@@ -16,8 +16,8 @@ const FOOTER_COLS: {
     links: [
       { label: "Notre histoire", href: "/notre-histoire" },
       { label: "De la ferme à l'assiette", href: "/la-ferme" },
-      { label: "Savoir-faire", href: "/savoir-faire" },
-      { label: "Actualités", href: "/actualites" },
+      { label: "L'atelier", href: "/atelier" },
+      { label: "À propos", href: "/a-propos" },
     ],
   },
   {
@@ -32,12 +32,12 @@ const FOOTER_COLS: {
   {
     title: "Aide",
     links: [
-      { label: "Livraison", href: "/livraison" },
-      { label: "Conservation", href: "/conservation" },
+      { label: "Livraison & retours", href: "/livraison-et-retours" },
+      { label: "FAQ", href: "/faq" },
       { label: "Nous contacter", href: "/contact" },
       { label: "CGV", href: "/cgv" },
       { label: "Mentions légales", href: "/mentions-legales" },
-      { label: "Confidentialité", href: "/confidentialite" },
+      { label: "Confidentialité", href: "/politique-confidentialite" },
     ],
   },
 ]

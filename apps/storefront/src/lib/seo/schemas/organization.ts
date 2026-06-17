@@ -16,8 +16,8 @@ export function organizationSchema() {
       "@type": "ImageObject",
       url: `${baseUrl}/logo-lehena.svg`,
     },
-    foundingDate: "1974",
-    founder: { "@type": "Person", name: "Famille Lehena" },
+    foundingDate: "2019",
+    founder: { "@type": "Person", name: "Bénat Petit" },
     address: {
       "@type": "PostalAddress",
       streetAddress: "Bourg",
@@ -39,6 +39,6 @@ export function organizationSchema() {
       "https://www.instagram.com/maisonlehena",
     ],
     description:
-      "Maître artisan charcutier au Pays Basque depuis 1974. Jambons affinés sans nitrite, salaisons, patxaran et épicerie fine du Sud-Ouest.",
+      "Maître artisan charcutier au Pays Basque. Jambons affinés sans nitrite, salaisons, patxaran et épicerie fine du Sud-Ouest.",
   }
 }

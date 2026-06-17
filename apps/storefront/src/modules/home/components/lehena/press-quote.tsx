@@ -11,7 +11,7 @@ export default function LehenaPressQuote() {
     >
       <div className="lh-wrap-narrow" style={{ textAlign: "center" }}>
         <div className="eyebrow" style={{ marginBottom: 32 }}>
-          Ils en parlent
+          Notre promesse
         </div>
         <blockquote
           className="serif-display"
@@ -29,7 +29,7 @@ export default function LehenaPressQuote() {
           jambon Orhi se goûte les yeux fermés. »
         </blockquote>
         <div className="mono" style={{ color: "var(--ink-mute)" }}>
-          — Le Bon Mangeur · Mars 2025
+          — Maison Lehena
         </div>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import repeat from "@lib/util/repeat"
 import { type HttpTypes } from "@medusajs/types"
-import { Heading, Table } from "@medusajs/ui"
+import { Table } from "@medusajs/ui"
 import Item from "@modules/cart/components/item"
 import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
 
@@ -12,17 +12,19 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
   const items = cart?.items
   return (
     <div>
-      <div className="pb-3 flex items-center">
-        <Heading className="text-[2rem] leading-[2.75rem]">Cart</Heading>
+      <div className="pb-4 flex items-center">
+        <h1 className="serif-display" style={{ fontSize: "var(--step-5)", lineHeight: 1 }}>
+          Votre panier
+        </h1>
       </div>
       <Table>
         <Table.Header className="border-t-0">
-          <Table.Row className="text-ui-fg-subtle txt-medium-plus">
-            <Table.HeaderCell className="!pl-0">Item</Table.HeaderCell>
+          <Table.Row className="eyebrow">
+            <Table.HeaderCell className="!pl-0">Article</Table.HeaderCell>
             <Table.HeaderCell></Table.HeaderCell>
-            <Table.HeaderCell>Quantity</Table.HeaderCell>
+            <Table.HeaderCell>Quantité</Table.HeaderCell>
             <Table.HeaderCell className="hidden small:table-cell">
-              Price
+              Prix
             </Table.HeaderCell>
             <Table.HeaderCell className="!pr-0 text-right">
               Total

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
   title: "Maison Lehena · Maître artisan charcutier au Pays Basque",
   description:
-    "Maître Artisan Charcutier au Pays Basque depuis 1974. Jambons affinés 24 mois, salaisons sans nitrite, patxaran, épicerie fine du Sud-Ouest.",
+    "Maître Artisan Charcutier au Pays Basque. Jambons affinés 15 mois minimum, salaisons sans nitrite, patxaran, épicerie fine du Sud-Ouest.",
 }
 
 export default function RootLayout(props: { children: React.ReactNode }) {

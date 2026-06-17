@@ -15,7 +15,7 @@ const PILLARS: Pillar[] = [
     detail: "Du sel de Salies, et c'est tout.",
   },
   {
-    figure: "24",
+    figure: "15",
     unit: "mois",
     title: "D'affinage minimum",
     detail: "Le temps comme seul ingrédient secret.",
@@ -27,9 +27,9 @@ const PILLARS: Pillar[] = [
     detail: "Une race rustique, élevée en plein air au Pays Basque.",
   },
   {
-    figure: "1974",
+    figure: "2019",
     title: "Notre première salaison",
-    detail: "Quatre générations, un même geste.",
+    detail: "L'année où Bénat Petit lance la Maison Lehena.",
   },
   {
     figure: "64470",

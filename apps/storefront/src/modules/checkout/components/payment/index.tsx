@@ -3,13 +3,13 @@
 import { RadioGroup } from "@headlessui/react"
 import { isStripeLike, paymentInfoMap } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
-import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
-import { Button, Container, Heading, Text, clx } from "@medusajs/ui"
+import { CreditCard } from "@medusajs/icons"
+import { Container, Text } from "@medusajs/ui"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
   StripeCardContainer,
 } from "@modules/checkout/components/payment-container"
-import Divider from "@modules/common/components/divider"
+import StepHeading from "@modules/checkout/components/step-heading"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 
@@ -105,34 +105,17 @@ const Payment = ({
   }, [isOpen])
 
   return (
-    <div className="bg-white">
-      <div className="flex flex-row items-center justify-between mb-6">
-        <Heading
-          level="h2"
-          className={clx(
-            "flex flex-row text-3xl-regular gap-x-2 items-baseline",
-            {
-              "opacity-50 pointer-events-none select-none":
-                !isOpen && !paymentReady,
-            }
-          )}
-        >
-          Payment
-          {!isOpen && paymentReady && <CheckCircleSolid />}
-        </Heading>
-        {!isOpen && paymentReady && (
-          <Text>
-            <button
-              onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
-              data-testid="edit-payment-button"
-            >
-              Edit
-            </button>
-          </Text>
-        )}
-      </div>
-      <div>
+    <section style={{ borderTop: "1px solid var(--line)", paddingTop: 24 }}>
+      <StepHeading
+        num={3}
+        label="Paiement"
+        done={!isOpen && paymentReady}
+        active={isOpen}
+        locked={!isOpen && !paymentReady}
+        onEdit={paymentReady ? handleEdit : undefined}
+        editTestId="edit-payment-button"
+      />
+      <div style={{ paddingLeft: 44 }}>
         <div className={isOpen ? "block" : "hidden"}>
           {!paidByGiftcard && availablePaymentMethods?.length && (
             <>
@@ -167,13 +150,13 @@ const Payment = ({
           {paidByGiftcard && (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
+                Moyen de paiement
               </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                Carte cadeau
               </Text>
             </div>
           )}
@@ -183,21 +166,34 @@ const Payment = ({
             data-testid="payment-method-error-message"
           />
 
-          <Button
-            size="large"
-            className="mt-6"
-            onClick={handleSubmit}
-            isLoading={isLoading}
-            disabled={
+          {(() => {
+            const payDisabled =
               (isStripeLike(selectedPaymentMethod) && !cardComplete) ||
-              (!selectedPaymentMethod && !paidByGiftcard)
-            }
-            data-testid="submit-payment-button"
-          >
-            {!activeSession && isStripeLike(selectedPaymentMethod)
-              ? " Enter card details"
-              : "Continue to review"}
-          </Button>
+              (!selectedPaymentMethod && !paidByGiftcard) ||
+              isLoading
+            return (
+              <button
+                type="button"
+                className="btn btn-solid"
+                style={{
+                  justifyContent: "center",
+                  width: "100%",
+                  marginTop: 22,
+                  opacity: payDisabled ? 0.45 : 1,
+                  cursor: payDisabled ? "not-allowed" : "pointer",
+                }}
+                onClick={handleSubmit}
+                disabled={payDisabled}
+                data-testid="submit-payment-button"
+              >
+                {isLoading
+                  ? "…"
+                  : !activeSession && isStripeLike(selectedPaymentMethod)
+                    ? "Saisir les informations de la carte"
+                    : "Vérifier la commande"}
+              </button>
+            )
+          })()}
         </div>
 
         <div className={isOpen ? "hidden" : "block"}>
@@ -205,7 +201,7 @@ const Payment = ({
             <div className="flex items-start gap-x-1 w-full">
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Payment method
+                  Moyen de paiement
                 </Text>
                 <Text
                   className="txt-medium text-ui-fg-subtle"
@@ -217,7 +213,7 @@ const Payment = ({
               </div>
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Payment details
+                  Détails du paiement
                 </Text>
                 <div
                   className="flex gap-2 txt-medium text-ui-fg-subtle items-center"
@@ -231,7 +227,7 @@ const Payment = ({
                   <Text>
                     {isStripeLike(selectedPaymentMethod) && cardBrand
                       ? cardBrand
-                      : "Another step will appear"}
+                      : "Une autre étape va apparaître"}
                   </Text>
                 </div>
               </div>
@@ -239,20 +235,19 @@ const Payment = ({
           ) : paidByGiftcard ? (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
+                Moyen de paiement
               </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                Carte cadeau
               </Text>
             </div>
           ) : null}
         </div>
       </div>
-      <Divider className="mt-8" />
-    </div>
+    </section>
   )
 }
 

@@ -38,6 +38,7 @@ export default function LehenaHero() {
     >
       <div className="lh-wrap" style={{ paddingTop: 60, paddingBottom: 80 }}>
         <div
+          className="hero-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1.1fr 1fr",
@@ -63,7 +64,7 @@ export default function LehenaHero() {
                   background: "var(--ink)",
                 }}
               />
-              Sublimateur de saveurs · Depuis 1974
+              Sublimateur de saveurs · Pays Basque
             </div>
             <h1
               className="serif-display reveal"
@@ -107,20 +108,19 @@ export default function LehenaHero() {
               <LocalizedClientLink href="/store" className="btn btn-rouge">
                 Découvrir nos produits <LhArrow />
               </LocalizedClientLink>
-              <LocalizedClientLink href="/histoire" className="btn btn-ghost">
+              <LocalizedClientLink href="/notre-histoire" className="btn btn-ghost">
                 Notre histoire
               </LocalizedClientLink>
             </div>
           </div>
 
           <div
-            className="reveal"
+            className="reveal hero-visual"
             style={{
               position: "relative",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: 600,
             }}
           >
             <Image

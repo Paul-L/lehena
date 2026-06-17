@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@medusajs/ui"
 import React from "react"
 import { useFormStatus } from "react-dom"
 
@@ -17,16 +16,24 @@ export function SubmitButton({
 }) {
   const { pending } = useFormStatus()
 
+  const btnClass =
+    variant === "secondary" || variant === "transparent"
+      ? "btn btn-ghost"
+      : "btn btn-rouge"
+
   return (
-    <Button
-      size="large"
-      className={className}
+    <button
       type="submit"
-      isLoading={pending}
-      variant={variant || "primary"}
+      disabled={pending}
+      className={`${btnClass}${className ? ` ${className}` : ""}`}
       data-testid={dataTestId}
+      style={{
+        justifyContent: "center",
+        opacity: pending ? 0.6 : 1,
+        cursor: pending ? "not-allowed" : "pointer",
+      }}
     >
-      {children}
-    </Button>
+      {pending ? "…" : children}
+    </button>
   )
 }

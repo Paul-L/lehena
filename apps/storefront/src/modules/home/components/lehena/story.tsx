@@ -33,7 +33,7 @@ export default function LehenaStory() {
             }}
           >
             <div className="eyebrow" style={{ marginBottom: 6 }}>
-              Cinquante ans plus tard
+              Le geste, le temps
             </div>
             <div
               className="serif-display"
@@ -84,7 +84,7 @@ export default function LehenaStory() {
               }}
             >
               Lehena, c'est l'histoire d'une passion qui nous anime depuis
-              cinquante ans. L'envie de vous faire découvrir des produits
+              le premier jour. L'envie de vous faire découvrir des produits
               d'exception au goût incomparable du terroir du Sud-Ouest.
             </p>
             <p
@@ -100,7 +100,7 @@ export default function LehenaStory() {
               dans le respect du bien-être animal et de l'environnement.
             </p>
           </div>
-          <LocalizedClientLink href="/histoire" className="btn">
+          <LocalizedClientLink href="/notre-histoire" className="btn">
             Découvrir Lehena <LhArrow />
           </LocalizedClientLink>
         </div>

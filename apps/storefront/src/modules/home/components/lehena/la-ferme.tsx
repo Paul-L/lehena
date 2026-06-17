@@ -66,7 +66,7 @@ export default function LehenaLaFerme() {
               naissance à votre table.
             </p>
             <LocalizedClientLink
-              href="/ferme"
+              href="/la-ferme"
               className="btn"
               style={{ borderColor: "var(--bg)", color: "var(--bg)" }}
             >
