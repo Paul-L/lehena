@@ -78,6 +78,28 @@ const callout = (
   content: content.length > 0 ? content : [{ type: "paragraph" }],
 })
 
+/**
+ * Legal identity for the mandatory pages below. Mirror of the storefront's
+ * `apps/storefront/src/lib/company.ts`. The empty fields are REAL values the
+ * company must provide before launch — we render an obvious "[à compléter]"
+ * marker rather than inventing RCS / SIRET / TVA numbers.
+ */
+const COMPANY = {
+  legalName: "Maison Lehena",
+  legalForm: "", // ex. "SAS au capital de 50 000 €"
+  siret: "", // 14 chiffres
+  vatNumber: "", // FR + 11 chiffres
+  rcs: "", // ex. "RCS Bayonne 000 000 000"
+  address: "Bourg, 64470 Laguinge (Pyrénées-Atlantiques), France",
+  email: "contact@lehena.fr",
+  privacyEmail: "rgpd@lehena.fr",
+  phone: "", // ex. "05 59 00 00 00"
+  publicationDirector: "", // directeur·rice de la publication
+  host: "OVH SAS — 2 rue Kellermann, 59100 Roubaix, France",
+}
+const todo = (value: string, hint: string) =>
+  value && value.length > 0 ? value : `[à compléter — ${hint}]`
+
 const SEEDS = (locale: string): SeedPage[] => [
   {
     slug: "a-propos",
@@ -87,8 +109,7 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "À propos — Lehena",
     meta_description:
       "Maison Lehena est une charcuterie artisanale du Pays Basque. Découvrez notre histoire, nos valeurs et l'équipe derrière les produits.",
-    og_image_url:
-      "https://lehena.fr/wp-content/uploads/2022/02/MRL05870.jpg",
+    og_image_url: "https://lehena.fr/wp-content/uploads/2022/02/MRL05870.jpg",
     content: doc(
       h2("Notre histoire"),
       para(
@@ -114,7 +135,7 @@ const SEEDS = (locale: string): SeedPage[] => [
         txt(
           "Sept artisans charcutiers travaillent quotidiennement à l'atelier. Pour toute question, contactez-nous à "
         ),
-        link("mailto:contact@lehena.com", "contact@lehena.com"),
+        link("mailto:contact@lehena.fr", "contact@lehena.fr"),
         txt(".")
       )
     ) as Record<string, unknown>,
@@ -198,7 +219,7 @@ const SEEDS = (locale: string): SeedPage[] => [
       ),
       h2("Procédure de retour"),
       ol([
-        "Contactez-nous à contact@lehena.com en précisant votre numéro de commande",
+        "Contactez-nous à contact@lehena.fr en précisant votre numéro de commande",
         "Nous vous envoyons une étiquette de retour prépayée par email",
         "Réexpédiez le colis sous 14 jours",
         "Remboursement effectué sous 5 jours ouvrés après réception",
@@ -206,7 +227,7 @@ const SEEDS = (locale: string): SeedPage[] => [
       h2("Contact"),
       para(
         txt("Une question ? Écrivez-nous à "),
-        link("mailto:contact@lehena.com", "contact@lehena.com"),
+        link("mailto:contact@lehena.fr", "contact@lehena.fr"),
         txt(" ou appelez le 05 59 00 00 00 (du lundi au vendredi, 9 h – 18 h).")
       )
     ) as Record<string, unknown>,
@@ -224,27 +245,35 @@ const SEEDS = (locale: string): SeedPage[] => [
       h2("Éditeur du site"),
       para(
         txt(
-          "Maison Lehena SAS — capital social 50 000 € — RCS Bayonne 123 456 789 — TVA intracommunautaire FR12345678901. Siège social : 1 rue du Marché, 64200 Biarritz."
+          `${COMPANY.legalName} — ${todo(COMPANY.legalForm, "forme juridique + capital")}. Siège social : ${COMPANY.address}. ${todo(COMPANY.rcs, "RCS")} · ${todo(COMPANY.siret ? `SIRET ${COMPANY.siret}` : "", "SIRET")} · ${todo(COMPANY.vatNumber ? `TVA intracommunautaire ${COMPANY.vatNumber}` : "", "TVA intracommunautaire")}.`
         )
+      ),
+      para(
+        txt("Directeur de la publication : "),
+        txt(
+          todo(
+            COMPANY.publicationDirector,
+            "nom du directeur de la publication"
+          )
+        ),
+        txt(". Contact : "),
+        link(`mailto:${COMPANY.email}`, COMPANY.email),
+        txt(COMPANY.phone ? ` — ${COMPANY.phone}.` : ".")
       ),
       h2("Hébergement"),
-      para(
-        txt(
-          "Le site est hébergé par OVH SAS, 2 rue Kellermann, 59100 Roubaix, France."
-        )
-      ),
+      para(txt(`Le site est hébergé par ${COMPANY.host}.`)),
       h2("Propriété intellectuelle"),
       para(
         txt(
-          "L'ensemble des contenus présents sur ce site (textes, images, logos, graphismes) sont la propriété exclusive de Maison Lehena SAS et sont protégés par le Code de la propriété intellectuelle."
+          `L'ensemble des contenus présents sur ce site (textes, photographies, logos, graphismes) sont la propriété exclusive de ${COMPANY.legalName} et sont protégés par le Code de la propriété intellectuelle. Toute reproduction sans autorisation est interdite.`
         )
       ),
-      h2("Données personnelles"),
+      h2("Données personnelles & cookies"),
       para(
-        txt(
-          "Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles. Pour exercer ces droits, contactez-nous à "
-        ),
-        link("mailto:rgpd@lehena.com", "rgpd@lehena.com"),
+        txt("Le traitement de vos données est détaillé dans notre "),
+        link("/fr/politique-confidentialite", "politique de confidentialité"),
+        txt(". Pour exercer vos droits RGPD, écrivez à "),
+        link(`mailto:${COMPANY.privacyEmail}`, COMPANY.privacyEmail),
         txt(".")
       )
     ) as Record<string, unknown>,
@@ -273,8 +302,7 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "Notre histoire — Lehena",
     meta_description:
       "Depuis 1974, Maison Lehena perpétue les techniques de salaison ancestrales du Pays Basque. Quatre générations, une même obsession : la qualité.",
-    og_image_url:
-      "https://lehena.fr/wp-content/uploads/2022/02/MRL05787.jpg",
+    og_image_url: "https://lehena.fr/wp-content/uploads/2022/02/MRL05787.jpg",
     content: doc(
       h2("Au commencement, une obstination"),
       para(
@@ -392,8 +420,7 @@ const SEEDS = (locale: string): SeedPage[] => [
     meta_title: "Engagements — Maison Lehena",
     meta_description:
       "Six engagements concrets et vérifiables : sans nitrite, traçabilité totale, fournisseurs locaux, emballage recyclable.",
-    og_image_url:
-      "https://lehena.fr/wp-content/uploads/2022/02/MRL05798.jpg",
+    og_image_url: "https://lehena.fr/wp-content/uploads/2022/02/MRL05798.jpg",
     content: doc(
       para(
         txt(
@@ -482,7 +509,7 @@ const SEEDS = (locale: string): SeedPage[] => [
       h2("Contact presse"),
       para(
         txt("Pour toute demande de visite ou d'interview : "),
-        link("mailto:presse@lehena.com", "presse@lehena.com")
+        link("mailto:presse@lehena.fr", "presse@lehena.fr")
       )
     ) as Record<string, unknown>,
     publish: true,
@@ -551,33 +578,99 @@ const SEEDS = (locale: string): SeedPage[] => [
     content: doc(
       callout(
         "warning",
-        "CONTENU À FOURNIR",
+        "Projet — à faire valider",
         para(
           txt(
-            "Les CGV définitives seront rédigées par notre conseil juridique avant la mise en production. Ce contenu est un placeholder."
+            "Rédaction de référence pour une boutique alimentaire artisanale. À faire relire et compléter par un conseil juridique (notamment le médiateur de la consommation) avant la mise en production."
           )
         )
       ),
-      h2("Article 1 — Objet"),
+      h2("Article 1 — Objet et champ d'application"),
       para(
         txt(
-          "Les présentes conditions générales de vente régissent les relations entre Maison Lehena SAS et tout client effectuant un achat sur le site lehena.fr."
+          "Les présentes conditions générales de vente (CGV) régissent l'ensemble des ventes conclues sur le site lehena.fr entre "
+        ),
+        txt(
+          `${COMPANY.legalName} (ci-après « le Vendeur ») et toute personne effectuant un achat (ci-après « le Client »). Toute commande implique l'acceptation sans réserve des présentes CGV.`
         )
       ),
-      h2("Article 2 — Commande"),
-      para(txt("[À COMPLÉTER]")),
-      h2("Article 3 — Prix et paiement"),
-      para(txt("[À COMPLÉTER]")),
-      h2("Article 4 — Livraison"),
-      para(txt("[À COMPLÉTER]")),
-      h2("Article 5 — Droit de rétractation"),
+      h2("Article 2 — Identification du vendeur"),
       para(
         txt(
-          "Conformément à l'article L.121-21-8 du Code de la consommation, le droit de rétractation ne s'applique pas aux denrées alimentaires périssables."
+          `${COMPANY.legalName} — ${todo(COMPANY.legalForm, "forme + capital")}, siège social ${COMPANY.address}. ${todo(COMPANY.siret ? `SIRET ${COMPANY.siret}` : "", "SIRET")}. ${todo(COMPANY.vatNumber ? `TVA ${COMPANY.vatNumber}` : "", "TVA")}. Contact : `
+        ),
+        link(`mailto:${COMPANY.email}`, COMPANY.email),
+        txt(COMPANY.phone ? ` — ${COMPANY.phone}.` : ".")
+      ),
+      h2("Article 3 — Produits"),
+      para(
+        txt(
+          "Les produits proposés sont des denrées alimentaires artisanales (jambons, salaisons, plats cuisinés, épicerie) et des accessoires. Les photographies et descriptifs sont les plus fidèles possibles mais ne sauraient engager le Vendeur, s'agissant de produits artisanaux dont l'aspect et le poids peuvent légèrement varier. Les produits sont proposés dans la limite des stocks disponibles."
         )
       ),
-      h2("Article 6 — Garanties"),
-      para(txt("[À COMPLÉTER]"))
+      h2("Article 4 — Prix"),
+      para(
+        txt(
+          "Les prix sont indiqués en euros, toutes taxes comprises (TVA 5,5 % sur les denrées alimentaires, 20 % sur les accessoires), hors frais de livraison précisés avant validation de la commande. Le Vendeur se réserve le droit de modifier ses prix à tout moment, les produits étant facturés au tarif en vigueur lors de la validation de la commande."
+        )
+      ),
+      h2("Article 5 — Commande"),
+      para(
+        txt(
+          "Le Client sélectionne ses produits, vérifie le détail de son panier, renseigne ses coordonnées puis valide sa commande après acceptation des présentes CGV. La vente est conclue à la confirmation de commande adressée par courriel. Le Vendeur se réserve le droit d'annuler toute commande en cas de litige antérieur ou de motif légitime."
+        )
+      ),
+      h2("Article 6 — Paiement"),
+      para(
+        txt(
+          "Le paiement s'effectue en ligne par carte bancaire au moment de la commande, via notre prestataire sécurisé Stripe. Aucune donnée de carte n'est conservée par le Vendeur. La commande n'est traitée qu'après confirmation du paiement."
+        )
+      ),
+      h2("Article 7 — Livraison et retrait"),
+      para(
+        txt(
+          "Les commandes sont livrées en France métropolitaine, au choix : livraison réfrigérée Chronofresh (produits frais, 24–48 h), livraison Colissimo (produits secs, 48–72 h), ou retrait gratuit à l'atelier de Laguinge. Tout panier contenant un produit frais est expédié en chaîne du froid. Les frais de port sont offerts dès 50 € d'achat. Les délais sont indicatifs ; le transfert des risques intervient à la remise du colis au Client."
+        )
+      ),
+      h2("Article 8 — Droit de rétractation"),
+      para(
+        txt(
+          "Conformément à l'article L.221-28 3° du Code de la consommation, le droit de rétractation ne s'applique pas aux denrées alimentaires périssables. Pour les produits non périssables (accessoires), le Client dispose d'un délai de 14 jours à compter de la réception pour se rétracter, en retournant le produit neuf et non utilisé, les frais de retour restant à sa charge ; le remboursement intervient sous 14 jours après réception du retour."
+        )
+      ),
+      h2("Article 9 — Garanties légales"),
+      para(
+        txt(
+          "Indépendamment de toute garantie commerciale, le Vendeur reste tenu de la garantie légale de conformité (articles L.217-3 et suivants du Code de la consommation) et de la garantie des vices cachés (articles 1641 et suivants du Code civil)."
+        )
+      ),
+      h2("Article 10 — Réclamations et service client"),
+      para(
+        txt("Toute réclamation peut être adressée à "),
+        link(`mailto:${COMPANY.email}`, COMPANY.email),
+        txt(
+          ". En cas de produit non conforme ou endommagé au transport, le signaler sous 48 h avec photographies à l'appui."
+        )
+      ),
+      h2("Article 11 — Médiation de la consommation"),
+      para(
+        txt(
+          "Conformément à l'article L.612-1 du Code de la consommation, le Client peut recourir gratuitement à un médiateur de la consommation : "
+        ),
+        txt(todo("", "nom et coordonnées du médiateur agréé"))
+      ),
+      h2("Article 12 — Données personnelles"),
+      para(
+        txt("Le traitement des données est décrit dans notre "),
+        link("/fr/politique-confidentialite", "politique de confidentialité"),
+        txt(".")
+      ),
+      h2("Article 13 — Droit applicable et litiges"),
+      para(
+        txt(
+          "Les présentes CGV sont soumises au droit français. À défaut de résolution amiable, tout litige relève des tribunaux français compétents."
+        )
+      )
     ) as Record<string, unknown>,
     publish: true,
   },
@@ -592,47 +685,62 @@ const SEEDS = (locale: string): SeedPage[] => [
       "Conforme RGPD : collecte, finalité, durée de conservation, droits, contact DPO.",
     content: doc(
       callout(
-        "warning",
-        "CONTENU À FOURNIR",
+        "note",
+        "Projet — à faire valider",
         para(
           txt(
-            "La politique de confidentialité définitive sera rédigée par notre DPO avant la mise en production."
+            "Rédaction de référence conforme au RGPD. À faire relire et compléter (durées exactes, outils analytics réellement utilisés) avant la mise en production."
           )
         )
       ),
       h2("Responsable du traitement"),
       para(
         txt(
-          "Maison Lehena SAS, 1 rue du Marché, 64200 Biarritz. Contact DPO : "
+          `${COMPANY.legalName}, ${COMPANY.address}. Contact données personnelles : `
         ),
-        link("mailto:rgpd@lehena.com", "rgpd@lehena.com")
+        link(`mailto:${COMPANY.privacyEmail}`, COMPANY.privacyEmail),
+        txt(".")
       ),
       h2("Données collectées"),
       ul([
-        "Identité (nom, prénom, adresse, téléphone, email)",
-        "Données de paiement (traitées par Stripe, non stockées par nous)",
-        "Historique de commande",
-        "Données de navigation (cookies — voir bannière)",
+        "Identité et coordonnées (nom, prénom, adresse, téléphone, email)",
+        "Données de paiement (traitées par notre prestataire Stripe — jamais stockées par nous)",
+        "Historique et détail des commandes",
+        "Données de navigation et cookies (voir la bannière de consentement)",
       ]),
-      h2("Finalité du traitement"),
+      h2("Finalités et bases légales"),
       ul([
-        "Exécution du contrat de vente",
-        "Gestion de la relation client",
-        "Envoi de la newsletter (consentement explicite)",
-        "Statistiques de fréquentation (anonymisées)",
+        "Exécution du contrat de vente et gestion des commandes (exécution du contrat)",
+        "Relation et service client (intérêt légitime)",
+        "Envoi de la newsletter (consentement explicite, révocable à tout moment)",
+        "Mesure d'audience du site (consentement / intérêt légitime selon l'outil)",
+        "Respect des obligations comptables et fiscales (obligation légale)",
       ]),
+      h2("Destinataires & sous-traitants"),
+      para(
+        txt(
+          "Vos données ne sont jamais vendues. Elles sont partagées uniquement avec nos sous-traitants techniques : hébergeur ("
+        ),
+        txt(`${COMPANY.host}`),
+        txt(
+          "), prestataire de paiement (Stripe), transporteurs (Chronofresh, Colissimo) pour la seule exécution de la commande."
+        )
+      ),
       h2("Durée de conservation"),
       para(
         txt(
-          "Données client : durée de la relation contractuelle + 5 ans. Newsletter : jusqu'au retrait du consentement."
+          "Données client et commandes : durée de la relation contractuelle puis archivage légal (jusqu'à 10 ans pour les pièces comptables). Newsletter : jusqu'au retrait du consentement. Cookies : 13 mois maximum."
         )
       ),
       h2("Vos droits"),
       para(
         txt(
-          "Vous disposez d'un droit d'accès, de rectification, de portabilité, et d'opposition au traitement. Pour les exercer : "
+          "Vous disposez d'un droit d'accès, de rectification, d'effacement, de portabilité, de limitation et d'opposition. Pour les exercer, écrivez à "
         ),
-        link("mailto:rgpd@lehena.com", "rgpd@lehena.com")
+        link(`mailto:${COMPANY.privacyEmail}`, COMPANY.privacyEmail),
+        txt(
+          ". Vous pouvez également introduire une réclamation auprès de la CNIL (www.cnil.fr)."
+        )
       )
     ) as Record<string, unknown>,
     publish: true,
@@ -658,11 +766,11 @@ const SEEDS = (locale: string): SeedPage[] => [
       h3("Par email"),
       para(
         txt("Service client : "),
-        link("mailto:contact@lehena.com", "contact@lehena.com"),
+        link("mailto:contact@lehena.fr", "contact@lehena.fr"),
         txt(" — Presse : "),
-        link("mailto:presse@lehena.com", "presse@lehena.com"),
+        link("mailto:presse@lehena.fr", "presse@lehena.fr"),
         txt(" — Réservations atelier : "),
-        link("mailto:visites@lehena.com", "visites@lehena.com")
+        link("mailto:visites@lehena.fr", "visites@lehena.fr")
       ),
       h3("Par téléphone"),
       para(
@@ -673,7 +781,7 @@ const SEEDS = (locale: string): SeedPage[] => [
       h3("À l'atelier"),
       para(
         txt(
-          "1 rue du Marché, 64200 Biarritz. Boutique ouverte le samedi de 9 h à 13 h (visite guidée uniquement sur rendez-vous)."
+          "Atelier & boutique : Bourg, 64470 Laguinge (Soule, Pays Basque). Ouverte le samedi de 9 h à 13 h (visite guidée uniquement sur rendez-vous)."
         )
       )
     ) as Record<string, unknown>,

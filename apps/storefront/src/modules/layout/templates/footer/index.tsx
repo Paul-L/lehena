@@ -1,3 +1,4 @@
+import { siretTvaFooterLine } from "@lib/company"
 import {
   LhAward,
   LhLeaf,
@@ -342,7 +343,7 @@ export default function Footer() {
         <span>
           © {new Date().getFullYear()} Maison Lehena · Tous droits réservés
         </span>
-        <span>SIRET à venir · TVA FR à venir</span>
+        <span>{siretTvaFooterLine()}</span>
       </div>
     </footer>
   )
