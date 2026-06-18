@@ -77,22 +77,26 @@ export class ColissimoFulfillmentService extends AbstractFulfillmentProviderServ
         itAny.subtotal ?? (itAny.unit_price ?? 0) * (itAny.quantity ?? 1)
       return sum + subtotal
     }, 0)
-    if (cartSubtotal >= freeShippingThresholdCents()) {
+    // Medusa v2 stores money in MAJOR units (euros) like our product prices.
+    // The grid + threshold helpers are in cents, so divide by 100 at the
+    // boundary. (Returning cents produced a "690,00 €" shipping line.)
+    const thresholdEur = freeShippingThresholdCents() / 100
+    if (cartSubtotal >= thresholdEur) {
       return {
         calculated_amount: 0,
         is_calculated_price_tax_inclusive: true,
       }
     }
 
-    const amount = colissimoPriceCents(zone, totalGrams)
-    if (amount === null) {
+    const amountCents = colissimoPriceCents(zone, totalGrams)
+    if (amountCents === null) {
       return {
-        calculated_amount: 99900,
+        calculated_amount: 999,
         is_calculated_price_tax_inclusive: true,
       }
     }
     return {
-      calculated_amount: amount,
+      calculated_amount: amountCents / 100,
       is_calculated_price_tax_inclusive: true,
     }
   }

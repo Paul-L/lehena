@@ -41,14 +41,35 @@ export function freeShippingApplies(cart: {
  */
 interface LineItemWithProfile {
   product?: {
-    shipping_profile?: { name?: string | null } | null
+    shipping_profile?: { id?: string | null; name?: string | null } | null
     type?: { value?: string | null } | null
   } | null
   variant?: {
     product?: {
-      shipping_profile?: { name?: string | null } | null
+      shipping_profile?: { id?: string | null; name?: string | null } | null
     } | null
   } | null
+}
+
+/**
+ * The set of shipping-profile IDs required by the cart's line items. Medusa's
+ * cart-completion validation demands a shipping method for EACH of these
+ * profiles, so the storefront must only offer options whose profile is in
+ * this set — otherwise the customer can pick an incompatible carrier and the
+ * order fails at `placeOrder` with "shipping profiles … not satisfied".
+ */
+export function requiredShippingProfileIds(
+  items: LineItemWithProfile[]
+): Set<string> {
+  const ids = new Set<string>()
+  for (const it of items) {
+    const id =
+      it.variant?.product?.shipping_profile?.id ??
+      it.product?.shipping_profile?.id ??
+      null
+    if (id) ids.add(id)
+  }
+  return ids
 }
 
 export function classifyCartProfiles(items: LineItemWithProfile[]): {
@@ -76,13 +97,42 @@ export function classifyCartProfiles(items: LineItemWithProfile[]): {
  * the Chronofresh-mixed coverage options that only exist for the mixed case.
  */
 export function filterShippingOptionsForCart<
-  T extends { provider_id?: string | null; name?: string | null },
->(options: T[], isMixed: boolean): T[] {
-  if (isMixed) {
-    return options.filter((o) => o.provider_id === "chronofresh_chronofresh")
+  T extends {
+    provider_id?: string | null
+    name?: string | null
+    shipping_profile_id?: string | null
+  },
+>(
+  options: T[],
+  opts: { isMixed: boolean; requiredProfileIds?: Set<string> }
+): T[] {
+  const { isMixed, requiredProfileIds } = opts
+
+  // 1) Keep only options whose profile the cart actually requires. This is
+  //    the exact rule Medusa enforces at completion, so a filtered list can
+  //    never lead to "shipping profiles not satisfied". (When the profile set
+  //    is empty — e.g. it wasn't expanded — we skip this guard and fall back
+  //    to the heuristics below to avoid hiding everything.)
+  let filtered = options
+  if (requiredProfileIds && requiredProfileIds.size > 0) {
+    filtered = filtered.filter(
+      (o) =>
+        o.shipping_profile_id != null &&
+        requiredProfileIds.has(o.shipping_profile_id)
+    )
   }
-  // Solo-ambient (or solo-fresh): hide the "Chronofresh ... (mixed)" options.
-  return options.filter((o) => !o.name?.includes("(mixed)"))
+
+  // 2) Mixed cart (fresh + ambient): force the whole order onto the cold
+  //    chain — Chronofresh only.
+  if (isMixed) {
+    return filtered.filter(
+      (o) => o.provider_id === "chronofresh_chronofresh"
+    )
+  }
+
+  // 3) Solo cart: hide the "Chronofresh … (mixed)" coverage options that only
+  //    make sense for mixed carts.
+  return filtered.filter((o) => !o.name?.includes("(mixed)"))
 }
 
 export interface VatBreakdown {

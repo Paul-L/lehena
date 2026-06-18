@@ -97,26 +97,31 @@ export class ChronofreshFulfillmentService extends AbstractFulfillmentProviderSe
         itAny.subtotal ?? (itAny.unit_price ?? 0) * (itAny.quantity ?? 1)
       return sum + subtotal
     }, 0)
-    const threshold = freeShippingThresholdCents()
-    if (cartSubtotal >= threshold) {
+    // Medusa v2 stores money in MAJOR units (euros) — same as our product
+    // prices (320 = 320 €). The pricing grid + free-shipping helper are kept
+    // in cents for readability, so divide by 100 at the boundary before
+    // comparing / returning. (Cf. the recurring price-cents anti-pattern:
+    // returning cents here produced a "1 500,00 €" shipping line.)
+    const thresholdEur = freeShippingThresholdCents() / 100
+    if (cartSubtotal >= thresholdEur) {
       return {
         calculated_amount: 0,
         is_calculated_price_tax_inclusive: true,
       }
     }
 
-    const amount = chronofreshPriceCents(zone, totalGrams)
-    if (amount === null) {
+    const amountCents = chronofreshPriceCents(zone, totalGrams)
+    if (amountCents === null) {
       // OUT_OF_RANGE — Medusa expects a number; we surface a deliberately
       // very high price (€999) so the option is visible but obviously
       // unusable. The storefront filter should hide it for these countries.
       return {
-        calculated_amount: 99900,
+        calculated_amount: 999,
         is_calculated_price_tax_inclusive: true,
       }
     }
     return {
-      calculated_amount: amount,
+      calculated_amount: amountCents / 100,
       is_calculated_price_tax_inclusive: true,
     }
   }

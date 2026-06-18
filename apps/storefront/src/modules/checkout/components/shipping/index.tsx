@@ -7,6 +7,7 @@ import { convertToLocale } from "@lib/util/money"
 import {
   classifyCartProfiles,
   filterShippingOptionsForCart,
+  requiredShippingProfileIds,
 } from "@lib/util/shipping-rules"
 import { Loader } from "@medusajs/icons"
 import { type HttpTypes } from "@medusajs/types"
@@ -84,6 +85,14 @@ const Shipping: React.FC<ShippingProps> = ({
     [cart.items]
   )
 
+  const requiredProfileIds = useMemo(
+    () =>
+      requiredShippingProfileIds(
+        (cart.items ?? []) as Parameters<typeof requiredShippingProfileIds>[0]
+      ),
+    [cart.items]
+  )
+
   const _rawShippingMethods = availableShippingMethods?.filter(
     (sm) =>
       (
@@ -95,11 +104,11 @@ const Shipping: React.FC<ShippingProps> = ({
 
   const _shippingMethods = useMemo(
     () =>
-      filterShippingOptionsForCart(
-        _rawShippingMethods ?? [],
-        profiles.is_mixed
-      ),
-    [_rawShippingMethods, profiles.is_mixed]
+      filterShippingOptionsForCart(_rawShippingMethods ?? [], {
+        isMixed: profiles.is_mixed,
+        requiredProfileIds,
+      }),
+    [_rawShippingMethods, profiles.is_mixed, requiredProfileIds]
   )
 
   const _pickupMethods = availableShippingMethods?.filter(
