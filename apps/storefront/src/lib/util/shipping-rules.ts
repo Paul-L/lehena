@@ -122,17 +122,56 @@ export function filterShippingOptionsForCart<
     )
   }
 
-  // 2) Mixed cart (fresh + ambient): force the whole order onto the cold
+  // 2) "(mixed)" Chronofresh options are coverage-only siblings, never a
+  //    primary choice: they exist to cover the ambient profile of a mixed
+  //    cart and are attached automatically at selection time (see
+  //    resolveCoveringOptionIds). Hide them from the visible list in all cases.
+  filtered = filtered.filter((o) => !o.name?.includes("(mixed)"))
+
+  // 3) Mixed cart (fresh + ambient): force the whole order onto the cold
   //    chain — Chronofresh only.
   if (isMixed) {
-    return filtered.filter(
-      (o) => o.provider_id === "chronofresh_chronofresh"
-    )
+    return filtered.filter((o) => o.provider_id === "chronofresh_chronofresh")
   }
 
-  // 3) Solo cart: hide the "Chronofresh … (mixed)" coverage options that only
-  //    make sense for mixed carts.
-  return filtered.filter((o) => !o.name?.includes("(mixed)"))
+  return filtered
+}
+
+/**
+ * Given the option the customer picked, returns the full set of shipping-option
+ * ids needed to cover EVERY required profile — the selection plus, for each
+ * still-uncovered profile, a sibling option from the same carrier
+ * (`provider_id`). This is how a mixed cart gets both a fresh Chronofresh
+ * method and its hidden ambient "(mixed)" counterpart in one bulk call.
+ */
+export function resolveCoveringOptionIds<
+  T extends {
+    id: string
+    provider_id?: string | null
+    shipping_profile_id?: string | null
+  },
+>(selected: T, all: T[], requiredProfileIds: Set<string>): string[] {
+  const ids = [selected.id]
+  const covered = new Set<string>()
+  if (selected.shipping_profile_id) {
+    covered.add(selected.shipping_profile_id)
+  }
+  for (const profileId of Array.from(requiredProfileIds)) {
+    if (covered.has(profileId)) {
+      continue
+    }
+    const sibling = all.find(
+      (o) =>
+        o.id !== selected.id &&
+        o.provider_id === selected.provider_id &&
+        o.shipping_profile_id === profileId
+    )
+    if (sibling) {
+      ids.push(sibling.id)
+      covered.add(profileId)
+    }
+  }
+  return ids
 }
 
 export interface VatBreakdown {

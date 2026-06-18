@@ -1,13 +1,14 @@
 "use client"
 
 import { Radio, RadioGroup } from "@headlessui/react"
-import { setShippingMethod } from "@lib/data/cart"
+import { setShippingMethods } from "@lib/data/cart"
 import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
 import { convertToLocale } from "@lib/util/money"
 import {
   classifyCartProfiles,
   filterShippingOptionsForCart,
   requiredShippingProfileIds,
+  resolveCoveringOptionIds,
 } from "@lib/util/shipping-rules"
 import { Loader } from "@medusajs/icons"
 import { type HttpTypes } from "@medusajs/types"
@@ -111,16 +112,49 @@ const Shipping: React.FC<ShippingProps> = ({
     [_rawShippingMethods, profiles.is_mixed, requiredProfileIds]
   )
 
-  const _pickupMethods = availableShippingMethods?.filter(
-    (sm) =>
-      (
-        sm as unknown as {
-          service_zone?: { fulfillment_set?: { type?: string } }
-        }
-      ).service_zone?.fulfillment_set?.type === "pickup"
-  )
+  // Pickup options are exposed by the backend on BOTH shipping profiles
+  // (fresh + ambient) so any cart — including a mixed jambon + accessoire
+  // cart — can be collected. Keep only those the cart actually requires,
+  // otherwise a fresh-only cart would also list the ambient pickup and
+  // selecting it would fail completion ("profiles not satisfied"). Fall back
+  // to all when profiles aren't expanded.
+  const _pickupMethods = availableShippingMethods
+    ?.filter(
+      (sm) =>
+        (
+          sm as unknown as {
+            service_zone?: { fulfillment_set?: { type?: string } }
+          }
+        ).service_zone?.fulfillment_set?.type === "pickup"
+    )
+    ?.filter(
+      (sm) =>
+        requiredProfileIds.size === 0 ||
+        (sm.shipping_profile_id != null &&
+          requiredProfileIds.has(sm.shipping_profile_id))
+    )
 
   const hasPickupOptions = !!_pickupMethods?.length
+
+  // One physical store backs several pickup options (one per profile).
+  // Collapse to unique locations for display; selecting a location sets a
+  // pickup method for every required profile (see handleSelectPickup).
+  const _pickupLocations = (() => {
+    const seen = new Set<string>()
+    const out: NonNullable<typeof _pickupMethods> = []
+    for (const m of _pickupMethods ?? []) {
+      const setId =
+        (
+          m as unknown as {
+            service_zone?: { fulfillment_set?: { id?: string } }
+          }
+        ).service_zone?.fulfillment_set?.id ?? m.id
+      if (seen.has(setId)) continue
+      seen.add(setId)
+      out.push(m)
+    }
+    return out
+  })()
 
   useEffect(() => {
     setIsLoadingPrices(true)
@@ -168,6 +202,27 @@ const Shipping: React.FC<ShippingProps> = ({
       setShowPickupOptions(PICKUP_OPTION_OFF)
     }
 
+    // Cover EVERY required shipping profile in a single bulk call. Pickup sets
+    // all (already profile-filtered) pickup methods; delivery sets the picked
+    // option plus, for a mixed cart, its same-carrier sibling for the other
+    // profile (e.g. Chronofresh France + Chronofresh France (mixed)).
+    let optionIds: string[]
+    if (variant === "pickup") {
+      optionIds = (_pickupMethods ?? []).map((m) => m.id)
+    } else {
+      const option = (availableShippingMethods ?? []).find((o) => o.id === id)
+      optionIds = option
+        ? resolveCoveringOptionIds(
+            option,
+            availableShippingMethods ?? [],
+            requiredProfileIds
+          )
+        : [id]
+    }
+    if (optionIds.length === 0) {
+      optionIds = [id]
+    }
+
     let currentId: string | null = null
     setIsLoading(true)
     setShippingMethodId((prev) => {
@@ -175,7 +230,7 @@ const Shipping: React.FC<ShippingProps> = ({
       return id
     })
 
-    await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
+    await setShippingMethods({ cartId: cart.id, optionIds })
       .catch((err) => {
         setShippingMethodId(currentId)
 
@@ -186,6 +241,20 @@ const Shipping: React.FC<ShippingProps> = ({
       })
   }
 
+  // In-store pickup. `_pickupMethods` is already filtered to the cart's
+  // required profiles, so for a single-profile cart this sets the one correct
+  // (right-profile) pickup method. NB: like delivery, the store endpoint keeps
+  // a single shipping method, so a *mixed* cart can't cover both profiles —
+  // a pre-existing platform limitation tracked separately.
+  const handleSelectPickup = async () => {
+    const id = _pickupMethods?.find((m) => !m.insufficient_inventory)?.id
+    if (id) {
+      await handleSetShippingMethod(id, "pickup")
+    } else {
+      setShowPickupOptions(PICKUP_OPTION_ON)
+    }
+  }
+
   useEffect(() => {
     setError(null)
   }, [isOpen])
@@ -193,7 +262,10 @@ const Shipping: React.FC<ShippingProps> = ({
   const done = !isOpen && (cart.shipping_methods?.length ?? 0) > 0
   const locked = !isOpen && cart.shipping_methods?.length === 0
 
-  const cardStyle = (selected: boolean, disabled = false): React.CSSProperties => ({
+  const cardStyle = (
+    selected: boolean,
+    disabled = false
+  ): React.CSSProperties => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -223,9 +295,19 @@ const Shipping: React.FC<ShippingProps> = ({
   ): { desc?: string; eta?: string } => {
     const n = (name ?? "").toLowerCase()
     if (n.includes("express") || n.includes("j+1") || n.includes("13h"))
-      return { desc: "Livraison réfrigérée le lendemain matin.", eta: "J+1 avant 13 h" }
-    if (n.includes("chronofresh") || n.includes("frais") || n.includes("réfrig"))
-      return { desc: "Livraison réfrigérée à domicile, jours ouvrés.", eta: "24–48 h" }
+      return {
+        desc: "Livraison réfrigérée le lendemain matin.",
+        eta: "J+1 avant 13 h",
+      }
+    if (
+      n.includes("chronofresh") ||
+      n.includes("frais") ||
+      n.includes("réfrig")
+    )
+      return {
+        desc: "Livraison réfrigérée à domicile, jours ouvrés.",
+        eta: "24–48 h",
+      }
     if (n.includes("colissimo") || n.includes("poste"))
       return { desc: "Colis suivi La Poste, à domicile.", eta: "48–72 h" }
     if (n.includes("relais") || n.includes("pickup") || n.includes("point"))
@@ -277,22 +359,12 @@ const Shipping: React.FC<ShippingProps> = ({
                 {hasPickupOptions && (
                   <RadioGroup
                     value={showPickupOptions}
-                    onChange={(value) => {
-                      const id = _pickupMethods.find(
-                        (option) => !option.insufficient_inventory
-                      )?.id
-
-                      if (id) {
-                        handleSetShippingMethod(id, "pickup")
-                      }
-                    }}
+                    onChange={() => handleSelectPickup()}
                   >
                     <Radio
                       value={PICKUP_OPTION_ON}
                       data-testid="delivery-option-radio"
-                      style={cardStyle(
-                        showPickupOptions === PICKUP_OPTION_ON
-                      )}
+                      style={cardStyle(showPickupOptions === PICKUP_OPTION_ON)}
                     >
                       <div
                         style={{
@@ -415,13 +487,10 @@ const Shipping: React.FC<ShippingProps> = ({
                 <div className="pb-8 md:pt-0 pt-2">
                   <RadioGroup
                     value={shippingMethodId}
-                    onChange={(v) => {
-                      if (v) {
-                        return handleSetShippingMethod(v, "pickup")
-                      }
-                    }}
+                    onChange={() => handleSelectPickup()}
                   >
-                    {_pickupMethods?.map((option) => {
+                    {_pickupLocations.map((option) => {
+                      const selected = showPickupOptions === PICKUP_OPTION_ON
                       return (
                         <Radio
                           key={option.id}
@@ -430,7 +499,7 @@ const Shipping: React.FC<ShippingProps> = ({
                           data-testid="delivery-option-radio"
                           style={{
                             ...cardStyle(
-                              option.id === shippingMethodId,
+                              selected,
                               option.insufficient_inventory
                             ),
                             alignItems: "flex-start",
@@ -443,11 +512,12 @@ const Shipping: React.FC<ShippingProps> = ({
                               gap: 14,
                             }}
                           >
-                            <MedusaRadio
-                              checked={option.id === shippingMethodId}
-                            />
+                            <MedusaRadio checked={selected} />
                             <div
-                              style={{ display: "flex", flexDirection: "column" }}
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                              }}
                             >
                               <span style={methodLabelStyle}>
                                 {option.name}
@@ -483,11 +553,21 @@ const Shipping: React.FC<ShippingProps> = ({
                               })()}
                             </div>
                           </div>
-                          <span style={priceStyle}>
-                            {convertToLocale({
-                              amount: option.amount!,
-                              currency_code: cart?.currency_code,
-                            })}
+                          <span
+                            style={{
+                              ...priceStyle,
+                              color:
+                                option.amount === 0
+                                  ? "var(--olive)"
+                                  : "var(--ink)",
+                            }}
+                          >
+                            {option.amount === 0
+                              ? "Gratuit"
+                              : convertToLocale({
+                                  amount: option.amount!,
+                                  currency_code: cart?.currency_code,
+                                })}
                           </span>
                         </Radio>
                       )

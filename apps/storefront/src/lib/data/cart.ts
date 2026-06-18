@@ -278,6 +278,35 @@ export async function setShippingMethod({
     .catch(medusaError)
 }
 
+/**
+ * Sets several shipping methods at once via the custom bulk route so a mixed
+ * cart can satisfy every required shipping profile (fresh + ambient). The core
+ * single-option route replaces all methods, which can never cover two profiles.
+ */
+export async function setShippingMethods({
+  cartId,
+  optionIds,
+}: {
+  cartId: string
+  optionIds: string[]
+}) {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  return sdk.client
+    .fetch(`/store/carts/${cartId}/shipping-methods-bulk`, {
+      method: "POST",
+      body: { option_ids: optionIds },
+      headers,
+    })
+    .then(async () => {
+      const cartCacheTag = await getCacheTag("carts")
+      revalidateTag(cartCacheTag)
+    })
+    .catch(medusaError)
+}
+
 export async function initiatePaymentSession(
   cart: HttpTypes.StoreCart,
   data: HttpTypes.StoreInitializePaymentSession
