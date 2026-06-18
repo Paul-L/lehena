@@ -27,7 +27,7 @@ export default function ForgotPasswordForm() {
   if (done) {
     return (
       <div className="max-w-sm w-full">
-        <h1 className="text-large-semi uppercase mb-4">
+        <h1 className="lh-h-page mb-4">
           Vérifiez votre boîte mail
         </h1>
         <p className="text-sm text-ui-fg-subtle leading-relaxed">
@@ -47,7 +47,7 @@ export default function ForgotPasswordForm() {
 
   return (
     <div className="max-w-sm w-full flex flex-col items-center">
-      <h1 className="text-large-semi uppercase mb-6">Mot de passe oublié</h1>
+      <h1 className="lh-h-page mb-6">Mot de passe oublié</h1>
       <p className="text-center text-sm text-ui-fg-subtle mb-8">
         Entrez votre email pour recevoir un lien de réinitialisation.
       </p>

@@ -52,7 +52,7 @@ export default function MagicLinkCallback({ token }: Props) {
   if (state === "verifying") {
     return (
       <div className="max-w-sm w-full">
-        <h1 className="text-large-semi uppercase mb-4">Connexion en cours…</h1>
+        <h1 className="lh-h-page mb-4">Connexion en cours…</h1>
         <p className="text-sm text-ui-fg-subtle">
           Veuillez patienter, nous vérifions votre lien.
         </p>
@@ -63,7 +63,7 @@ export default function MagicLinkCallback({ token }: Props) {
   if (state === "success") {
     return (
       <div className="max-w-sm w-full">
-        <h1 className="text-large-semi uppercase mb-4">Connecté</h1>
+        <h1 className="lh-h-page mb-4">Connecté</h1>
         <p className="text-sm text-ui-fg-subtle">
           Redirection vers votre espace client…
         </p>
@@ -73,7 +73,7 @@ export default function MagicLinkCallback({ token }: Props) {
 
   return (
     <div className="max-w-sm w-full">
-      <h1 className="text-large-semi uppercase mb-4">Lien invalide</h1>
+      <h1 className="lh-h-page mb-4">Lien invalide</h1>
       <p className="text-sm text-ui-fg-subtle leading-relaxed">
         {error ?? "Ce lien a expiré ou a déjà été utilisé."}
       </p>

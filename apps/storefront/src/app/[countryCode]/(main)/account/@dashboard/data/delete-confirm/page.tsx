@@ -15,7 +15,7 @@ export default async function DeleteConfirmPage({
   const { token } = await searchParams
   return (
     <div className="w-full max-w-2xl">
-      <h1 className="text-2xl-semi mb-4">Confirmer la suppression</h1>
+      <h1 className="lh-h-page mb-4">Confirmer la suppression</h1>
       <GdprDeleteConfirm token={token ?? ""} />
     </div>
   )

@@ -22,7 +22,7 @@ export default async function MySubscriptionsPage() {
   if (subs.length === 0) {
     return (
       <div className="w-full">
-        <h1 className="text-2xl-semi mb-4">Mes abonnements</h1>
+        <h1 className="lh-h-page mb-4">Mes abonnements</h1>
         <p className="text-sm text-ui-fg-subtle max-w-2xl mb-6">
           Vous n&apos;avez pas encore d&apos;abonnement actif. Notre box
           mensuelle est faite pour vous si vous voulez goûter régulièrement à la
@@ -51,7 +51,7 @@ export default async function MySubscriptionsPage() {
   return (
     <div className="w-full">
       <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Mes abonnements</h1>
+        <h1 className="lh-h-page">Mes abonnements</h1>
         <p className="text-sm text-ui-fg-subtle max-w-2xl">
           Mettez en pause un envoi à venir, reprenez à votre rythme, ou annulez
           sans frais. La carte de paiement enregistrée pour l&apos;abonnement

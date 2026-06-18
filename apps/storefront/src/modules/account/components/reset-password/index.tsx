@@ -20,7 +20,7 @@ export default function ResetPasswordForm({ token, email }: Props) {
   if (!token) {
     return (
       <div className="max-w-sm w-full">
-        <h1 className="text-large-semi uppercase mb-4">Lien invalide</h1>
+        <h1 className="lh-h-page mb-4">Lien invalide</h1>
         <p className="text-sm text-ui-fg-subtle leading-relaxed">
           Ce lien ne contient pas de jeton valide.
         </p>
@@ -54,7 +54,7 @@ export default function ResetPasswordForm({ token, email }: Props) {
   if (done) {
     return (
       <div className="max-w-sm w-full">
-        <h1 className="text-large-semi uppercase mb-4">
+        <h1 className="lh-h-page mb-4">
           Mot de passe mis à jour
         </h1>
         <p className="text-sm text-ui-fg-subtle leading-relaxed">
@@ -72,7 +72,7 @@ export default function ResetPasswordForm({ token, email }: Props) {
 
   return (
     <div className="max-w-sm w-full flex flex-col items-center">
-      <h1 className="text-large-semi uppercase mb-6">Nouveau mot de passe</h1>
+      <h1 className="lh-h-page mb-6">Nouveau mot de passe</h1>
       {email ? (
         <p className="text-center text-sm text-ui-fg-subtle mb-6">
           Pour <strong>{email}</strong>

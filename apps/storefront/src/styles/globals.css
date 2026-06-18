@@ -73,6 +73,8 @@ html.lehena, html.lehena body {
 
 .serif { font-family: var(--serif); }
 .serif-display { font-family: var(--serif-display); font-weight: 400; letter-spacing: -0.01em; }
+/* Titre de page (espace client, flux secondaires) — remplace les têtes Medusa */
+.lh-h-page { font-family: var(--serif-display); font-weight: 400; font-size: clamp(28px, 4vw, 34px); line-height: 1.02; letter-spacing: -0.015em; color: var(--ink); }
 .sans { font-family: var(--sans); }
 .mono { font-family: var(--mono); font-size: var(--step--2); letter-spacing: 0.08em; text-transform: uppercase; }
 

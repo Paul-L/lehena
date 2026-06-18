@@ -6,7 +6,6 @@ import {
 } from "@lib/data/customer"
 import useToggleState from "@lib/hooks/use-toggle-state"
 import { type HttpTypes } from "@medusajs/types"
-import { Button, Heading } from "@medusajs/ui"
 import CountrySelect from "@modules/checkout/components/country-select"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
 import Input from "@modules/common/components/input"
@@ -182,9 +181,7 @@ const EditAddress: React.FC<EditAddressProps> = ({ region, address }) => {
       </article>
 
       <Modal isOpen={state} close={close} data-testid="edit-address-modal">
-        <Modal.Title>
-          <Heading className="mb-2">Modifier l’adresse</Heading>
-        </Modal.Title>
+        <Modal.Title>Modifier l’adresse</Modal.Title>
         <form action={formAction}>
           <input type="hidden" name="addressId" value={address.id} />
           <Modal.Body>
@@ -271,22 +268,24 @@ const EditAddress: React.FC<EditAddressProps> = ({ region, address }) => {
               />
             </div>
             {formState.error && (
-              <div className="text-rose-500 text-small-regular py-2">
+              <div
+                className="py-2"
+                style={{ color: "var(--rouge)", fontFamily: "var(--serif)", fontSize: 14 }}
+              >
                 {formState.error}
               </div>
             )}
           </Modal.Body>
           <Modal.Footer>
             <div className="flex gap-3 mt-6">
-              <Button
+              <button
                 type="reset"
-                variant="secondary"
                 onClick={close}
-                className="h-10"
+                className="btn btn-ghost"
                 data-testid="cancel-button"
               >
-                Cancel
-              </Button>
+                Annuler
+              </button>
               <SubmitButton data-testid="save-button">Enregistrer</SubmitButton>
             </div>
           </Modal.Footer>

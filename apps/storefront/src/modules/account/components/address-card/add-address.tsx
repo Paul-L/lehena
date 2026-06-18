@@ -4,7 +4,6 @@ import { addCustomerAddress } from "@lib/data/customer"
 import useToggleState from "@lib/hooks/use-toggle-state"
 import { Plus } from "@medusajs/icons"
 import { type HttpTypes } from "@medusajs/types"
-import { Button, Heading } from "@medusajs/ui"
 import CountrySelect from "@modules/checkout/components/country-select"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
 import Input from "@modules/common/components/input"
@@ -72,9 +71,7 @@ const AddAddress = ({
       </button>
 
       <Modal isOpen={state} close={close} data-testid="add-address-modal">
-        <Modal.Title>
-          <Heading className="mb-2">Ajouter une adresse</Heading>
-        </Modal.Title>
+        <Modal.Title>Ajouter une adresse</Modal.Title>
         <form action={formAction}>
           <Modal.Body>
             <div className="flex flex-col gap-y-2">
@@ -151,7 +148,8 @@ const AddAddress = ({
             </div>
             {formState.error && (
               <div
-                className="text-rose-500 text-small-regular py-2"
+                className="py-2"
+                style={{ color: "var(--rouge)", fontFamily: "var(--serif)", fontSize: 14 }}
                 data-testid="address-error"
               >
                 {formState.error}
@@ -160,15 +158,14 @@ const AddAddress = ({
           </Modal.Body>
           <Modal.Footer>
             <div className="flex gap-3 mt-6">
-              <Button
+              <button
                 type="reset"
-                variant="secondary"
                 onClick={close}
-                className="h-10"
+                className="btn btn-ghost"
                 data-testid="cancel-button"
               >
-                Cancel
-              </Button>
+                Annuler
+              </button>
               <SubmitButton data-testid="save-button">Enregistrer</SubmitButton>
             </div>
           </Modal.Footer>

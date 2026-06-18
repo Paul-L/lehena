@@ -20,7 +20,7 @@ export default async function WishlistPage({
   if (items.length === 0) {
     return (
       <div className="w-full">
-        <h1 className="text-2xl-semi mb-4">Ma liste d&apos;envies</h1>
+        <h1 className="lh-h-page mb-4">Ma liste d&apos;envies</h1>
         <p className="text-sm text-ui-fg-subtle max-w-2xl">
           Votre liste est vide. Parcourez la boutique et cliquez sur le cœur
           d&apos;un produit pour l&apos;ajouter.
@@ -40,7 +40,7 @@ export default async function WishlistPage({
 
   return (
     <div className="w-full">
-      <h1 className="text-2xl-semi mb-6">Ma liste d&apos;envies</h1>
+      <h1 className="lh-h-page mb-6">Ma liste d&apos;envies</h1>
       <WishlistGrid items={items} products={response.products} />
     </div>
   )
