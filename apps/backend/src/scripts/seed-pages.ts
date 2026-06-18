@@ -85,16 +85,16 @@ const callout = (
  * marker rather than inventing RCS / SIRET / TVA numbers.
  */
 const COMPANY = {
-  legalName: "Maison Lehena",
-  legalForm: "", // ex. "SAS au capital de 50 000 €"
-  siret: "", // 14 chiffres
-  vatNumber: "", // FR + 11 chiffres
-  rcs: "", // ex. "RCS Bayonne 000 000 000"
-  address: "Bourg, 64470 Laguinge (Pyrénées-Atlantiques), France",
+  legalName: "LEHENA",
+  legalForm: "Société par actions simplifiée (SAS) au capital de 1 000 €",
+  siret: "", // 14 chiffres = SIREN + NIC établissement — NIC manquant
+  vatNumber: "FR29849613435", // dérivée du SIREN (clé 29) — à confirmer compta
+  rcs: "RCS Pau 849 613 435",
+  address: "Le Bourg, 64470 Laguinge-Restoue (Pyrénées-Atlantiques), France",
   email: "contact@lehena.fr",
   privacyEmail: "rgpd@lehena.fr",
   phone: "", // ex. "05 59 00 00 00"
-  publicationDirector: "", // directeur·rice de la publication
+  publicationDirector: "M. Bernard Petit, Président",
   host: "OVH SAS — 2 rue Kellermann, 59100 Roubaix, France",
 }
 const todo = (value: string, hint: string) =>

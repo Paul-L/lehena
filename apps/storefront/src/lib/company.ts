@@ -8,20 +8,20 @@
  * the backend CMS legal pages (apps/backend/src/scripts/seed-pages.ts → COMPANY).
  */
 export const COMPANY = {
-  /** Raison sociale, e.g. "Maison Lehena". */
-  legalName: "Maison Lehena",
-  /** Forme + capital, e.g. "SAS au capital de 50 000 €". TODO réel. */
-  legalForm: "",
-  /** SIRET (14 chiffres). TODO réel. */
+  /** Raison sociale. */
+  legalName: "LEHENA",
+  /** Forme + capital. */
+  legalForm: "Société par actions simplifiée (SAS) au capital de 1 000 €",
+  /** SIRET (14 chiffres = SIREN + NIC établissement). TODO: NIC manquant. */
   siret: "",
-  /** TVA intracommunautaire (FR + 11 chiffres). TODO réel. */
-  vatNumber: "",
-  /** RCS, e.g. "RCS Bayonne 000 000 000". TODO réel. */
-  rcs: "",
+  /** TVA intracommunautaire — dérivée du SIREN (clé 29). À confirmer compta. */
+  vatNumber: "FR29849613435",
+  /** RCS + numéro (= SIREN). */
+  rcs: "RCS Pau 849 613 435",
   address: {
-    street: "Bourg",
+    street: "Le Bourg",
     postalCode: "64470",
-    city: "Laguinge",
+    city: "Laguinge-Restoue",
     region: "Pyrénées-Atlantiques",
     country: "France",
   },
@@ -31,9 +31,11 @@ export const COMPANY = {
   phone: "",
 } as const
 
-/** Footer line: real SIRET/TVA once filled, otherwise the "à venir" fallback. */
+/** Footer legal line: SIRET if known, else RCS; plus the VAT number. */
 export function siretTvaFooterLine(): string {
-  const siret = COMPANY.siret ? `SIRET ${COMPANY.siret}` : "SIRET à venir"
+  const id = COMPANY.siret
+    ? `SIRET ${COMPANY.siret}`
+    : COMPANY.rcs || "SIRET à venir"
   const tva = COMPANY.vatNumber ? `TVA ${COMPANY.vatNumber}` : "TVA FR à venir"
-  return `${siret} · ${tva}`
+  return `${id} · ${tva}`
 }
