@@ -1,6 +1,6 @@
 import { Disclosure } from "@headlessui/react"
 import useToggleState from "@lib/hooks/use-toggle-state"
-import { Badge, Button, clx } from "@medusajs/ui"
+import { clx } from "@medusajs/ui"
 import { useEffect } from "react"
 import { useFormStatus } from "react-dom"
 
@@ -15,19 +15,36 @@ interface AccountInfoProps {
   "data-testid"?: string
 }
 
+const SaveButton = () => {
+  const { pending } = useFormStatus()
+  return (
+    <button
+      type="submit"
+      className="btn btn-solid"
+      disabled={pending}
+      data-testid="save-button"
+      style={{
+        justifyContent: "center",
+        opacity: pending ? 0.6 : 1,
+        cursor: pending ? "not-allowed" : "pointer",
+      }}
+    >
+      {pending ? "…" : "Enregistrer"}
+    </button>
+  )
+}
+
 const AccountInfo = ({
   label,
   currentInfo,
   isSuccess,
   isError,
   clearState,
-  errorMessage = "An error occurred, please try again",
+  errorMessage = "Une erreur est survenue, veuillez réessayer.",
   children,
   "data-testid": dataTestid,
 }: AccountInfoProps) => {
   const { state, close, toggle } = useToggleState()
-
-  const { pending } = useFormStatus()
 
   const handleToggle = () => {
     clearState()
@@ -41,35 +58,54 @@ const AccountInfo = ({
   }, [isSuccess, close])
 
   return (
-    <div className="text-small-regular" data-testid={dataTestid}>
-      <div className="flex items-end justify-between">
-        <div className="flex flex-col">
-          <span className="uppercase text-ui-fg-base">{label}</span>
-          <div className="flex items-center flex-1 basis-0 justify-end gap-x-4">
+    <div
+      data-testid={dataTestid}
+      style={{ borderTop: "1px solid var(--line)", padding: "22px 0" }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 16,
+        }}
+      >
+        <div style={{ minWidth: 0 }}>
+          <div className="eyebrow">{label}</div>
+          <div
+            style={{
+              fontFamily: "var(--serif)",
+              fontSize: 17,
+              color: "var(--ink)",
+              marginTop: 6,
+            }}
+          >
             {typeof currentInfo === "string" ? (
-              <span className="font-semibold" data-testid="current-info">
-                {currentInfo}
-              </span>
+              <span data-testid="current-info">{currentInfo}</span>
             ) : (
               currentInfo
             )}
           </div>
         </div>
-        <div>
-          <Button
-            variant="secondary"
-            className="w-[100px] min-h-[25px] py-1"
-            onClick={handleToggle}
-            type={state ? "reset" : "button"}
-            data-testid="edit-button"
-            data-active={state}
-          >
-            {state ? "Cancel" : "Edit"}
-          </Button>
-        </div>
+        <button
+          onClick={handleToggle}
+          type={state ? "reset" : "button"}
+          data-testid="edit-button"
+          data-active={state}
+          className="mono"
+          style={{
+            fontSize: 10,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "var(--rouge)",
+            flexShrink: 0,
+          }}
+        >
+          {state ? "Annuler" : "Modifier"}
+        </button>
       </div>
 
-      {/* Success state */}
+      {/* Succès */}
       <Disclosure>
         <Disclosure.Panel
           static
@@ -82,13 +118,25 @@ const AccountInfo = ({
           )}
           data-testid="success-message"
         >
-          <Badge className="p-2 my-4" color="green">
-            <span>{label} updated succesfully</span>
-          </Badge>
+          <div
+            className="mono"
+            style={{
+              display: "inline-block",
+              marginTop: 14,
+              padding: "8px 12px",
+              fontSize: 10,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--success)",
+              border: "1px solid var(--success)",
+            }}
+          >
+            {label} mis à jour.
+          </div>
         </Disclosure.Panel>
       </Disclosure>
 
-      {/* Error state  */}
+      {/* Erreur */}
       <Disclosure>
         <Disclosure.Panel
           static
@@ -101,9 +149,21 @@ const AccountInfo = ({
           )}
           data-testid="error-message"
         >
-          <Badge className="p-2 my-4" color="red">
-            <span>{errorMessage}</span>
-          </Badge>
+          <div
+            className="mono"
+            style={{
+              display: "inline-block",
+              marginTop: 14,
+              padding: "8px 12px",
+              fontSize: 10,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--rouge)",
+              border: "1px solid var(--rouge)",
+            }}
+          >
+            {errorMessage}
+          </div>
         </Disclosure.Panel>
       </Disclosure>
 
@@ -118,17 +178,10 @@ const AccountInfo = ({
             }
           )}
         >
-          <div className="flex flex-col gap-y-2 py-4">
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 18 }}>
             <div>{children}</div>
-            <div className="flex items-center justify-end mt-2">
-              <Button
-                isLoading={pending}
-                className="w-full small:max-w-[140px]"
-                type="submit"
-                data-testid="save-button"
-              >
-                Save changes
-              </Button>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 4 }}>
+              <SaveButton />
             </div>
           </div>
         </Disclosure.Panel>

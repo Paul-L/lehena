@@ -4,7 +4,6 @@ import ProfilePhone from "@modules/account//components/profile-phone"
 import ProfileBillingAddress from "@modules/account/components/profile-billing-address"
 import ProfileEmail from "@modules/account/components/profile-email"
 import ProfileName from "@modules/account/components/profile-name"
-import ProfilePassword from "@modules/account/components/profile-password"
 import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 
@@ -24,30 +23,26 @@ export default async function Profile() {
 
   return (
     <div className="w-full" data-testid="profile-page-wrapper">
-      <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Profile</h1>
-        <p className="text-base-regular">
-          View and update your profile information, including your name, email,
-          and phone number. You can also update your billing address, or change
-          your password.
+      <div style={{ marginBottom: 32 }}>
+        <h2
+          className="serif-display"
+          style={{ fontSize: 32, lineHeight: 1, margin: "0 0 8px", letterSpacing: "-0.015em" }}
+        >
+          Mon profil
+        </h2>
+        <p
+          style={{ fontFamily: "var(--serif)", fontSize: 15, color: "var(--ink-soft)", margin: 0 }}
+        >
+          Consultez et modifiez vos informations : nom, e-mail, téléphone et
+          adresse de facturation.
         </p>
       </div>
-      <div className="flex flex-col gap-y-8 w-full">
+      <div className="flex flex-col w-full">
         <ProfileName customer={customer} />
-        <Divider />
         <ProfileEmail customer={customer} />
-        <Divider />
         <ProfilePhone customer={customer} />
-        <Divider />
-        {/* <ProfilePassword customer={customer} />
-        <Divider /> */}
         <ProfileBillingAddress customer={customer} regions={regions} />
       </div>
     </div>
   )
 }
-
-const Divider = () => {
-  return <div className="w-full h-px bg-gray-200" />
-}
-;``
