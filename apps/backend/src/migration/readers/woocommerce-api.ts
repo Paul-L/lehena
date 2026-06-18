@@ -41,9 +41,12 @@ export class WooCommerceApiReader implements MigrationReader {
   }
 
   async *listProducts(): AsyncIterable<LegacyProduct> {
+    // Published-only: the legacy store keeps ~21 abandoned drafts (old
+    // versions, unreleased wines, "(Copie)" duplicates) we don't want in
+    // Medusa. Only the live published catalogue is migrated.
     for await (const product of this.paginate<WcProductDto>(
       "/wp-json/wc/v3/products",
-      { per_page: "100", status: "any" }
+      { per_page: "100", status: "publish" }
     )) {
       const variations: LegacyVariation[] =
         product.type === "variable" && product.variations.length > 0

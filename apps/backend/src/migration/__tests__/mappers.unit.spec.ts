@@ -82,9 +82,9 @@ describe("mapCategoryToLehena", () => {
     expect(mapCategoryToLehena(["coffret"])).toBe("coffrets-cadeaux")
     expect(mapCategoryToLehena(["cadeau"])).toBe("coffrets-cadeaux")
   })
-  it("falls back to epicerie-basque", () => {
-    expect(mapCategoryToLehena(["miel"])).toBe("epicerie-basque")
-    expect(mapCategoryToLehena([])).toBe("epicerie-basque")
+  it("falls back to epicerie-fine", () => {
+    expect(mapCategoryToLehena(["miel"])).toBe("epicerie-fine")
+    expect(mapCategoryToLehena([])).toBe("epicerie-fine")
   })
   it("picks the first matching slug then the first matching rule", () => {
     // Iteration is slug-first then rule-first: "coffret" hits the
@@ -93,6 +93,41 @@ describe("mapCategoryToLehena", () => {
       "coffrets-cadeaux"
     )
     expect(mapCategoryToLehena(["saucisson", "coffret"])).toBe("salaisons")
+  })
+  it("name overrides the slug for accessoires filed under meat categories", () => {
+    // WC files these under Jambon / Patxaran; the product name wins.
+    expect(
+      mapCategoryToLehena(
+        ["jambon-d-iparralde"],
+        "Planche de découpe avec son couteau"
+      )
+    ).toBe("accessoires")
+    expect(
+      mapCategoryToLehena(
+        ["jambon-d-iparralde"],
+        "Support pour jambon avec couteau"
+      )
+    ).toBe("accessoires")
+    expect(
+      mapCategoryToLehena(["patxaran-production-artisanale"], "Aérateur de vin")
+    ).toBe("accessoires")
+  })
+  it("name overrides route prepared dishes to plats-cuisines", () => {
+    expect(
+      mapCategoryToLehena(["notre-epicerie"], "Navarin d'Agneau Bürü Beltza")
+    ).toBe("plats-cuisines")
+    expect(
+      mapCategoryToLehena(["notre-epicerie"], "Tajine de Mouton Bürü Beltza")
+    ).toBe("plats-cuisines")
+    expect(
+      mapCategoryToLehena(
+        ["notre-epicerie"],
+        "3 Saucisses de Mouton à la Piperade"
+      )
+    ).toBe("plats-cuisines")
+    expect(mapCategoryToLehena(["notre-epicerie"], "Axoa de Porc")).toBe(
+      "plats-cuisines"
+    )
   })
 })
 

@@ -13,7 +13,7 @@ import type { LegacyProduct } from "../types"
  *  - "saucisson" / "chorizo" / "salaison" → "salaisons"
  *  - "patxaran" / "spiritueux" / "liqueur" → "patxaran-spiritueux"
  *  - "coffret" / "cadeau" → "coffrets-cadeaux"
- *  - Default: "epicerie-basque"
+ *  - Default: "epicerie-fine"
  */
 
 const CATEGORY_MAP: { match: RegExp; target: string }[] = [
@@ -24,13 +24,35 @@ const CATEGORY_MAP: { match: RegExp; target: string }[] = [
   { match: /coffret|cadeau/i, target: "coffrets-cadeaux" },
 ]
 
-export function mapCategoryToLehena(legacyCategorySlugs: string[]): string {
+/**
+ * Name-based overrides applied BEFORE the category rules. WooCommerce files
+ * accessories and prepared dishes under a meat category (e.g. the jamón
+ * stand sits in "Jambon d'Iparralde", the aérateur in "Patxaran"), so the
+ * slug alone misroutes them. Matching the product title fixes it at import.
+ */
+const NAME_OVERRIDES: { match: RegExp; target: string }[] = [
+  { match: /planche|support|couteau|a[ée]rateur/i, target: "accessoires" },
+  {
+    match: /axoa|navarin|tajine|pied de porc|piperade/i,
+    target: "plats-cuisines",
+  },
+]
+
+export function mapCategoryToLehena(
+  legacyCategorySlugs: string[],
+  productName = ""
+): string {
+  for (const rule of NAME_OVERRIDES) {
+    if (rule.match.test(productName)) return rule.target
+  }
   for (const slug of legacyCategorySlugs) {
     for (const rule of CATEGORY_MAP) {
       if (rule.match.test(slug)) return rule.target
     }
   }
-  return "epicerie-basque"
+  // Real seeded category handle. Must exist in `product_category`, otherwise
+  // `buildWorkflowProductInput` skips the product at commit time (returns null).
+  return "epicerie-fine"
 }
 
 /** Stripped product-details payload — used by the link Phase 1 ships. */
@@ -131,7 +153,10 @@ export function mapProduct(p: LegacyProduct): MappedProduct {
     subtitle: p.short_description,
     description: stripHtml(p.description),
     status,
-    category_handle: mapCategoryToLehena(p.categories.map((c) => c.slug)),
+    category_handle: mapCategoryToLehena(
+      p.categories.map((c) => c.slug),
+      p.name
+    ),
     tags: p.tags,
     images: p.images.map((i) => ({ url: i.src })),
     thumbnail: p.images[0]?.src ?? null,
