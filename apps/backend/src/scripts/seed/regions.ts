@@ -3,9 +3,19 @@ import {
   createRegionsWorkflow,
   createTaxRatesWorkflow,
   createTaxRegionsWorkflow,
+  updateRegionsWorkflow,
 } from "@medusajs/medusa/core-flows"
 
 import type { MedusaContainer } from "@medusajs/framework/types"
+
+// Payment providers enabled per region. Stripe (`pp_stripe_stripe`) is only
+// registered by medusa-config when STRIPE_API_KEY is set, so we only attach it
+// when configured — otherwise the region would reference a non-existent
+// provider. `pp_system_default` always stays (manual/dev fallback).
+const PAYMENT_PROVIDERS = [
+  "pp_system_default",
+  ...(process.env.STRIPE_API_KEY ? ["pp_stripe_stripe"] : []),
+]
 
 // Country lists per region. Storefront middleware picks the right region
 // from the visitor's countryCode segment.
@@ -142,7 +152,7 @@ export async function seedRegions(
         name: REGION_NAMES.fr,
         currency_code: "eur",
         countries: FR_COUNTRIES,
-        payment_providers: ["pp_system_default"],
+        payment_providers: PAYMENT_PROVIDERS,
       },
     },
     {
@@ -151,7 +161,7 @@ export async function seedRegions(
         name: REGION_NAMES.eu,
         currency_code: "eur",
         countries: EU_COUNTRIES,
-        payment_providers: ["pp_system_default"],
+        payment_providers: PAYMENT_PROVIDERS,
       },
     },
     {
@@ -160,7 +170,7 @@ export async function seedRegions(
         name: REGION_NAMES.world,
         currency_code: "eur",
         countries: WORLD_COUNTRIES,
-        payment_providers: ["pp_system_default"],
+        payment_providers: PAYMENT_PROVIDERS,
       },
     },
   ]
@@ -185,6 +195,16 @@ export async function seedRegions(
   if (!fr || !eu || !world) {
     throw new Error("[seed.regions] region creation failed")
   }
+
+  // Ensure payment providers on EXISTING regions too — the create branch above
+  // only runs for missing regions, so a region created before Stripe was
+  // configured would otherwise never gain `pp_stripe_stripe`. Idempotent.
+  await updateRegionsWorkflow(container).run({
+    input: {
+      selector: { id: [fr.id, eu.id, world.id] },
+      update: { payment_providers: PAYMENT_PROVIDERS },
+    },
+  })
 
   // ─── Tax regions per country (idempotent: skip existing) ───────────
   const allCountryCodes = [...FR_COUNTRIES, ...EU_COUNTRIES, ...WORLD_COUNTRIES]
