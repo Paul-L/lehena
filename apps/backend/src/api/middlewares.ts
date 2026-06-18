@@ -10,6 +10,11 @@ import {
 } from "./admin/contact-submissions/validators"
 import { ExportOrdersSchema } from "./admin/exports/orders/validators"
 import { UpdateFaqItemSchema } from "./admin/faq-items/[id]/validators"
+import { SaveWcCredentialsSchema } from "./admin/migration/wc-credentials/validators"
+import {
+  CreateMigrationRunSchema,
+  ListMigrationRunsQuerySchema,
+} from "./admin/migration-runs/validators"
 import {
   CreatePageSchema,
   ListPagesQuerySchema,
@@ -26,11 +31,6 @@ import {
   ListRedirectsQuerySchema,
 } from "./admin/redirects/validators"
 import {
-  CreateMigrationRunSchema,
-  ListMigrationRunsQuerySchema,
-} from "./admin/migration-runs/validators"
-import { SaveWcCredentialsSchema } from "./admin/migration/wc-credentials/validators"
-import {
   ListAdminReviewsQuerySchema,
   UpdateReviewStatusSchema,
 } from "./admin/reviews/validators"
@@ -38,6 +38,7 @@ import {
   RequestMagicLinkSchema,
   VerifyMagicLinkSchema,
 } from "./store/auth/magic-link/validators"
+import { SetShippingMethodsBulkSchema } from "./store/carts/[id]/shipping-methods-bulk/validators"
 import { SubmitContactSchema } from "./store/contact/validators"
 import {
   DeleteConfirmSchema,
@@ -120,6 +121,11 @@ export default defineMiddlewares({
       middlewares: [validateAndTransformBody(SubmitContactSchema)],
     },
     {
+      matcher: "/store/carts/:id/shipping-methods-bulk",
+      method: "POST",
+      middlewares: [validateAndTransformBody(SetShippingMethodsBulkSchema)],
+    },
+    {
       matcher: "/store/auth/magic-link",
       method: "POST",
       middlewares: [validateAndTransformBody(RequestMagicLinkSchema)],
@@ -199,7 +205,9 @@ export default defineMiddlewares({
     {
       matcher: "/admin/migration-runs",
       method: "GET",
-      middlewares: [validateAndTransformQuery(ListMigrationRunsQuerySchema, {})],
+      middlewares: [
+        validateAndTransformQuery(ListMigrationRunsQuerySchema, {}),
+      ],
     },
     {
       matcher: "/admin/migration-runs",

@@ -250,10 +250,17 @@ export async function seedFulfillment(
   // at checkout time.
   const { data: existingOptions } = await query.graph({
     entity: "shipping_option",
-    fields: ["id", "name"],
+    fields: ["id", "name", "provider_id", "shipping_profile_id"],
   })
   const existingOptionNames = new Set(
     (existingOptions ?? []).map((o) => o.name)
+  )
+  // Shipping-profile ids that already have an in-store pickup option, so a
+  // re-seed doesn't duplicate it.
+  const pickupProfileIds = new Set(
+    (existingOptions ?? [])
+      .filter((o) => o.provider_id === "manual_manual")
+      .map((o) => o.shipping_profile_id)
   )
 
   const calcOption = (
@@ -324,6 +331,77 @@ export async function seedFulfillment(
     await createShippingOptionsWorkflow(container).run({
       input: optionsToCreate,
     })
+  }
+
+  // ─── In-store pickup — "Retrait à la boutique" (Laguinge) ──────────
+  // A dedicated `type: "pickup"` fulfillment set so the storefront's pickup
+  // UI (which keys off `service_zone.fulfillment_set.type === "pickup"`)
+  // surfaces it and — by design — bypasses the mixed-cart cold-chain filter:
+  // collecting in person needs no Chronofresh. Free (flat 0 €) via the
+  // already-linked `manual_manual` provider, on BOTH shipping profiles so any
+  // cart — fresh (jambon) or ambient (accessoire) — can be collected.
+  const PICKUP_SET_NAME = "Lehena boutique pickup"
+  let pickupZoneId: string | null = null
+  const { data: existingPickupSets } = await query.graph({
+    entity: "fulfillment_set",
+    fields: ["id", "name", "type", "service_zones.id"],
+    filters: { name: [PICKUP_SET_NAME] },
+  })
+  if (existingPickupSets?.[0]?.service_zones?.[0]) {
+    pickupZoneId = existingPickupSets[0].service_zones[0].id
+  } else {
+    const createdPickup = await fulfillment.createFulfillmentSets({
+      name: PICKUP_SET_NAME,
+      type: "pickup",
+      service_zones: [
+        {
+          name: "Boutique Lehena — Laguinge",
+          geo_zones: [{ type: "country", country_code: "fr" }],
+        },
+      ],
+    })
+    pickupZoneId = createdPickup.service_zones[0].id
+    try {
+      await link.create({
+        [Modules.STOCK_LOCATION]: { stock_location_id: stockLocationId },
+        [Modules.FULFILLMENT]: { fulfillment_set_id: createdPickup.id },
+      })
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      if (!/exists|duplicate|unique/i.test(msg)) {
+        throw e
+      }
+    }
+  }
+
+  const pickupOptions = (["fresh", "ambient"] as ShippingProfileKind[])
+    .map((k) => ({
+      profileId: k === "fresh" ? freshProfileId : ambientProfileId,
+    }))
+    .filter(({ profileId }) => !pickupProfileIds.has(profileId))
+    .map(({ profileId }) => ({
+      name: "Retrait à la boutique",
+      price_type: "flat" as const,
+      provider_id: "manual_manual",
+      service_zone_id: pickupZoneId!,
+      shipping_profile_id: profileId,
+      prices: [{ currency_code: "eur", amount: 0 }],
+      type: {
+        label: "Retrait gratuit",
+        description: "Retrait à l'atelier Lehena — Bourg, 64470 Laguinge.",
+        code: "pickup",
+      },
+      rules: [
+        {
+          attribute: "enabled_in_store",
+          value: "true",
+          operator: "eq" as const,
+        },
+        { attribute: "is_return", value: "false", operator: "eq" as const },
+      ],
+    }))
+  if (pickupOptions.length > 0) {
+    await createShippingOptionsWorkflow(container).run({ input: pickupOptions })
   }
 
   return {
