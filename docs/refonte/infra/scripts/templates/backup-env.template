@@ -1,0 +1,23 @@
+# Template pour /srv/lehena/scripts/.backup-env
+#
+# Copie ce fichier en /srv/lehena/scripts/.backup-env,
+# remplis les valeurs, puis :
+#   chmod 600 /srv/lehena/scripts/.backup-env
+#
+# Puis une seule fois :
+#   source /srv/lehena/scripts/.backup-env && restic init
+
+# --- Scaleway Object Storage credentials ---
+# Créer une API key sur https://console.scaleway.com/iam/api-keys
+export AWS_ACCESS_KEY_ID="SCW_XXXXXXXX"
+export AWS_SECRET_ACCESS_KEY="XXXXXXXXXXXXXXXXXXXXXXXX"
+
+# --- Restic repo ---
+# Bucket à créer préalablement dans Scaleway (region fr-par ou nl-ams).
+# Format : s3:<endpoint>/<bucket-name>
+export RESTIC_REPOSITORY="s3:https://s3.fr-par.scw.cloud/lehena-backups"
+
+# --- Mot de passe de chiffrement du repo restic ---
+# GÉNÈRE AVEC : openssl rand -base64 32
+# SAUVEGARDE EN LIEU SÛR (1Password) — sans lui, les backups sont irrécupérables.
+export RESTIC_PASSWORD="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"

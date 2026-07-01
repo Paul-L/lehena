@@ -1,0 +1,110 @@
+{
+  "run_id": "01KVE2YSVAN8T5ZS8AGP35SKGB",
+  "script": "products",
+  "source": "api",
+  "dry_run": true,
+  "status": "completed",
+  "started_at": "2026-06-18T19:22:34.738Z",
+  "finished_at": "2026-06-18T19:22:39.447Z",
+  "totals": {
+    "seen": 18,
+    "failed": 0,
+    "created": 17,
+    "skipped": 1,
+    "updated": 0
+  },
+  "entries": [
+    {
+      "notes": "would create handle=navarin-agneau-buru-beltza-360g-copy category=plats-cuisines variants=2",
+      "outcome": "created",
+      "legacy_id": 1420
+    },
+    {
+      "notes": "would create handle=tajine-de-mouton-buru-beltza-360g category=plats-cuisines variants=2",
+      "outcome": "created",
+      "legacy_id": 1419
+    },
+    {
+      "notes": "would create handle=3-saucisses-de-mouton-a-la-piperade-360g category=plats-cuisines variants=2",
+      "outcome": "created",
+      "legacy_id": 1418
+    },
+    {
+      "notes": "would create handle=jambon-entier-desosse-24-mois category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 1300
+    },
+    {
+      "notes": "would create handle=jambon-entier-avec-os-20-mois-a-reserver category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 1298
+    },
+    {
+      "notes": "would create handle=ventreche-plate-entiere-environ-3kg category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 959
+    },
+    {
+      "notes": "would create handle=aerateur-de-vin category=accessoires variants=1",
+      "outcome": "created",
+      "legacy_id": 956
+    },
+    {
+      "notes": "would create handle=planche-de-decoupe-avec-son-couteau category=accessoires variants=1",
+      "outcome": "created",
+      "legacy_id": 955
+    },
+    {
+      "notes": "would create handle=support-pour-jambon-avec-couteau category=accessoires variants=1",
+      "outcome": "created",
+      "legacy_id": 946
+    },
+    {
+      "notes": "would create handle=ventreche-par-1kg category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 943
+    },
+    {
+      "notes": "would create handle=patxaran-des-laminak category=patxaran-spiritueux variants=1",
+      "outcome": "created",
+      "legacy_id": 942
+    },
+    {
+      "notes": "would create handle=ttipini-au-piment-d-espelette category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 941
+    },
+    {
+      "notes": "would create handle=ventreche-tranchee category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 940
+    },
+    {
+      "notes": "would create handle=demi-ventreche-environ-15kg category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 939
+    },
+    {
+      "notes": "handle already exists",
+      "outcome": "skipped",
+      "legacy_id": 938,
+      "medusa_id": "prod_01KSDDG21QXK4AESDHQZX0C8JK"
+    },
+    {
+      "notes": "would create handle=jambon-par-4-tranches category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 937
+    },
+    {
+      "notes": "would create handle=quart-de-jambon category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 936
+    },
+    {
+      "notes": "would create handle=demi-jambon category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 935
+    }
+  ],
+  "error_message": null
+}

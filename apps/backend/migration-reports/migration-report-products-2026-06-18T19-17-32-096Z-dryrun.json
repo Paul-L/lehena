@@ -1,0 +1,215 @@
+{
+  "run_id": "01KVE2ND6D6W5KZCZJ6AF4WZQH",
+  "script": "products",
+  "source": "api",
+  "dry_run": true,
+  "status": "completed",
+  "started_at": "2026-06-18T19:17:26.876Z",
+  "finished_at": "2026-06-18T19:17:32.087Z",
+  "totals": {
+    "seen": 39,
+    "failed": 0,
+    "created": 38,
+    "skipped": 1,
+    "updated": 0
+  },
+  "entries": [
+    {
+      "notes": "would create handle=navarin-agneau-buru-beltza-360g-copy category=epicerie-fine variants=2",
+      "outcome": "created",
+      "legacy_id": 1420
+    },
+    {
+      "notes": "would create handle=tajine-de-mouton-buru-beltza-360g category=epicerie-fine variants=2",
+      "outcome": "created",
+      "legacy_id": 1419
+    },
+    {
+      "notes": "would create handle=3-saucisses-de-mouton-a-la-piperade-360g category=epicerie-fine variants=2",
+      "outcome": "created",
+      "legacy_id": 1418
+    },
+    {
+      "notes": "would create handle=jambon-entier-desosse-24-mois category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 1300
+    },
+    {
+      "notes": "would create handle=jambon-entier-avec-os-20-mois-a-reserver category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 1298
+    },
+    {
+      "notes": "would create handle=poudre-de-piment-d-espelette category=epicerie-fine variants=1",
+      "outcome": "created",
+      "legacy_id": 1296
+    },
+    {
+      "notes": "would create handle=moutarde-au-piment-d-espelette category=epicerie-fine variants=1",
+      "outcome": "created",
+      "legacy_id": 1293
+    },
+    {
+      "notes": "would create handle=tomate-sechee-de-navarre category=epicerie-fine variants=1",
+      "outcome": "created",
+      "legacy_id": 1291
+    },
+    {
+      "notes": "would create handle=pimientos-del-piquillo category=epicerie-fine variants=1",
+      "outcome": "created",
+      "legacy_id": 1288
+    },
+    {
+      "notes": "would create handle=miel-bio category=epicerie-fine variants=1",
+      "outcome": "created",
+      "legacy_id": 1286
+    },
+    {
+      "notes": "would create handle= category=epicerie-fine variants=1",
+      "outcome": "created",
+      "legacy_id": 1255
+    },
+    {
+      "notes": "would create handle=axoa-de-porc category=epicerie-fine variants=1",
+      "outcome": "created",
+      "legacy_id": 1254
+    },
+    {
+      "notes": "would create handle=pied-de-porc-en-gelee category=epicerie-fine variants=1",
+      "outcome": "created",
+      "legacy_id": 1253
+    },
+    {
+      "notes": "would create handle=saucisses-de-mouton-a-la-piperade category=epicerie-fine variants=1",
+      "outcome": "created",
+      "legacy_id": 1252
+    },
+    {
+      "notes": "would create handle=tajine-mouton-tete-noire-des-pyrenees-ferme-ainty-lehena category=epicerie-fine variants=1",
+      "outcome": "created",
+      "legacy_id": 954
+    },
+    {
+      "notes": "would create handle=chateau-brulesecaille-2012 category=patxaran-spiritueux variants=1",
+      "outcome": "created",
+      "legacy_id": 958
+    },
+    {
+      "notes": "would create handle=ventreche-plate-entiere-environ-3kg category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 959
+    },
+    {
+      "notes": "would create handle=aerateur-de-vin category=patxaran-spiritueux variants=1",
+      "outcome": "created",
+      "legacy_id": 956
+    },
+    {
+      "notes": "would create handle=planche-de-decoupe-avec-son-couteau category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 955
+    },
+    {
+      "notes": "would create handle=domaine-de-mignaberry-blanc category=patxaran-spiritueux variants=1",
+      "outcome": "created",
+      "legacy_id": 952
+    },
+    {
+      "notes": "would create handle=ttpini-chorizopiment-d-espelette category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 951
+    },
+    {
+      "notes": "would create handle=ttipini-sanglier-de-la-foret-d-iraty category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 950
+    },
+    {
+      "notes": "would create handle=ttipini-fromage-brebis-ossau-iraty category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 949
+    },
+    {
+      "notes": "would create handle=lukainkak-pre-sechees-a-cuire category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 948
+    },
+    {
+      "notes": "would create handle=domaine-de-mignaberry-rouge category=patxaran-spiritueux variants=1",
+      "outcome": "created",
+      "legacy_id": 947
+    },
+    {
+      "notes": "would create handle=clos-lacabe-foehn category=patxaran-spiritueux variants=1",
+      "outcome": "created",
+      "legacy_id": 944
+    },
+    {
+      "notes": "would create handle=lot-de-3-ttipinis category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 945
+    },
+    {
+      "notes": "would create handle=jambon-entier-desosse category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 934
+    },
+    {
+      "notes": "would create handle=support-pour-jambon-avec-couteau category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 946
+    },
+    {
+      "notes": "would create handle=ventreche-par-1kg category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 943
+    },
+    {
+      "notes": "would create handle=patxaran-des-laminak category=patxaran-spiritueux variants=1",
+      "outcome": "created",
+      "legacy_id": 942
+    },
+    {
+      "notes": "would create handle=ttipini-au-piment-d-espelette category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 941
+    },
+    {
+      "notes": "would create handle=ventreche-tranchee category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 940
+    },
+    {
+      "notes": "would create handle=demi-ventreche-environ-15kg category=salaisons variants=1",
+      "outcome": "created",
+      "legacy_id": 939
+    },
+    {
+      "notes": "handle already exists",
+      "outcome": "skipped",
+      "legacy_id": 938,
+      "medusa_id": "prod_01KSDDG21QXK4AESDHQZX0C8JK"
+    },
+    {
+      "notes": "would create handle=jambon-par-4-tranches category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 937
+    },
+    {
+      "notes": "would create handle=quart-de-jambon category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 936
+    },
+    {
+      "notes": "would create handle=demi-jambon category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 935
+    },
+    {
+      "notes": "would create handle=jambon-basque-fermier-entier-avec-os category=jambons-iparralde variants=1",
+      "outcome": "created",
+      "legacy_id": 933
+    }
+  ],
+  "error_message": null
+}
