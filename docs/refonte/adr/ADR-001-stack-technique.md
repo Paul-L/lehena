@@ -55,14 +55,9 @@ On retient la stack ci-dessous, sans surprise par rapport au plan.
 - **Husky** + **lint-staged** + **commitlint** : pre-commit auto-format + lint, commit-msg conventional.
 - **CI GitHub Actions** baseline : install + typecheck + lint + build.
 
-### Hors-scope mais présent : plugin `medusa-ai-assistant`
+### Plugin Pilot AI (`medusa-ai-assistant`) — projet isolé
 
-Le repo contient un plugin Pilot AI (`medusa-ai-assistant`) lié via **yalc** (`apps/backend/.yalc/medusa-ai-assistant`). Il est explicitement hors-scope refonte (cf. `00-PLAN.md` § 1). On le conserve sur cette branche pour permettre à Paul de continuer à l'expérimenter en parallèle. Conséquences :
-
-- `apps/backend/package.json` référence `medusa-ai-assistant: file:.yalc/medusa-ai-assistant` ; `apps/backend/yalc.lock` est commité ; `.yalc/` reste **gitignored**.
-- La CI publique ne peut pas installer ce package tel quel. Le workflow `.github/workflows/ci.yml` **stube** le package au début du job pour ne pas casser. Quand le plugin sera publié (npm, registry privé ou git+https), retirer le stub.
-- Les variables `ENCRYPTION_KEY`, `ASSISTANT_DEFAULT_MODEL`, `ASSISTANT_MAX_TOKENS` sont déclarées dans `apps/backend/.env.example` et listées dans `turbo.json` (`globalEnv` du `build`).
-- Pas de blocage Phase 0 : tant que le plugin n'est pas branché côté refonte, il n'a aucun impact sur le périmètre Medusa standard.
+Le plugin Pilot AI est développé dans un **workspace séparé** (cf. `docs/pilot-ai/` pour la vision produit). Il **n'est pas** dépendance du backend Lehena en refonte. Aucune référence à `medusa-ai-assistant`, `yalc`, ou `@anthropic-ai/sdk` ne subsiste dans ce repo. Quand le plugin sera prêt pour usage réel, il sera publié comme package npm (privé sur GHCR ou public) et ajouté proprement en dépendance — pas via yalc.
 
 ## Alternatives considérées
 

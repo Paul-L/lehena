@@ -24,7 +24,3 @@ build
 !.yarn/versions
 
 .medusa
-
-# Locally-linked plugin sources (cf. ADR-001). Plugin code lives in its
-# own repo; here we only commit the package.json file: reference + yalc.lock.
-.yalc

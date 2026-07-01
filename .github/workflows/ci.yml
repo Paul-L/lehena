@@ -51,22 +51,6 @@ jobs:
           node-version: 20
           cache: pnpm
 
-      # Plugin `medusa-ai-assistant` is linked via yalc on the maintainer's
-      # machine (see ADR-001). The directory `apps/backend/.yalc/` is
-      # gitignored — until the plugin is published as a public package,
-      # the backend install fails on CI. We sidestep by stubbing it here.
-      - name: Stub medusa-ai-assistant (yalc-linked, not yet published)
-        run: |
-          mkdir -p apps/backend/.yalc/medusa-ai-assistant
-          cat > apps/backend/.yalc/medusa-ai-assistant/package.json <<'EOF'
-          {
-            "name": "medusa-ai-assistant",
-            "version": "0.0.0-ci-stub",
-            "main": "index.js"
-          }
-          EOF
-          echo "module.exports = {};" > apps/backend/.yalc/medusa-ai-assistant/index.js
-
       - name: Install
         run: pnpm install --frozen-lockfile
 

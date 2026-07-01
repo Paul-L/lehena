@@ -178,22 +178,6 @@ module.exports = defineConfig({
     },
   ],
   plugins: [
-    // AI assistant plugin is opt-in (out-of-scope refonte, yalc-linked).
-    // Set ENABLE_AI_ASSISTANT=true to load it.
-    ...(process.env.ENABLE_AI_ASSISTANT === "true"
-      ? [
-          {
-            resolve: "medusa-ai-assistant",
-            options: {
-              defaultModel:
-                process.env.ASSISTANT_DEFAULT_MODEL ?? "claude-sonnet-4-6",
-              maxTokens: process.env.ASSISTANT_MAX_TOKENS
-                ? Number(process.env.ASSISTANT_MAX_TOKENS)
-                : 4096,
-            },
-          },
-        ]
-      : []),
     // MeiliSearch plugin only registered when a host is configured. This
     // keeps CI (and any env without Meili running) from crashing on every
     // product save. The plugin auto-indexes via its own subscribers.

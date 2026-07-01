@@ -1,9 +1,0 @@
-{
-  "version": "v1",
-  "packages": {
-    "medusa-ai-assistant": {
-      "signature": "9266d701e070858d7aa04b7bb38d3559",
-      "file": true
-    }
-  }
-}

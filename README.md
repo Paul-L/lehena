@@ -35,12 +35,6 @@ lehena/
 
 ## Setup dev local
 
-> ⚠️ Le repo référence un plugin local `medusa-ai-assistant` lié via yalc
-> (cf. [ADR-001](./docs/refonte/adr/ADR-001-stack-technique.md)). Tant qu'il
-> n'est pas publié, il faut soit pousser le yalc local
-> (`yalc add medusa-ai-assistant` depuis `apps/backend/`), soit commenter
-> l'entrée `plugins` dans `apps/backend/medusa-config.ts`.
-
 ### 1. Cloner et installer
 
 ```bash

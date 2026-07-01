@@ -27,7 +27,6 @@ export default tseslint.config(
       "**/.turbo/**",
       "**/build/**",
       "**/coverage/**",
-      "**/.yalc/**",
       "**/public/**",
       "apps/backend/integration-tests/**",
     ],

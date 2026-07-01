@@ -6,7 +6,5 @@ node_modules
 **/.turbo
 **/build
 **/coverage
-**/.yalc
 **/public/assets
 pnpm-lock.yaml
-yalc.lock
