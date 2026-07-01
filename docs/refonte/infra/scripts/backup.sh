@@ -14,13 +14,12 @@
 set -euo pipefail
 
 # ==== À CONFIGURER ====================================================
-BACKUP_ENV=/srv/lehena/scripts/.backup-env
-# Fichier à créer manuellement, contenant :
-#   export AWS_ACCESS_KEY_ID=<scaleway-access-key>
-#   export AWS_SECRET_ACCESS_KEY=<scaleway-secret-key>
-#   export RESTIC_REPOSITORY=s3:https://s3.fr-par.scw.cloud/lehena-backups
-#   export RESTIC_PASSWORD=<mot-de-passe-restic-fort>
-# chmod 600
+# HORS repo Git : /srv/lehena/scripts pointe (via symlink) sur le clone
+# du repo, donc y mettre .backup-env risquerait de committer les secrets.
+BACKUP_ENV=/srv/lehena/backups/.backup-env
+# Fichier à créer manuellement à partir du template :
+#   /srv/lehena/scripts/templates/backup-env.template
+# Puis chmod 600.
 # ======================================================================
 
 log()  { echo -e "\033[1;34m[backup $(date -Iseconds)]\033[0m $*"; }

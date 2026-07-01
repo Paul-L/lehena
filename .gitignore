@@ -48,3 +48,6 @@ coverage/
 # Misc
 *.pem
 .vercel
+
+
+photos/

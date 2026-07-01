@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-BACKUP_ENV=/srv/lehena/scripts/.backup-env
+BACKUP_ENV=/srv/lehena/backups/.backup-env
 
 log()  { echo -e "\033[1;34m[restore]\033[0m $*"; }
 warn() { echo -e "\033[1;33m[restore]\033[0m $*"; }

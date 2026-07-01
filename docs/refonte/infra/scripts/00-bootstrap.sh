@@ -122,7 +122,10 @@ fi
 # --- Structure de dossiers --------------------------------------------
 log "Création de /srv/lehena/"
 install -d -o "$DEPLOY_USER" -g "$DEPLOY_USER" -m 755 /srv/lehena
-install -d -o "$DEPLOY_USER" -g "$DEPLOY_USER" -m 755 /srv/lehena/scripts
+# NE PAS créer /srv/lehena/scripts : ce dossier sera un symlink vers
+# /opt/lehena/repo/docs/refonte/infra/scripts (cf. README étape "git").
+# Si on le pré-crée, `ln -s <src> /srv/lehena/scripts` place le lien À
+# L'INTÉRIEUR au lieu de le créer à sa place.
 
 # --- Récap ------------------------------------------------------------
 log "Bootstrap terminé."

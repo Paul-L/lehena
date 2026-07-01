@@ -116,9 +116,14 @@ log "Génération docker-compose.yml"
 cat > "$INSTALL_DIR/docker-compose.yml" <<EOF
 services:
   traefik:
-    image: traefik:v3.1
+    image: traefik:v3          # tag majeur : dernière v3.x (compat Docker Engine récent)
     container_name: traefik
     restart: unless-stopped
+    environment:
+      # Force la version d'API Docker parlée par la SDK Go de Traefik.
+      # Sans ça, sur un daemon Docker très récent (Docker 28+), la SDK
+      # peut retomber sur API 1.24 qui est refusée. Belt-and-suspenders.
+      DOCKER_API_VERSION: "1.44"
     ports:
       - "80:80"
       - "443:443"

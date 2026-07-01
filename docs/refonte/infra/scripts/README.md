@@ -163,3 +163,70 @@ c'est game over.
 - **Firewall** : `00-bootstrap.sh` ouvre uniquement SSH + HTTP + HTTPS. Si
   tu ajoutes un service exposé (Dozzle par ex.), il passe par Traefik →
   pas de port supplémentaire à ouvrir.
+
+---
+
+## Troubleshooting connu
+
+### `ln -s` place le symlink dans le mauvais dossier
+
+Symptôme :
+
+```
+/srv/lehena/scripts/scripts -> /opt/lehena/repo/docs/refonte/infra/scripts
+```
+
+Cause : `/srv/lehena/scripts/` existait déjà en tant que dossier, donc `ln`
+a placé le lien à l'intérieur.
+
+Fix :
+
+```bash
+rm /srv/lehena/scripts/scripts
+rmdir /srv/lehena/scripts
+ln -s /opt/lehena/repo/docs/refonte/infra/scripts /srv/lehena/scripts
+```
+
+Le patch de `00-bootstrap.sh` ne crée plus ce dossier à l'avance.
+
+### Traefik : `client version 1.24 is too old`
+
+Symptôme (logs Traefik) :
+
+```
+ERR Failed to retrieve information of the docker client and server host
+   error="Error response from daemon: client version 1.24 is too old.
+   Minimum supported API version is 1.40"
+```
+
+Cause : Docker Engine récent (≥ 28) refuse les vieilles versions d'API que
+la SDK Go de Traefik peut demander en fallback.
+
+Fix (déjà dans `20-traefik.sh` patché) :
+
+- image `traefik:v3` (dernière v3.x)
+- env var `DOCKER_API_VERSION=1.44`
+
+Si tu as déjà lancé la version pré-patch, édite manuellement
+`/srv/lehena/traefik/docker-compose.yml` puis :
+
+```bash
+cd /srv/lehena/traefik
+docker compose down && docker compose pull && docker compose up -d
+```
+
+### Docker legacy (docker.io Debian) pré-installé
+
+Certains providers livrent Debian 12 avec `docker.io` (version ~20.10)
+qui ne supporte pas l'API 1.40. `10-docker.sh` patché détecte et purge
+automatiquement.
+
+Si tu as fait le setup avant le patch : refais manuellement la purge :
+
+```bash
+sudo systemctl stop docker docker.socket containerd 2>/dev/null || true
+sudo apt purge -y docker docker.io containerd runc containerd.io 2>/dev/null
+sudo apt autoremove -y
+sudo rm -rf /var/lib/docker /var/lib/containerd
+sudo bash /srv/lehena/scripts/10-docker.sh
+```
