@@ -2,6 +2,7 @@ import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
 import { MIGRATION_MODULE } from "../../../modules/migration"
 
+import type { MigrationModuleService } from "../../../modules/migration"
 import type { MigrationStatus } from "../../../modules/migration/models/migration-run"
 
 interface SetRunStatusInput {
@@ -16,7 +17,7 @@ interface SetRunStatusInput {
 export const setRunStatusStep = createStep(
   "migration-set-run-status",
   async (input: SetRunStatusInput, { container }) => {
-    const service = container.resolve(MIGRATION_MODULE)
+    const service = container.resolve<MigrationModuleService>(MIGRATION_MODULE)
     const now = new Date()
     await service.updateMigrationRuns({
       id: input.runId,

@@ -6,6 +6,7 @@ import { runMediaMigration } from "../../../migration/runners/media"
 import { runProductsMigration } from "../../../migration/runners/products"
 import { MIGRATION_MODULE } from "../../../modules/migration"
 
+import type { MigrationModuleService } from "../../../modules/migration"
 import type { MigrationStatus } from "../../../modules/migration/models/migration-run"
 
 interface ExecuteMigrationInput {
@@ -22,7 +23,7 @@ export const executeMigrationStep = createStep(
   "migration-execute",
   async (input: ExecuteMigrationInput, { container }) => {
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const service = container.resolve(MIGRATION_MODULE)
+    const service = container.resolve<MigrationModuleService>(MIGRATION_MODULE)
 
     const row = await service.retrieveMigrationRun(input.runId)
     logger.info(
@@ -51,7 +52,9 @@ export const executeMigrationStep = createStep(
     } catch (err) {
       status = "failed"
       errorMessage = err instanceof Error ? err.message : String(err)
-      logger.error(`[migration-execute] runId=${row.id} failed: ${errorMessage}`)
+      logger.error(
+        `[migration-execute] runId=${row.id} failed: ${errorMessage}`
+      )
     }
 
     await service.updateMigrationRuns({

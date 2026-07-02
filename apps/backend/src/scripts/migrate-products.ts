@@ -8,7 +8,6 @@ import { MIGRATION_MODULE } from "../modules/migration"
 import { runMigrationWorkflow } from "../workflows/migration/run-migration"
 
 import type MigrationModuleService from "../modules/migration/service"
-
 import type { ExecArgs } from "@medusajs/framework/types"
 
 /**
@@ -27,7 +26,7 @@ import type { ExecArgs } from "@medusajs/framework/types"
  */
 export default async function migrateProducts({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-  const service = container.resolve(MIGRATION_MODULE)
+  const service = container.resolve<MigrationModuleService>(MIGRATION_MODULE)
 
   const args = parseArgs(process.argv.slice(2))
   const limit = args.limit ? parseInt(args.limit, 10) : null

@@ -5,9 +5,9 @@ import { MIGRATION_MODULE } from "../modules/migration"
 import { CsvFixtureReader } from "./readers/csv-fixture"
 import { WooCommerceApiReader } from "./readers/woocommerce-api"
 
-import type { MedusaContainer } from "@medusajs/framework/types"
-
 import type { MigrationReader } from "./types"
+import type { MigrationModuleService } from "../modules/migration"
+import type { MedusaContainer } from "@medusajs/framework/types"
 
 /**
  * Picks the right reader based on the script's CLI flags.
@@ -56,7 +56,7 @@ export async function resolveReader(
   if (source !== "api") return null
 
   try {
-    const service = container.resolve(MIGRATION_MODULE)
+    const service = container.resolve<MigrationModuleService>(MIGRATION_MODULE)
     const saved = await service.resolveWcCredentials()
     if (saved) {
       return new WooCommerceApiReader({

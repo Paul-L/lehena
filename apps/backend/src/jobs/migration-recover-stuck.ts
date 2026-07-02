@@ -2,6 +2,7 @@ import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
 import { MIGRATION_MODULE } from "../modules/migration"
 
+import type { MigrationModuleService } from "../modules/migration"
 import type { MedusaContainer } from "@medusajs/framework/types"
 
 /**
@@ -26,7 +27,7 @@ export default async function recoverStuckMigrationRuns(
   // scheduler every minute.
   if (process.env.ENABLE_MIGRATION_MODULE !== "true") return
 
-  const service = container.resolve(MIGRATION_MODULE)
+  const service = container.resolve<MigrationModuleService>(MIGRATION_MODULE)
 
   const cutoff = new Date(Date.now() - STUCK_RUN_TIMEOUT_MS)
   const stuck = await service.listMigrationRuns({

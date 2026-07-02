@@ -6,12 +6,14 @@ import { MedusaError } from "@medusajs/framework/utils"
 
 import { MIGRATION_MODULE } from "../../../../modules/migration"
 
+import type { MigrationModuleService } from "../../../../modules/migration"
+
 export async function GET(
   req: AuthenticatedMedusaRequest,
   res: MedusaResponse
 ) {
   const { id } = req.params
-  const service = req.scope.resolve(MIGRATION_MODULE)
+  const service = req.scope.resolve<MigrationModuleService>(MIGRATION_MODULE)
   try {
     const run = await service.retrieveMigrationRun(id)
     res.json({ run })

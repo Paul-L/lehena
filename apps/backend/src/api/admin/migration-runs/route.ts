@@ -12,6 +12,8 @@ import {
   type ListMigrationRunsQuerySchema,
 } from "./validators"
 
+import type { MigrationModuleService } from "../../../modules/migration"
+
 export async function GET(
   req: AuthenticatedMedusaRequest,
   res: MedusaResponse
@@ -26,7 +28,7 @@ export async function GET(
   if (script) filters.script = script
   if (status) filters.status = status
 
-  const service = req.scope.resolve(MIGRATION_MODULE)
+  const service = req.scope.resolve<MigrationModuleService>(MIGRATION_MODULE)
   const [rows, count] = await service.listAndCountMigrationRuns(filters, {
     take,
     skip,
@@ -51,7 +53,7 @@ export async function POST(
 ) {
   const { script, source, commit, limit } = req.validatedBody
   const logger = req.scope.resolve(ContainerRegistrationKeys.LOGGER)
-  const service = req.scope.resolve(MIGRATION_MODULE)
+  const service = req.scope.resolve<MigrationModuleService>(MIGRATION_MODULE)
 
   const triggeredBy = req.auth_context?.actor_id ?? null
 

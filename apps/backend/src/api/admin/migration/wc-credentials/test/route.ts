@@ -6,6 +6,8 @@ import { MedusaError } from "@medusajs/framework/utils"
 
 import { MIGRATION_MODULE } from "../../../../../modules/migration"
 
+import type { MigrationModuleService } from "../../../../../modules/migration"
+
 /**
  * Pings the configured WC REST API with the saved credentials. On a 2xx
  * response we mark the row as validated; otherwise we surface the status
@@ -18,7 +20,7 @@ export async function POST(
   req: AuthenticatedMedusaRequest,
   res: MedusaResponse
 ) {
-  const service = req.scope.resolve(MIGRATION_MODULE)
+  const service = req.scope.resolve<MigrationModuleService>(MIGRATION_MODULE)
   const resolved = await service.resolveWcCredentials()
   if (!resolved) {
     throw new MedusaError(
@@ -27,7 +29,9 @@ export async function POST(
     )
   }
 
-  const url = new URL(`${resolved.url.replace(/\/$/, "")}/wp-json/wc/v3/products`)
+  const url = new URL(
+    `${resolved.url.replace(/\/$/, "")}/wp-json/wc/v3/products`
+  )
   url.searchParams.set("per_page", "1")
   const token = Buffer.from(
     `${resolved.consumerKey}:${resolved.consumerSecret}`
