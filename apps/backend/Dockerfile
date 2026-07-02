@@ -1,64 +1,67 @@
 # À placer dans le repo Lehena : apps/backend/Dockerfile
 #
-# Multi-stage build pour le backend Medusa v2 dans un monorepo pnpm.
-# Publié sur GHCR par la CI, pull automatiquement par Watchtower sur le VPS.
+# Multi-stage build Medusa v2 (pattern "standalone").
+# `medusa build` produit apps/backend/.medusa/server/ = un serveur autonome
+# avec son propre package.json. On copie CE dossier dans le stage runner,
+# on y install les deps prod, on lance depuis là.
+#
+# Publié sur GHCR par la CI, pull auto par Watchtower sur le VPS.
 
 # ============================================================
 # Stage 1 : builder
 # ============================================================
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 RUN corepack enable
 
 WORKDIR /app
 
-# Cache : d'abord les manifestes pnpm pour un install cacheable
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+# Copie des manifestes du monorepo (cache-friendly)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json .npmrc* ./
 COPY apps/backend/package.json apps/backend/
+COPY apps/backend/.npmrc* apps/backend/
+# Storefront manifest requis car pnpm-workspace le référence
+COPY apps/storefront/package.json apps/storefront/
 
-# Install à froid
-RUN pnpm install --frozen-lockfile --filter=@lehena/backend...
+# Install ALL les deps (pas de --filter : @medusajs/dashboard est transitive
+# et doit être hoistée pour que Vite la trouve au build admin)
+RUN pnpm install --frozen-lockfile
 
-# Copie du code
+# Copie du code backend uniquement
 COPY apps/backend/ apps/backend/
 
-# Build
-WORKDIR /app/apps/backend
-RUN pnpm build
+# Build : produit apps/backend/.medusa/server/ (serveur standalone)
+RUN cd apps/backend && pnpm build
+
+# Install les deps prod DU standalone
+WORKDIR /app/apps/backend/.medusa/server
+RUN pnpm install --prod --no-frozen-lockfile
 
 # ============================================================
-# Stage 2 : runner (image finale)
+# Stage 2 : runner
 # ============================================================
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 RUN corepack enable && apk add --no-cache curl tini
 
 WORKDIR /app
 
-# Copie des artefacts build + node_modules
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/backend ./apps/backend
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/pnpm-lock.yaml ./
-COPY --from=builder /app/pnpm-workspace.yaml ./
+# Copie du standalone avec ses node_modules
+COPY --from=builder /app/apps/backend/.medusa/server ./
 
-# Utilisateur non-root
+# User non-root
 RUN addgroup -S medusa && adduser -S -G medusa medusa && \
     chown -R medusa:medusa /app
 
 USER medusa
-WORKDIR /app/apps/backend
 
 EXPOSE 9000
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
   CMD curl -f http://localhost:9000/health || exit 1
 
-# Tini comme init pour gérer proprement SIGTERM
 ENTRYPOINT ["/sbin/tini", "--"]
 
-# Migrations au démarrage puis start
-# → si les migrations échouent, le container ne boot pas
-# → à toi de décider si tu veux ce comportement ou de déplacer les migrations
-#   en step CI dédiée (recommandé si tes migrations sont sensibles)
-CMD ["sh", "-c", "pnpm exec medusa db:migrate && pnpm start"]
+# Migrations puis start. Si migrations foirent → container ne boot pas → alerte.
+# Pour éviter le crash-loop en cas de migration cassée, déplacer ce hook en step CI.
+CMD ["sh", "-c", "pnpm exec medusa db:migrate && pnpm exec medusa start"]
