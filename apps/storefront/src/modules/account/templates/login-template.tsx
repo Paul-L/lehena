@@ -16,7 +16,7 @@ export enum LOGIN_VIEW {
 type Step = "email" | "method"
 type Method = "magic" | "password"
 
-const REASSURANCE: ReadonlyArray<readonly [string, string]> = [
+const REASSURANCE: readonly (readonly [string, string])[] = [
   ["Chronofresh", "24–48 h"],
   ["Frais de port offerts", "dès 50 €"],
   ["Sans nitrite", "Affinage 15 mois min."],
@@ -111,7 +111,10 @@ const LoginTemplate = () => {
         }}
       >
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div className="eyebrow" style={{ color: "var(--argile)", marginBottom: 20 }}>
+          <div
+            className="eyebrow"
+            style={{ color: "var(--argile)", marginBottom: 20 }}
+          >
             Espace client
           </div>
           <h1
@@ -459,7 +462,9 @@ const LoginTemplate = () => {
                 </strong>
               </p>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 14 }}
+              >
                 {/* Option 1 : magic link (recommandé) */}
                 <MethodCard
                   selected={method === "magic"}
@@ -638,6 +643,7 @@ function MethodCard({
 }: MethodCardProps) {
   return (
     <label
+      aria-label={title}
       style={{
         display: "block",
         cursor: "pointer",
@@ -760,7 +766,12 @@ function PasswordForm({
   return (
     <form
       action={action}
-      style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 14 }}
+      style={{
+        marginTop: 18,
+        display: "flex",
+        flexDirection: "column",
+        gap: 14,
+      }}
     >
       <input type="hidden" name="email" value={email} />
       {isRegister && (

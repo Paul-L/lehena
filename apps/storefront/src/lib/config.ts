@@ -25,7 +25,9 @@ sdk.client.fetch = async <T>(
   try {
     localeHeader = await getLocaleHeader()
     headers["x-medusa-locale"] ??= localeHeader["x-medusa-locale"]
-  } catch {}
+  } catch {
+    // Locale header is best-effort — swallow errors to keep the request going.
+  }
 
   const newHeaders = {
     ...localeHeader,
