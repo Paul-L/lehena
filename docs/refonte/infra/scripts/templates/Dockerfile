@@ -34,6 +34,13 @@ COPY apps/backend/ apps/backend/
 # Build : produit apps/backend/.medusa/server/ (avec public/admin/)
 RUN cd apps/backend && pnpm build
 
+# Assertion défensive : si medusa build s'est terminé sans .medusa/server/,
+# on fait planter le build ici plutôt que de publier une image cassée.
+RUN test -d /app/apps/backend/.medusa/server \
+    && test -f /app/apps/backend/.medusa/server/package.json \
+    && test -f /app/apps/backend/.medusa/server/public/admin/index.html \
+    || (echo "FATAL: medusa build did not produce a valid .medusa/server/ directory" && ls -la /app/apps/backend/.medusa/ 2>&1 && exit 1)
+
 # ============================================================
 # Stage 2 : runner
 # ============================================================
