@@ -1,11 +1,12 @@
 # À placer dans le repo Lehena : apps/backend/Dockerfile
 #
-# Multi-stage build Medusa v2 (pattern "standalone").
-# `medusa build` produit apps/backend/.medusa/server/ = un serveur autonome
-# avec son propre package.json. On copie CE dossier dans le stage runner,
-# on y install les deps prod, on lance depuis là.
+# Pattern "workspace preserved" : on garde la structure monorepo dans
+# l'image finale, node_modules hoisté à /app/node_modules (via .npmrc
+# node-linker=hoisted), et on démarre depuis apps/backend/ où `medusa
+# start` trouve .medusa/server/public/admin/ automatiquement.
 #
-# Publié sur GHCR par la CI, pull auto par Watchtower sur le VPS.
+# Pattern plus lourd que le standalone (~150 Mo de plus) mais fiable et
+# aligné sur le pnpm workspace du monorepo.
 
 # ============================================================
 # Stage 1 : builder
@@ -16,26 +17,22 @@ RUN corepack enable
 
 WORKDIR /app
 
-# Copie des manifestes du monorepo (cache-friendly)
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json .npmrc* ./
+# Manifestes du monorepo (cache-friendly)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY .npmrc* ./
 COPY apps/backend/package.json apps/backend/
 COPY apps/backend/.npmrc* apps/backend/
-# Storefront manifest requis car pnpm-workspace le référence
+# Storefront manifest requis par pnpm-workspace
 COPY apps/storefront/package.json apps/storefront/
 
-# Install ALL les deps (pas de --filter : @medusajs/dashboard est transitive
-# et doit être hoistée pour que Vite la trouve au build admin)
+# Install ALL les deps du workspace (dashboard transitive hoistée)
 RUN pnpm install --frozen-lockfile
 
 # Copie du code backend uniquement
 COPY apps/backend/ apps/backend/
 
-# Build : produit apps/backend/.medusa/server/ (serveur standalone)
+# Build : produit apps/backend/.medusa/server/ (avec public/admin/)
 RUN cd apps/backend && pnpm build
-
-# Install les deps prod DU standalone
-WORKDIR /app/apps/backend/.medusa/server
-RUN pnpm install --prod --no-frozen-lockfile
 
 # ============================================================
 # Stage 2 : runner
@@ -46,14 +43,22 @@ RUN corepack enable && apk add --no-cache curl tini
 
 WORKDIR /app
 
-# Copie du standalone avec ses node_modules
-COPY --from=builder /app/apps/backend/.medusa/server ./
+# node_modules hoisté du workspace root (via .npmrc hoisted)
+COPY --from=builder /app/node_modules ./node_modules
+# Manifestes du workspace (pour que pnpm exec les trouve)
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/pnpm-lock.yaml ./
+COPY --from=builder /app/pnpm-workspace.yaml ./
+COPY --from=builder /app/.npmrc* ./
+# Backend complet (avec .medusa/server/ dedans)
+COPY --from=builder /app/apps/backend ./apps/backend
 
 # User non-root
 RUN addgroup -S medusa && adduser -S -G medusa medusa && \
     chown -R medusa:medusa /app
 
 USER medusa
+WORKDIR /app/apps/backend
 
 EXPOSE 9000
 
@@ -62,6 +67,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-# Migrations puis start. Si migrations foirent → container ne boot pas → alerte.
-# Pour éviter le crash-loop en cas de migration cassée, déplacer ce hook en step CI.
+# medusa start lit .medusa/server/ automatiquement pour l'admin bundle.
 CMD ["sh", "-c", "pnpm exec medusa db:migrate && pnpm exec medusa start"]
