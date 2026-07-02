@@ -47,7 +47,7 @@ if [[ ! -f "$ENV_FILE" ]]; then
 POSTGRES_USER=medusa
 POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 POSTGRES_DB=medusa
-DATABASE_URL=postgres://medusa:$POSTGRES_PASSWORD@postgres:5432/medusa
+DATABASE_URL=postgres://medusa:$POSTGRES_PASSWORD@postgres:5432/medusa?sslmode=disable
 
 # --- Redis ---
 REDIS_PASSWORD=$REDIS_PASSWORD

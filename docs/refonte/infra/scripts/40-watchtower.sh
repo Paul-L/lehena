@@ -60,6 +60,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./docker-config:/config
     environment:
+      # Force la version d'API Docker parlée par la SDK Go de Watchtower.
+      # Sans ça, sur Docker Engine récent (≥ 28), la SDK retombe sur API 1.25
+      # qui est refusée. Même piège que Traefik (cf. 20-traefik.sh).
+      DOCKER_API_VERSION: "1.44"
       # Auth GHCR
       DOCKER_CONFIG: /config
       # Ne watch que les containers avec le label enable=true (cf. 30-stack.sh)
