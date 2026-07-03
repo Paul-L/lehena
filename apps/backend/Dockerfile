@@ -32,7 +32,26 @@ RUN pnpm install --frozen-lockfile
 COPY apps/backend/ apps/backend/
 
 # Build : produit apps/backend/.medusa/server/ (avec public/admin/)
-RUN cd apps/backend && pnpm build
+#
+# medusa build charge medusa-config.ts, qui appelle requireEnv() sur
+# DATABASE_URL / *_CORS / *_SECRET. Sans ces vars, la config throw au
+# load-time → Medusa se retrouve avec un config null → "Cannot read
+# properties of null (reading 'admin')" → medusa build sort exit 0 SANS
+# produire .medusa/server/ (l'assertion ci-dessous le détecte).
+#
+# Ces valeurs sont des PLACEHOLDERS de build uniquement : medusa build ne
+# se connecte à aucun service (il compile + génère le bundle admin). Le
+# stage builder est jeté ; le runtime reçoit les vrais secrets via le
+# .env monté par docker-compose sur le VPS. Ne PAS mettre de vrais secrets ici.
+RUN cd apps/backend && \
+    DATABASE_URL="postgres://build:build@localhost:5432/build" \
+    STORE_CORS="http://localhost:3000" \
+    ADMIN_CORS="http://localhost:9000" \
+    AUTH_CORS="http://localhost:9000" \
+    JWT_SECRET="build-time-placeholder-not-a-secret" \
+    COOKIE_SECRET="build-time-placeholder-not-a-secret" \
+    NODE_ENV="production" \
+    pnpm build
 
 # Assertion défensive : si medusa build s'est terminé sans .medusa/server/,
 # on fait planter le build ici plutôt que de publier une image cassée.
