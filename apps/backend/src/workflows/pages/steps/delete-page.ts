@@ -1,6 +1,6 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { PAGES_MODULE } from "../../../modules/pages"
+import { PAGES_MODULE, type PagesModuleService } from "../../../modules/pages"
 
 export interface DeletePageStepInput {
   id: string
@@ -9,7 +9,7 @@ export interface DeletePageStepInput {
 export const deletePageStep = createStep(
   "delete-page",
   async (input: DeletePageStepInput, { container }) => {
-    const pagesService = container.resolve(PAGES_MODULE)
+    const pagesService = container.resolve<PagesModuleService>(PAGES_MODULE)
 
     await pagesService.retrievePage(input.id)
     await pagesService.softDeletePages(input.id)
@@ -20,7 +20,7 @@ export const deletePageStep = createStep(
     if (!id) {
       return
     }
-    const pagesService = container.resolve(PAGES_MODULE)
+    const pagesService = container.resolve<PagesModuleService>(PAGES_MODULE)
     await pagesService.restorePages(id)
   }
 )

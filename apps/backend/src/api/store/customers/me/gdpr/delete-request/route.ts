@@ -9,7 +9,10 @@ import {
 } from "@medusajs/framework/utils"
 import jwt from "jsonwebtoken"
 
-import { GDPR_MODULE } from "../../../../../../modules/gdpr"
+import {
+  GDPR_MODULE,
+  type GdprModuleService,
+} from "../../../../../../modules/gdpr"
 import { type DeleteRequestSchema } from "../validators"
 
 /**
@@ -69,7 +72,7 @@ export async function POST(
       ?.split(",")[0]
       ?.trim() ?? null
 
-  const gdprService = req.scope.resolve(GDPR_MODULE)
+  const gdprService = req.scope.resolve<GdprModuleService>(GDPR_MODULE)
   await gdprService.createGdprLogs({
     customer_id,
     action: "delete_requested",

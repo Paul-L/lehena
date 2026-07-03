@@ -1,6 +1,6 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { FAQ_MODULE } from "../../../modules/faq"
+import { FAQ_MODULE, type FaqModuleService } from "../../../modules/faq"
 
 interface Snapshot {
   id: string
@@ -15,7 +15,7 @@ export const deleteFaqItemStep = createStep(
     input: { id: string },
     { container }
   ): Promise<StepResponse<{ id: string }, Snapshot>> => {
-    const faq = container.resolve(FAQ_MODULE)
+    const faq = container.resolve<FaqModuleService>(FAQ_MODULE)
     const existing = await faq.retrieveFaqItem(input.id)
     const snapshot: Snapshot = {
       id: existing.id,
@@ -28,7 +28,7 @@ export const deleteFaqItemStep = createStep(
   },
   async (snapshot, { container }) => {
     if (!snapshot) return
-    const faq = container.resolve(FAQ_MODULE)
+    const faq = container.resolve<FaqModuleService>(FAQ_MODULE)
     // Re-create with the same id so any reference stays valid.
     await faq.createFaqItems([
       {

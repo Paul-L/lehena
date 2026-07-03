@@ -1,6 +1,6 @@
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
-import { NOTIFICATIONS_MODULE } from "./index"
+import { NOTIFICATIONS_MODULE, type NotificationsModuleService } from "./index"
 
 import type { MedusaContainer } from "@medusajs/framework/types"
 
@@ -82,7 +82,8 @@ export async function sendEmail(
   input: SendEmailInput
 ): Promise<SendEmailResult> {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-  const notif = container.resolve(NOTIFICATIONS_MODULE)
+  const notif =
+    container.resolve<NotificationsModuleService>(NOTIFICATIONS_MODULE)
 
   // 1. Idempotency check.
   const existing = await notif.listEmailSentLogs({

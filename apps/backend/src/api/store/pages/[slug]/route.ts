@@ -5,7 +5,10 @@ import {
 import { MedusaError } from "@medusajs/framework/utils"
 import jwt from "jsonwebtoken"
 
-import { PAGES_MODULE } from "../../../../modules/pages"
+import {
+  PAGES_MODULE,
+  type PagesModuleService,
+} from "../../../../modules/pages"
 
 /**
  * Returns true if the supplied token grants preview access.
@@ -30,7 +33,7 @@ function isValidPreviewToken(token: string, previewSecret: string): boolean {
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { slug } = req.params
-  const pagesService = req.scope.resolve(PAGES_MODULE)
+  const pagesService = req.scope.resolve<PagesModuleService>(PAGES_MODULE)
 
   const previewSecret = process.env.PREVIEW_SECRET
   const headerToken = req.headers["x-preview-token"]

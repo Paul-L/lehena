@@ -4,7 +4,10 @@ import {
 } from "@medusajs/framework/http"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 
-import { SUBSCRIPTION_MODULE } from "../../../../modules/subscription"
+import {
+  SUBSCRIPTION_MODULE,
+  type SubscriptionModuleService,
+} from "../../../../modules/subscription"
 import { getStripeClient } from "../../../../modules/subscription/stripe-client"
 
 interface StripeEvent {
@@ -73,7 +76,8 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     return res.status(401).json({ ok: false })
   }
 
-  const subService = req.scope.resolve(SUBSCRIPTION_MODULE)
+  const subService =
+    req.scope.resolve<SubscriptionModuleService>(SUBSCRIPTION_MODULE)
   const dupes = await subService.listSubscriptionEventLogs(
     { stripe_event_id: event.id },
     { take: 1 }

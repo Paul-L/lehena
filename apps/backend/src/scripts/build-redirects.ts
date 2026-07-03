@@ -8,7 +8,10 @@ import {
 } from "../migration/mappers/redirect"
 import { ReportBuilder } from "../migration/report"
 import { parseArgs, pickReader } from "../migration/source"
-import { REDIRECTS_MODULE } from "../modules/redirects"
+import {
+  REDIRECTS_MODULE,
+  type RedirectsModuleService,
+} from "../modules/redirects"
 
 import type { ExecArgs } from "@medusajs/framework/types"
 
@@ -26,7 +29,9 @@ import type { ExecArgs } from "@medusajs/framework/types"
  */
 export default async function buildRedirects({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-  const redirectService = container.resolve(REDIRECTS_MODULE) as {
+  const redirectService = container.resolve<RedirectsModuleService>(
+    REDIRECTS_MODULE
+  ) as {
     listRedirects: (
       f: Record<string, unknown>,
       o?: Record<string, unknown>

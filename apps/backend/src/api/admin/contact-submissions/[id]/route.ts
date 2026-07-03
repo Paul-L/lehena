@@ -4,12 +4,15 @@ import {
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { CONTACT_MODULE } from "../../../../modules/contact"
+import {
+  CONTACT_MODULE,
+  type ContactModuleService,
+} from "../../../../modules/contact"
 import { type UpdateContactSubmissionSchema } from "../validators"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { id } = req.params
-  const service = req.scope.resolve(CONTACT_MODULE)
+  const service = req.scope.resolve<ContactModuleService>(CONTACT_MODULE)
   const submission = await service.retrieveContactSubmission(id)
   if (!submission) {
     throw new MedusaError(
@@ -35,7 +38,7 @@ export async function POST(
 ) {
   const { id } = req.params
   const { status } = req.validatedBody
-  const service = req.scope.resolve(CONTACT_MODULE)
+  const service = req.scope.resolve<ContactModuleService>(CONTACT_MODULE)
 
   const patch: Record<string, unknown> = { id, status }
   if (status === "read") patch.read_at = new Date()
@@ -47,7 +50,7 @@ export async function POST(
 
 export async function DELETE(req: MedusaRequest, res: MedusaResponse) {
   const { id } = req.params
-  const service = req.scope.resolve(CONTACT_MODULE)
+  const service = req.scope.resolve<ContactModuleService>(CONTACT_MODULE)
   await service.deleteContactSubmissions(id)
   return res.json({ id, object: "contact_submission", deleted: true })
 }

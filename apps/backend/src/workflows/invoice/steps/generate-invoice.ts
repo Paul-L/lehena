@@ -1,7 +1,10 @@
 import { MedusaError, Modules } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { INVOICE_MODULE } from "../../../modules/invoice"
+import {
+  INVOICE_MODULE,
+  type InvoiceModuleService,
+} from "../../../modules/invoice"
 import {
   renderInvoicePdf,
   type InvoiceData,
@@ -16,7 +19,8 @@ const pad = (n: number, len: number) => n.toString().padStart(len, "0")
 export const generateInvoiceStep = createStep(
   "generate-invoice",
   async (input: GenerateInvoiceStepInput, { container }) => {
-    const invoiceService = container.resolve(INVOICE_MODULE)
+    const invoiceService =
+      container.resolve<InvoiceModuleService>(INVOICE_MODULE)
     const orderService = container.resolve(Modules.ORDER)
     const fileService = container.resolve(Modules.FILE)
 
@@ -99,7 +103,8 @@ export const generateInvoiceStep = createStep(
   },
   async (id, { container }) => {
     if (!id) return
-    const invoiceService = container.resolve(INVOICE_MODULE)
+    const invoiceService =
+      container.resolve<InvoiceModuleService>(INVOICE_MODULE)
     await invoiceService.deleteInvoices(id)
   }
 )

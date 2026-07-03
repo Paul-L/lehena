@@ -3,7 +3,10 @@ import {
   type MedusaResponse,
 } from "@medusajs/framework/http"
 
-import { REVIEW_MODULE } from "../../../modules/review"
+import {
+  REVIEW_MODULE,
+  type ReviewModuleService,
+} from "../../../modules/review"
 
 import { type ListAdminReviewsQuerySchema } from "./validators"
 
@@ -16,7 +19,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   if (status) filters.status = status
   if (product_id) filters.product_id = product_id
 
-  const reviewService = req.scope.resolve(REVIEW_MODULE)
+  const reviewService = req.scope.resolve<ReviewModuleService>(REVIEW_MODULE)
   const [reviews, count] = await reviewService.listAndCountReviews(filters, {
     take,
     skip,

@@ -5,7 +5,10 @@ import {
 } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { SUBSCRIPTION_MODULE } from "../../../modules/subscription"
+import {
+  SUBSCRIPTION_MODULE,
+  type SubscriptionModuleService,
+} from "../../../modules/subscription"
 import { getStripeClient } from "../../../modules/subscription/stripe-client"
 
 export interface CreateCheckoutSessionStepInput {
@@ -32,7 +35,8 @@ export const createCheckoutSessionStep = createStep(
   "create-subscription-checkout-session",
   async (input: CreateCheckoutSessionStepInput, { container }) => {
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-    const subService = container.resolve(SUBSCRIPTION_MODULE)
+    const subService =
+      container.resolve<SubscriptionModuleService>(SUBSCRIPTION_MODULE)
     const customerService = container.resolve(Modules.CUSTOMER)
 
     const plan = await subService.retrieveSubscriptionPlan(input.plan_id)

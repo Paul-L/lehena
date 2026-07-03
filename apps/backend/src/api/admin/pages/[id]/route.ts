@@ -3,7 +3,10 @@ import {
   type MedusaResponse,
 } from "@medusajs/framework/http"
 
-import { PAGES_MODULE } from "../../../../modules/pages"
+import {
+  PAGES_MODULE,
+  type PagesModuleService,
+} from "../../../../modules/pages"
 import {
   deletePageWorkflow,
   updatePageWorkflow,
@@ -12,7 +15,7 @@ import { type UpdatePageSchema } from "../validators"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { id } = req.params
-  const pagesService = req.scope.resolve(PAGES_MODULE)
+  const pagesService = req.scope.resolve<PagesModuleService>(PAGES_MODULE)
 
   const page = await pagesService.retrievePage(id)
 

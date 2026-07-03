@@ -5,7 +5,10 @@ import {
 } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { REVIEW_MODULE } from "../../../modules/review"
+import {
+  REVIEW_MODULE,
+  type ReviewModuleService,
+} from "../../../modules/review"
 
 export interface SubmitReviewStepInput {
   product_id: string
@@ -42,7 +45,7 @@ export const submitReviewStep = createStep(
       )
     }
 
-    const reviewService = container.resolve(REVIEW_MODULE)
+    const reviewService = container.resolve<ReviewModuleService>(REVIEW_MODULE)
     // Idempotence — a re-submission overwrites the previous draft if the
     // customer has one pending. Approved/rejected reviews stay locked.
     const existing = await reviewService.listReviews({
@@ -109,7 +112,7 @@ export const submitReviewStep = createStep(
   },
   async (id, { container }) => {
     if (!id) return
-    const reviewService = container.resolve(REVIEW_MODULE)
+    const reviewService = container.resolve<ReviewModuleService>(REVIEW_MODULE)
     await reviewService.deleteReviews(id)
   }
 )

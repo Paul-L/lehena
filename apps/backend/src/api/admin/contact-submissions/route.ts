@@ -3,7 +3,10 @@ import {
   type MedusaResponse,
 } from "@medusajs/framework/http"
 
-import { CONTACT_MODULE } from "../../../modules/contact"
+import {
+  CONTACT_MODULE,
+  type ContactModuleService,
+} from "../../../modules/contact"
 
 import { type ListContactSubmissionsQuerySchema } from "./validators"
 
@@ -24,7 +27,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     ]
   }
 
-  const service = req.scope.resolve(CONTACT_MODULE)
+  const service = req.scope.resolve<ContactModuleService>(CONTACT_MODULE)
 
   const [submissions, count] = await service.listAndCountContactSubmissions(
     filters,

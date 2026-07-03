@@ -4,7 +4,10 @@ import React from "react"
 import { renderEmail } from "../emails/render"
 import SubscriptionWelcomeEmail from "../emails/subscription-welcome"
 import { sendEmail } from "../modules/notifications/email-sender"
-import { SUBSCRIPTION_MODULE } from "../modules/subscription"
+import {
+  SUBSCRIPTION_MODULE,
+  type SubscriptionModuleService,
+} from "../modules/subscription"
 
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
 
@@ -18,7 +21,8 @@ export default async function subscriptionCreatedHandler({
 }>) {
   const { customer_id, plan_id } = event.data
   const customerService = container.resolve(Modules.CUSTOMER)
-  const subService = container.resolve(SUBSCRIPTION_MODULE)
+  const subService =
+    container.resolve<SubscriptionModuleService>(SUBSCRIPTION_MODULE)
   const customer = await customerService.retrieveCustomer(customer_id)
   if (!customer?.email) return
   const plan = await subService.retrieveSubscriptionPlan(plan_id)

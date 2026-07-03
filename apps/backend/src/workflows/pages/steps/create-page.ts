@@ -1,7 +1,7 @@
 import { MedusaError } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { PAGES_MODULE } from "../../../modules/pages"
+import { PAGES_MODULE, type PagesModuleService } from "../../../modules/pages"
 import {
   PAGE_RESERVED_SLUGS,
   PAGE_SLUG_REGEX,
@@ -24,7 +24,7 @@ export interface CreatePageStepInput {
 export const createPageStep = createStep(
   "create-page",
   async (input: CreatePageStepInput, { container }) => {
-    const pagesService = container.resolve(PAGES_MODULE)
+    const pagesService = container.resolve<PagesModuleService>(PAGES_MODULE)
 
     if (!PAGE_SLUG_REGEX.test(input.slug)) {
       throw new MedusaError(
@@ -64,7 +64,7 @@ export const createPageStep = createStep(
     if (!id) {
       return
     }
-    const pagesService = container.resolve(PAGES_MODULE)
+    const pagesService = container.resolve<PagesModuleService>(PAGES_MODULE)
     await pagesService.deletePages(id)
   }
 )

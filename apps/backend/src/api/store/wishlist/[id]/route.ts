@@ -4,7 +4,10 @@ import {
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { WISHLIST_MODULE } from "../../../../modules/wishlist"
+import {
+  WISHLIST_MODULE,
+  type WishlistModuleService,
+} from "../../../../modules/wishlist"
 
 export async function DELETE(
   req: AuthenticatedMedusaRequest,
@@ -18,7 +21,7 @@ export async function DELETE(
     )
   }
   const { id } = req.params
-  const service = req.scope.resolve(WISHLIST_MODULE)
+  const service = req.scope.resolve<WishlistModuleService>(WISHLIST_MODULE)
   // Verify ownership before deleting — never delete another customer's item.
   const items = await service.listWishlistItems(
     { id, customer_id },

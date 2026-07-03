@@ -6,7 +6,10 @@ import {
 } from "@medusajs/framework/http"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
-import { NOTIFICATIONS_MODULE } from "../../../../modules/notifications"
+import {
+  NOTIFICATIONS_MODULE,
+  type NotificationsModuleService,
+} from "../../../../modules/notifications"
 
 interface ResendWebhookEvent {
   type: string
@@ -84,7 +87,8 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     return res.json({ ok: true })
   }
 
-  const notif = req.scope.resolve(NOTIFICATIONS_MODULE)
+  const notif =
+    req.scope.resolve<NotificationsModuleService>(NOTIFICATIONS_MODULE)
   const recipient = Array.isArray(event.data.to)
     ? event.data.to[0]
     : event.data.to

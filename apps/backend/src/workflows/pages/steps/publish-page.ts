@@ -1,6 +1,6 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { PAGES_MODULE } from "../../../modules/pages"
+import { PAGES_MODULE, type PagesModuleService } from "../../../modules/pages"
 
 export interface PublishPageStepInput {
   id: string
@@ -9,7 +9,7 @@ export interface PublishPageStepInput {
 export const publishPageStep = createStep(
   "publish-page",
   async (input: PublishPageStepInput, { container }) => {
-    const pagesService = container.resolve(PAGES_MODULE)
+    const pagesService = container.resolve<PagesModuleService>(PAGES_MODULE)
 
     const before = await pagesService.retrievePage(input.id)
 
@@ -25,7 +25,7 @@ export const publishPageStep = createStep(
     if (!before) {
       return
     }
-    const pagesService = container.resolve(PAGES_MODULE)
+    const pagesService = container.resolve<PagesModuleService>(PAGES_MODULE)
     await pagesService.updatePages({
       id: before.id,
       status: before.status,

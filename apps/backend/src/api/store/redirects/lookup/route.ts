@@ -3,7 +3,10 @@ import {
   type MedusaResponse,
 } from "@medusajs/framework/http"
 
-import { REDIRECTS_MODULE } from "../../../../modules/redirects"
+import {
+  REDIRECTS_MODULE,
+  type RedirectsModuleService,
+} from "../../../../modules/redirects"
 
 /**
  * Looks up a single redirect by exact `from_path`. The Next.js middleware
@@ -20,7 +23,9 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     return res.status(400).json({ message: "from_path required" })
   }
 
-  const redirectService = req.scope.resolve(REDIRECTS_MODULE) as {
+  const redirectService = req.scope.resolve<RedirectsModuleService>(
+    REDIRECTS_MODULE
+  ) as {
     listRedirects: (
       f: Record<string, unknown>,
       o?: Record<string, unknown>

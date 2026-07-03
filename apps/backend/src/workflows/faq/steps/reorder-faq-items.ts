@@ -1,6 +1,6 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { FAQ_MODULE } from "../../../modules/faq"
+import { FAQ_MODULE, type FaqModuleService } from "../../../modules/faq"
 
 import type { FaqItemsReorderInput } from "../../../modules/faq/types"
 
@@ -14,7 +14,7 @@ export const reorderFaqItemsStep = createStep(
     input: FaqItemsReorderInput,
     { container }
   ): Promise<StepResponse<{ count: number }, Snapshot>> => {
-    const faq = container.resolve(FAQ_MODULE)
+    const faq = container.resolve<FaqModuleService>(FAQ_MODULE)
     const ids = input.items.map((i) => i.id)
     const existing = await faq.listFaqItems({ id: ids })
     const previousPositions = existing.map((e) => ({
@@ -35,7 +35,7 @@ export const reorderFaqItemsStep = createStep(
   },
   async (snapshot, { container }) => {
     if (!snapshot) return
-    const faq = container.resolve(FAQ_MODULE)
+    const faq = container.resolve<FaqModuleService>(FAQ_MODULE)
     await Promise.all(
       snapshot.previous.map((it) =>
         faq.updateFaqItems({ id: it.id, position: it.position })

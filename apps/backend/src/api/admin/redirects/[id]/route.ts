@@ -4,12 +4,15 @@ import {
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { REDIRECTS_MODULE } from "../../../../modules/redirects"
+import {
+  REDIRECTS_MODULE,
+  type RedirectsModuleService,
+} from "../../../../modules/redirects"
 import { deleteRedirectWorkflow } from "../../../../workflows/redirects/delete-redirect"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { id } = req.params
-  const redirects = req.scope.resolve(REDIRECTS_MODULE)
+  const redirects = req.scope.resolve<RedirectsModuleService>(REDIRECTS_MODULE)
   try {
     const redirect = await redirects.retrieveRedirect(id)
     return res.json({ redirect })

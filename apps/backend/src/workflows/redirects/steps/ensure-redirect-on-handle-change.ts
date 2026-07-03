@@ -1,7 +1,10 @@
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { REDIRECTS_MODULE } from "../../../modules/redirects"
+import {
+  REDIRECTS_MODULE,
+  type RedirectsModuleService,
+} from "../../../modules/redirects"
 import {
   buildResourcePath,
   type ResourceType,
@@ -28,7 +31,8 @@ export const ensureRedirectOnHandleChangeStep = createStep(
   ): Promise<
     StepResponse<{ created_redirect_id: string | null }, CompensationData>
   > => {
-    const redirects = container.resolve(REDIRECTS_MODULE)
+    const redirects =
+      container.resolve<RedirectsModuleService>(REDIRECTS_MODULE)
 
     // 1. Find the existing snapshot for this resource (if any).
     const [existing] = await redirects.listHandleSnapshots(
@@ -117,7 +121,8 @@ export const ensureRedirectOnHandleChangeStep = createStep(
     if (!compensation) {
       return
     }
-    const redirects = container.resolve(REDIRECTS_MODULE)
+    const redirects =
+      container.resolve<RedirectsModuleService>(REDIRECTS_MODULE)
 
     if (compensation.created_redirect_id) {
       await redirects.deleteRedirects(compensation.created_redirect_id)

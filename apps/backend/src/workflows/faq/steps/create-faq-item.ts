@@ -1,7 +1,7 @@
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { FAQ_MODULE } from "../../../modules/faq"
+import { FAQ_MODULE, type FaqModuleService } from "../../../modules/faq"
 
 import type { FaqItemCreateInput } from "../../../modules/faq/types"
 
@@ -20,7 +20,7 @@ export const createFaqItemStep = createStep(
     input: CreateFaqItemStepInput,
     { container }
   ): Promise<StepResponse<{ id: string }, Snapshot>> => {
-    const faq = container.resolve(FAQ_MODULE)
+    const faq = container.resolve<FaqModuleService>(FAQ_MODULE)
     const link = container.resolve(ContainerRegistrationKeys.LINK)
 
     const [created] = await faq.createFaqItems([
@@ -40,7 +40,7 @@ export const createFaqItemStep = createStep(
   },
   async (snapshot, { container }) => {
     if (!snapshot) return
-    const faq = container.resolve(FAQ_MODULE)
+    const faq = container.resolve<FaqModuleService>(FAQ_MODULE)
     // Cascade on the link removes the link automatically when the item dies.
     await faq.deleteFaqItems(snapshot.faq_item_id)
   }

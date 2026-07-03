@@ -3,7 +3,10 @@ import {
   type MedusaResponse,
 } from "@medusajs/framework/http"
 
-import { REDIRECTS_MODULE } from "../../../modules/redirects"
+import {
+  REDIRECTS_MODULE,
+  type RedirectsModuleService,
+} from "../../../modules/redirects"
 import { createRedirectWorkflow } from "../../../workflows/redirects/create-redirect"
 
 import {
@@ -28,7 +31,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     ]
   }
 
-  const redirects = req.scope.resolve(REDIRECTS_MODULE)
+  const redirects = req.scope.resolve<RedirectsModuleService>(REDIRECTS_MODULE)
   const [items, count] = await redirects.listAndCountRedirects(filters, {
     take,
     skip,

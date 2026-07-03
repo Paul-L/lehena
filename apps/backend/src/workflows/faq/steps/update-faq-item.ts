@@ -1,6 +1,6 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { FAQ_MODULE } from "../../../modules/faq"
+import { FAQ_MODULE, type FaqModuleService } from "../../../modules/faq"
 
 import type { FaqItemUpdateInput } from "../../../modules/faq/types"
 
@@ -24,7 +24,7 @@ export const updateFaqItemStep = createStep(
     input: UpdateFaqItemStepInput,
     { container }
   ): Promise<StepResponse<{ id: string }, Snapshot>> => {
-    const faq = container.resolve(FAQ_MODULE)
+    const faq = container.resolve<FaqModuleService>(FAQ_MODULE)
     const existing = await faq.retrieveFaqItem(input.id)
     await faq.updateFaqItems({
       id: input.id,
@@ -44,7 +44,7 @@ export const updateFaqItemStep = createStep(
   },
   async (snapshot, { container }) => {
     if (!snapshot) return
-    const faq = container.resolve(FAQ_MODULE)
+    const faq = container.resolve<FaqModuleService>(FAQ_MODULE)
     await faq.updateFaqItems({
       id: snapshot.previous.id,
       question: snapshot.previous.question,

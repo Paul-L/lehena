@@ -1,7 +1,10 @@
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { CATALOG_MODULE } from "../../../modules/catalog"
+import {
+  CATALOG_MODULE,
+  type CatalogModuleService,
+} from "../../../modules/catalog"
 
 import type {
   ProductDetailsInput,
@@ -37,7 +40,7 @@ interface Snapshot {
 export const upsertProductCatalogStep = createStep(
   "upsert-product-catalog",
   async (input: UpsertProductCatalogInput, { container }) => {
-    const catalog = container.resolve(CATALOG_MODULE)
+    const catalog = container.resolve<CatalogModuleService>(CATALOG_MODULE)
     const link = container.resolve(ContainerRegistrationKeys.LINK)
     const query = container.resolve(ContainerRegistrationKeys.QUERY)
 
@@ -134,7 +137,7 @@ export const upsertProductCatalogStep = createStep(
     if (!snapshot) {
       return
     }
-    const catalog = container.resolve(CATALOG_MODULE)
+    const catalog = container.resolve<CatalogModuleService>(CATALOG_MODULE)
     const link = container.resolve(ContainerRegistrationKeys.LINK)
 
     // Roll back product details

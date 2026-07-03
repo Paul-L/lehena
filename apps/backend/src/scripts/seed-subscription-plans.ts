@@ -1,6 +1,9 @@
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
-import { SUBSCRIPTION_MODULE } from "../modules/subscription"
+import {
+  SUBSCRIPTION_MODULE,
+  type SubscriptionModuleService,
+} from "../modules/subscription"
 
 import type { ExecArgs } from "@medusajs/framework/types"
 
@@ -47,7 +50,8 @@ const SEEDS: Seed[] = [
  */
 export default async function seedSubscriptionPlans({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
-  const service = container.resolve(SUBSCRIPTION_MODULE)
+  const service =
+    container.resolve<SubscriptionModuleService>(SUBSCRIPTION_MODULE)
 
   for (const seed of SEEDS) {
     const existing = await service.listSubscriptionPlans({ slug: seed.slug })

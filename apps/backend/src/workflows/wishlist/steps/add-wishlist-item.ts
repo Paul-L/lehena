@@ -1,7 +1,10 @@
 import { MedusaError } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { WISHLIST_MODULE } from "../../../modules/wishlist"
+import {
+  WISHLIST_MODULE,
+  type WishlistModuleService,
+} from "../../../modules/wishlist"
 
 export interface AddWishlistItemStepInput {
   customer_id: string
@@ -12,7 +15,7 @@ export interface AddWishlistItemStepInput {
 export const addWishlistItemStep = createStep(
   "add-wishlist-item",
   async (input: AddWishlistItemStepInput, { container }) => {
-    const service = container.resolve(WISHLIST_MODULE)
+    const service = container.resolve<WishlistModuleService>(WISHLIST_MODULE)
     const existing = await service.listWishlistItems({
       customer_id: input.customer_id,
       product_id: input.product_id,
@@ -33,7 +36,7 @@ export const addWishlistItemStep = createStep(
   },
   async (id, { container }) => {
     if (!id) return
-    const service = container.resolve(WISHLIST_MODULE)
+    const service = container.resolve<WishlistModuleService>(WISHLIST_MODULE)
     await service.deleteWishlistItems(id)
   }
 )

@@ -1,6 +1,9 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { REDIRECTS_MODULE } from "../../../modules/redirects"
+import {
+  REDIRECTS_MODULE,
+  type RedirectsModuleService,
+} from "../../../modules/redirects"
 
 interface DeleteRedirectInput {
   id: string
@@ -19,7 +22,8 @@ interface Snapshot {
 export const deleteRedirectStep = createStep(
   "delete-redirect",
   async (input: DeleteRedirectInput, { container }) => {
-    const redirects = container.resolve(REDIRECTS_MODULE)
+    const redirects =
+      container.resolve<RedirectsModuleService>(REDIRECTS_MODULE)
     const existing = await redirects.retrieveRedirect(input.id)
     const snapshot: Snapshot = {
       id: existing.id,
@@ -37,7 +41,8 @@ export const deleteRedirectStep = createStep(
     if (!snapshot) {
       return
     }
-    const redirects = container.resolve(REDIRECTS_MODULE)
+    const redirects =
+      container.resolve<RedirectsModuleService>(REDIRECTS_MODULE)
     // Re-create with the same id so any reference stays valid.
     await redirects.createRedirects([
       {

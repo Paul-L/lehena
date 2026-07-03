@@ -3,7 +3,7 @@ import crypto from "crypto"
 import { MedusaError } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { PAGES_MODULE } from "../../../modules/pages"
+import { PAGES_MODULE, type PagesModuleService } from "../../../modules/pages"
 import {
   PAGE_RESERVED_SLUGS,
   PAGE_SLUG_REGEX,
@@ -26,7 +26,7 @@ export interface CreatePageTranslationStepInput {
 export const createPageTranslationStep = createStep(
   "create-page-translation",
   async (input: CreatePageTranslationStepInput, { container }) => {
-    const pagesService = container.resolve(PAGES_MODULE)
+    const pagesService = container.resolve<PagesModuleService>(PAGES_MODULE)
     const source = await pagesService.retrievePage(input.source_id)
 
     if (source.locale === input.target_locale) {
@@ -102,7 +102,7 @@ export const createPageTranslationStep = createStep(
   },
   async (compensationInput, { container }) => {
     if (!compensationInput) return
-    const pagesService = container.resolve(PAGES_MODULE)
+    const pagesService = container.resolve<PagesModuleService>(PAGES_MODULE)
     await pagesService.deletePages(compensationInput.created_id)
     if (compensationInput.source_was_backfilled) {
       await pagesService.updatePages({

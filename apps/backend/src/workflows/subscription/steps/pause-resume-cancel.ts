@@ -1,7 +1,10 @@
 import { MedusaError } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { SUBSCRIPTION_MODULE } from "../../../modules/subscription"
+import {
+  SUBSCRIPTION_MODULE,
+  type SubscriptionModuleService,
+} from "../../../modules/subscription"
 import { getStripeClient } from "../../../modules/subscription/stripe-client"
 
 export type SubscriptionMutationKind = "pause" | "resume" | "cancel"
@@ -21,7 +24,8 @@ export interface MutateSubscriptionStepInput {
 export const mutateSubscriptionStep = createStep(
   "mutate-subscription",
   async (input: MutateSubscriptionStepInput, { container }) => {
-    const service = container.resolve(SUBSCRIPTION_MODULE)
+    const service =
+      container.resolve<SubscriptionModuleService>(SUBSCRIPTION_MODULE)
     const sub = await service.retrieveSubscription(input.subscription_id)
     if (!sub || sub.customer_id !== input.customer_id) {
       throw new MedusaError(

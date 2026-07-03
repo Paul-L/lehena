@@ -1,6 +1,9 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { CONTACT_MODULE } from "../../../modules/contact"
+import {
+  CONTACT_MODULE,
+  type ContactModuleService,
+} from "../../../modules/contact"
 
 export interface CreateContactSubmissionStepInput {
   name: string
@@ -14,7 +17,7 @@ export interface CreateContactSubmissionStepInput {
 export const createContactSubmissionStep = createStep(
   "create-contact-submission",
   async (input: CreateContactSubmissionStepInput, { container }) => {
-    const service = container.resolve(CONTACT_MODULE)
+    const service = container.resolve<ContactModuleService>(CONTACT_MODULE)
     const created = await service.createContactSubmissions({
       name: input.name.trim(),
       email: input.email.trim().toLowerCase(),
@@ -28,7 +31,7 @@ export const createContactSubmissionStep = createStep(
   },
   async (id, { container }) => {
     if (!id) return
-    const service = container.resolve(CONTACT_MODULE)
+    const service = container.resolve<ContactModuleService>(CONTACT_MODULE)
     await service.deleteContactSubmissions(id)
   }
 )

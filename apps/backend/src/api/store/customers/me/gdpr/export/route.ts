@@ -8,8 +8,14 @@ import {
   Modules,
 } from "@medusajs/framework/utils"
 
-import { GDPR_MODULE } from "../../../../../../modules/gdpr"
-import { WISHLIST_MODULE } from "../../../../../../modules/wishlist"
+import {
+  GDPR_MODULE,
+  type GdprModuleService,
+} from "../../../../../../modules/gdpr"
+import {
+  WISHLIST_MODULE,
+  type WishlistModuleService,
+} from "../../../../../../modules/wishlist"
 
 /**
  * Returns a JSON blob with every piece of PII we hold about the requesting
@@ -35,10 +41,11 @@ export async function GET(
     relations: ["addresses"],
   })
 
-  const wishlistService = req.scope.resolve(WISHLIST_MODULE)
+  const wishlistService =
+    req.scope.resolve<WishlistModuleService>(WISHLIST_MODULE)
   const wishlist = await wishlistService.listWishlistItems({ customer_id })
 
-  const gdprService = req.scope.resolve(GDPR_MODULE)
+  const gdprService = req.scope.resolve<GdprModuleService>(GDPR_MODULE)
   const history = await gdprService.listGdprLogs(
     { customer_id },
     { order: { created_at: "DESC" }, take: 50 }

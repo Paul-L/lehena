@@ -5,7 +5,10 @@ import {
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { SUBSCRIPTION_MODULE } from "../../../modules/subscription"
+import {
+  SUBSCRIPTION_MODULE,
+  type SubscriptionModuleService,
+} from "../../../modules/subscription"
 
 /**
  * Lists active subscription plans (public) when no auth context, or the
@@ -13,7 +16,8 @@ import { SUBSCRIPTION_MODULE } from "../../../modules/subscription"
  */
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const authReq = req as AuthenticatedMedusaRequest
-  const subService = req.scope.resolve(SUBSCRIPTION_MODULE)
+  const subService =
+    req.scope.resolve<SubscriptionModuleService>(SUBSCRIPTION_MODULE)
   const customer_id = authReq.auth_context?.actor_id
   if (customer_id) {
     const subs = await subService.listSubscriptions(

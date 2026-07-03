@@ -3,7 +3,7 @@ import React from "react"
 
 import ContactFormEmail from "../emails/contact-form"
 import { renderEmail } from "../emails/render"
-import { CONTACT_MODULE } from "../modules/contact"
+import { CONTACT_MODULE, type ContactModuleService } from "../modules/contact"
 import { sendEmail } from "../modules/notifications/email-sender"
 
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
@@ -17,7 +17,7 @@ export default async function contactSubmittedEmailHandler({
   event,
   container,
 }: SubscriberArgs<{ id: string }>) {
-  const contactService = container.resolve(CONTACT_MODULE)
+  const contactService = container.resolve<ContactModuleService>(CONTACT_MODULE)
   const submission = await contactService.retrieveContactSubmission(
     event.data.id
   )

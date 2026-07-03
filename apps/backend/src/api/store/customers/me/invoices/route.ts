@@ -7,7 +7,10 @@ import {
   MedusaError,
 } from "@medusajs/framework/utils"
 
-import { INVOICE_MODULE } from "../../../../../modules/invoice"
+import {
+  INVOICE_MODULE,
+  type InvoiceModuleService,
+} from "../../../../../modules/invoice"
 
 /**
  * Lists invoices for the authenticated customer. Cross-references the
@@ -37,7 +40,7 @@ export async function GET(
     return res.json({ invoices: [] })
   }
 
-  const invoiceService = req.scope.resolve(INVOICE_MODULE)
+  const invoiceService = req.scope.resolve<InvoiceModuleService>(INVOICE_MODULE)
   const invoices = await invoiceService.listInvoices(
     { order_id: orderIds },
     { order: { created_at: "DESC" }, take: 100 }

@@ -4,7 +4,10 @@ import {
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { WISHLIST_MODULE } from "../../../modules/wishlist"
+import {
+  WISHLIST_MODULE,
+  type WishlistModuleService,
+} from "../../../modules/wishlist"
 import { addWishlistItemWorkflow } from "../../../workflows/wishlist"
 
 import { type AddWishlistItemSchema } from "./validators"
@@ -25,7 +28,7 @@ export async function GET(
   res: MedusaResponse
 ) {
   const customer_id = requireCustomerId(req)
-  const service = req.scope.resolve(WISHLIST_MODULE)
+  const service = req.scope.resolve<WishlistModuleService>(WISHLIST_MODULE)
   const items = await service.listWishlistItems(
     { customer_id },
     { order: { created_at: "DESC" }, take: 200 }

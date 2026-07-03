@@ -1,8 +1,11 @@
 import { Modules } from "@medusajs/framework/utils"
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 
-import { GDPR_MODULE } from "../../../modules/gdpr"
-import { WISHLIST_MODULE } from "../../../modules/wishlist"
+import { GDPR_MODULE, type GdprModuleService } from "../../../modules/gdpr"
+import {
+  WISHLIST_MODULE,
+  type WishlistModuleService,
+} from "../../../modules/wishlist"
 
 export interface AnonymiseCustomerStepInput {
   customer_id: string
@@ -22,8 +25,9 @@ export const anonymiseCustomerStep = createStep(
   "anonymise-customer",
   async (input: AnonymiseCustomerStepInput, { container }) => {
     const customerService = container.resolve(Modules.CUSTOMER)
-    const wishlistService = container.resolve(WISHLIST_MODULE)
-    const gdprService = container.resolve(GDPR_MODULE)
+    const wishlistService =
+      container.resolve<WishlistModuleService>(WISHLIST_MODULE)
+    const gdprService = container.resolve<GdprModuleService>(GDPR_MODULE)
 
     const customer_id = input.customer_id
 

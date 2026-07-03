@@ -4,7 +4,10 @@ import {
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { SUBSCRIPTION_MODULE } from "../../../../modules/subscription"
+import {
+  SUBSCRIPTION_MODULE,
+  type SubscriptionModuleService,
+} from "../../../../modules/subscription"
 import { createSubscriptionCheckoutWorkflow } from "../../../../workflows/subscription"
 import { type StartCheckoutSchema } from "../validators"
 
@@ -30,7 +33,8 @@ export async function POST(
   }
   const { plan_slug, gift_message } = req.validatedBody
 
-  const subService = req.scope.resolve(SUBSCRIPTION_MODULE)
+  const subService =
+    req.scope.resolve<SubscriptionModuleService>(SUBSCRIPTION_MODULE)
   const [plan] = await subService.listSubscriptionPlans(
     { slug: plan_slug, active: true },
     { take: 1 }

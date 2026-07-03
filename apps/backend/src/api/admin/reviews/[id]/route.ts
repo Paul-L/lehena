@@ -4,7 +4,10 @@ import {
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { REVIEW_MODULE } from "../../../../modules/review"
+import {
+  REVIEW_MODULE,
+  type ReviewModuleService,
+} from "../../../../modules/review"
 import { type UpdateReviewStatusSchema } from "../validators"
 
 /**
@@ -26,7 +29,7 @@ export async function POST(
     )
   }
 
-  const reviewService = req.scope.resolve(REVIEW_MODULE)
+  const reviewService = req.scope.resolve<ReviewModuleService>(REVIEW_MODULE)
   const patch: Record<string, unknown> = { id, status }
   if (status === "approved") {
     patch.approved_at = new Date()
@@ -47,7 +50,7 @@ export async function DELETE(
   res: MedusaResponse
 ) {
   const { id } = req.params
-  const reviewService = req.scope.resolve(REVIEW_MODULE)
+  const reviewService = req.scope.resolve<ReviewModuleService>(REVIEW_MODULE)
   await reviewService.deleteReviews(id)
   return res.json({ id, deleted: true })
 }

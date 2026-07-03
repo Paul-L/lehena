@@ -5,7 +5,10 @@ import {
 } from "@medusajs/framework/http"
 import { MedusaError } from "@medusajs/framework/utils"
 
-import { REVIEW_MODULE } from "../../../../../modules/review"
+import {
+  REVIEW_MODULE,
+  type ReviewModuleService,
+} from "../../../../../modules/review"
 import { submitReviewWorkflow } from "../../../../../workflows/review"
 
 import {
@@ -24,7 +27,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const take = limit ?? 10
   const skip = offset ?? 0
 
-  const reviewService = req.scope.resolve(REVIEW_MODULE)
+  const reviewService = req.scope.resolve<ReviewModuleService>(REVIEW_MODULE)
   const [reviews, count] = await reviewService.listAndCountReviews(
     { product_id, status: "approved" },
     { take, skip, order: { approved_at: "DESC" } }
