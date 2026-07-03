@@ -93,5 +93,10 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-# medusa start lit .medusa/server/ automatiquement pour l'admin bundle.
-CMD ["sh", "-c", "pnpm exec medusa db:migrate && pnpm exec medusa start"]
+# IMPORTANT : `medusa start` doit tourner DEPUIS .medusa/server/ (le bundle
+# compilé auto-suffisant). Lancé depuis la racine du projet, il résout
+# rootDirectory = cwd et cherche l'admin à <cwd>/public/admin/index.html —
+# absent, car le build l'écrit dans .medusa/server/public/admin/. D'où
+# "Could not find index.html in the admin build directory" et le crash-loop.
+# db:migrate, lui, reste OK depuis la racine (il lit la config source).
+CMD ["sh", "-c", "pnpm exec medusa db:migrate && cd .medusa/server && pnpm exec medusa start"]
