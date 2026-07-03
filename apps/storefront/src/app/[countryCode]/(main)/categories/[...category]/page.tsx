@@ -17,30 +17,43 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const product_categories = await listCategories()
+  // Resilient build: if the backend is unreachable/unseeded at build time
+  // (self-hosted image build in CI), return [] so no category path is
+  // pre-rendered — pages are generated on first request (ISR) instead of
+  // hard-failing the Docker image build.
+  try {
+    const product_categories = await listCategories()
 
-  if (!product_categories) {
+    if (!product_categories) {
+      return []
+    }
+
+    const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
+      regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
+    )
+
+    const categoryHandles = product_categories.map(
+      (category) => category.handle as string
+    )
+
+    const staticParams = countryCodes
+      ?.map((countryCode) =>
+        categoryHandles.map((handle: string) => ({
+          countryCode,
+          category: [handle],
+        }))
+      )
+      .flat()
+
+    return staticParams ?? []
+  } catch (error) {
+    console.error(
+      `Failed to generate static paths for category pages: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }.`
+    )
     return []
   }
-
-  const countryCodes = await listRegions().then((regions: StoreRegion[]) =>
-    regions?.map((r) => r.countries?.map((c) => c.iso_2)).flat()
-  )
-
-  const categoryHandles = product_categories.map(
-    (category) => category.handle as string
-  )
-
-  const staticParams = countryCodes
-    ?.map((countryCode) =>
-      categoryHandles.map((handle: string) => ({
-        countryCode,
-        category: [handle],
-      }))
-    )
-    .flat()
-
-  return staticParams
 }
 
 function hasFilters(

@@ -15,13 +15,21 @@ const S3_PATHNAME = process.env.MEDUSA_CLOUD_S3_PATHNAME
  * of the port (so dev on 9000/9100/etc. works without further config).
  */
 const MEDUSA_BACKEND_HOSTNAME = process.env.MEDUSA_BACKEND_HOSTNAME
-const MEDUSA_BACKEND_PROTOCOL =
-  process.env.MEDUSA_BACKEND_PROTOCOL || "https"
+const MEDUSA_BACKEND_PROTOCOL = process.env.MEDUSA_BACKEND_PROTOCOL || "https"
 
 /**
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
+  // Self-hosted deploy (VPS Docker, cf. build-storefront.yml): emit a
+  // standalone server bundle (.next/standalone/server.js + minimal
+  // node_modules) that the runner stage copies. Without this the Docker
+  // build produces no standalone dir and the image COPY fails.
+  output: "standalone",
+  // pnpm monorepo: trace from the repo root so the standalone layout is
+  // apps/storefront/server.js (what the Dockerfile CMD `node
+  // apps/storefront/server.js` expects) and workspace deps are included.
+  outputFileTracingRoot: require("path").join(__dirname, "../../"),
   reactStrictMode: true,
   logging: {
     fetches: {
