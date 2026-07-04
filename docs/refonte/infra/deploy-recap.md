@@ -117,12 +117,10 @@ RUN test -d /app/apps/backend/.medusa/server \
         && ls -la /app/apps/backend/.medusa/ 2>&1 && exit 1)
 ```
 
-### Reste à faire (hors blocker back)
+### Suite (faite depuis)
 
-- **Storefront Next.js non déployé** (Vercel, hors scope de ce deploy back) —
-  `lehena.fr` / `www.lehena.fr` ne répondent pas encore, c'est attendu.
-- Créer un utilisateur admin Medusa si pas encore fait (`medusa user`) pour se
-  connecter à `/app`.
+- ✅ **Storefront déployé sur le VPS** (finalement pas Vercel) — cf. §9.
+- ✅ Compte admin Medusa créé (`medusa user`) ; seed exécuté.
 
 ## 5. Historique des blockers résolus (chronologique)
 
