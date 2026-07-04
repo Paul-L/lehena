@@ -19,10 +19,7 @@ import { ALL_PRODUCTS } from "./data"
 import type { ProductSeed } from "./types"
 import type { MedusaContainer } from "@medusajs/framework/types"
 
-const SEED_ASSETS_DIR = path.resolve(
-  process.cwd(),
-  "seed-assets/products"
-)
+const SEED_ASSETS_DIR = path.resolve(process.cwd(), "seed-assets/products")
 const MIME_BY_EXT: Record<string, string> = {
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
@@ -51,8 +48,10 @@ async function uploadSeedImage(
     // that isn't valid base64 falls back to a UTF-8 decode, which mangles
     // binary bytes ≥ 0x80 (0xFF → 0xC3 0xBF) and produces a corrupt image.
     // Always hand it base64 so the bytes round-trip intact.
+    // access: "public" → the local provider drops the "private-" prefix and
+    // serves the file at /static/<name>. Product images are public content.
     const [uploaded] = await fileService.createFiles([
-      { filename, mimeType, content: buf.toString("base64") },
+      { filename, mimeType, content: buf.toString("base64"), access: "public" },
     ])
     return uploaded.url
   } catch (err) {

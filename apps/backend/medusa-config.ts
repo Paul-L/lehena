@@ -160,6 +160,34 @@ module.exports = defineConfig({
     // / COLISSIMO_API_KEY unset → grille tarifaire locale only, no external
     // API calls). Wiring real APIs is post-launch when commercial contracts
     // are signed.
+    // File module (local provider). Overrides the framework default so that:
+    //  - backend_url builds PUBLIC urls (https://backend.lehena.fr/static/...)
+    //    instead of the localhost:9000 default, otherwise product images are
+    //    unreachable from the browser and blocked by next/image.
+    //  - upload_dir is driven by FILE_UPLOAD_DIR. Files are served by express
+    //    from `<cwd>/static` (= .medusa/server/static at runtime). The seed
+    //    runs from a different cwd (/app/apps/backend), so an ABSOLUTE
+    //    FILE_UPLOAD_DIR pointing at the runtime static dir keeps seed and
+    //    server writing to the same (volume-mounted, persistent) folder.
+    // On the VPS set FILE_UPLOAD_DIR=/app/apps/backend/.medusa/server/static
+    // and mount a Docker volume there. Locally the "static" default is fine.
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-local",
+            id: "local",
+            options: {
+              upload_dir: process.env.FILE_UPLOAD_DIR || "static",
+              backend_url: `${
+                process.env.MEDUSA_BACKEND_URL || "http://localhost:9000"
+              }/static`,
+            },
+          },
+        ],
+      },
+    },
     {
       resolve: "@medusajs/medusa/fulfillment",
       options: {
