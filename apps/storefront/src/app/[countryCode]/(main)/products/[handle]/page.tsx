@@ -15,6 +15,8 @@ import LehenaProductTemplate from "@modules/products/templates/lehena-product-te
 import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 
+export const dynamic = "force-dynamic"
+
 interface Props {
   params: Promise<{ countryCode: string; handle: string }>
   searchParams: Promise<{ v?: string; v_id?: string }>

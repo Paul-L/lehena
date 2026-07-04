@@ -7,6 +7,8 @@ import { type SortOptions } from "@modules/store/components/refinement-list/sort
 import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 
+export const dynamic = "force-dynamic"
+
 interface Props {
   params: Promise<{ handle: string; countryCode: string }>
   searchParams: Promise<{
