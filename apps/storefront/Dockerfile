@@ -37,6 +37,10 @@ ARG NEXT_PUBLIC_BASE_URL
 ARG NEXT_PUBLIC_DEFAULT_REGION
 ARG NEXT_PUBLIC_PLAUSIBLE_DOMAIN
 ARG NEXT_PUBLIC_SENTRY_DSN
+# next.config.js whitelists this host in images.remotePatterns (/static/**)
+# so next/image can load product images served by the Medusa backend.
+ARG MEDUSA_BACKEND_HOSTNAME
+ARG MEDUSA_BACKEND_PROTOCOL
 
 WORKDIR /app/apps/storefront
 RUN pnpm build
