@@ -5,7 +5,6 @@ import {
   ALLERGEN_OPTIONS,
   BREED_OPTIONS,
   FORMAT_OPTIONS,
-  ORIGIN_OPTIONS,
 } from "@lib/data/facet-constants"
 import { LhArrow } from "@modules/common/components/lehena/icons"
 import * as Accordion from "@radix-ui/react-accordion"
@@ -103,13 +102,13 @@ export function LehenaFacetFilters({ applied }: LehenaFacetFiltersProps) {
 
       <Accordion.Root
         type="multiple"
-        defaultValue={["format", "aging", "options", "breed", "origin"]}
+        defaultValue={["format", "aging", "options", "breed"]}
         className="flex flex-col gap-1"
       >
         {/* Format */}
         <FacetGroup id="format" title="Format">
           <CheckboxList
-            options={FORMAT_OPTIONS.slice(0, 9)}
+            options={FORMAT_OPTIONS.slice(0, 7)}
             applied={applied.format ?? []}
             onToggle={(value, current) =>
               toggleInList("format", value, current)
@@ -169,17 +168,6 @@ export function LehenaFacetFilters({ applied }: LehenaFacetFiltersProps) {
             options={BREED_OPTIONS}
             applied={applied.breed ?? []}
             onToggle={(value, current) => toggleInList("breed", value, current)}
-          />
-        </FacetGroup>
-
-        {/* Origine */}
-        <FacetGroup id="origin" title="Origine">
-          <CheckboxList
-            options={ORIGIN_OPTIONS}
-            applied={applied.origin ?? []}
-            onToggle={(value, current) =>
-              toggleInList("origin", value, current)
-            }
           />
         </FacetGroup>
 

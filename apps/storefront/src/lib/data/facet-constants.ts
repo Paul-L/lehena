@@ -5,13 +5,7 @@
  * from the backend's TypeScript types.
  */
 
-export const BREED_OPTIONS = [
-  { value: "Duroc", label: "Duroc" },
-  { value: "Kintoa", label: "Kintoa AOC" },
-  { value: "Bigorre", label: "Bigorre noir" },
-  { value: "Iberico", label: "Iberico" },
-  { value: "Autre", label: "Autre" },
-] as const
+export const BREED_OPTIONS = [{ value: "Duroc", label: "Duroc" }] as const
 
 export const ORIGIN_OPTIONS = [
   { value: "Iparralde", label: "Iparralde" },
@@ -29,9 +23,7 @@ export const FORMAT_OPTIONS = [
   { value: "quart", label: "Quart" },
   { value: "tranches_100g", label: "Tranches 100 g" },
   { value: "tranches_200g", label: "Tranches 200 g" },
-  { value: "bouteille_500ml", label: "Bouteille 50 cl" },
-  { value: "bouteille_700ml", label: "Bouteille 70 cl" },
-  { value: "bouteille_1l", label: "Bouteille 1 L" },
+  { value: "bouteille_750ml", label: "Bouteille 75 cl" },
   { value: "pot_180g", label: "Pot 180 g" },
   { value: "pot_330g", label: "Pot 330 g" },
   { value: "boite_400g", label: "Boîte 400 g" },
@@ -62,7 +54,6 @@ export const ALLERGEN_OPTIONS = [
 ] as const
 
 export const AGING_BUCKETS = [
-  { id: "le-12", label: "Moins de 12 mois", min: undefined, max: 11 },
   { id: "12-17", label: "12 – 17 mois", min: 12, max: 17 },
   { id: "18-23", label: "18 – 23 mois", min: 18, max: 23 },
   { id: "24+", label: "24 mois et plus", min: 24, max: undefined },
