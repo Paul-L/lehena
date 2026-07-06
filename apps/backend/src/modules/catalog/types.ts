@@ -35,6 +35,7 @@ export const VARIANT_FORMAT_VALUES = [
   // Bouteilles / pots / conserves
   "bouteille_500ml",
   "bouteille_700ml",
+  "bouteille_750ml",
   "bouteille_1l",
   "pot_180g",
   "pot_330g",

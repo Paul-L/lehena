@@ -287,10 +287,10 @@ const SALAISONS: ProductSeed[] = [
   {
     handle: "ventreche-roulee",
     image_filename: "ventreche-roulee.jpg",
-    title: "Ventrêche roulée 6 mois",
+    title: "Ventrêche roulée 3 mois",
     subtitle: "Poitrine séchée · sans nitrite",
     description:
-      "Poitrine de porc Duroc roulée et séchée 6 mois. Tranchez fin pour l'apéro ou en lardons pour vos plats. Sans nitrite, sel de Salies.",
+      "Poitrine de porc Duroc roulée et séchée 3 mois minimum. Tranchez fin pour l'apéro ou en lardons pour vos plats. Sans nitrite, sel de Salies.",
     product_type: "alimentaire",
     shipping_kind: "fresh",
     category_handles: ["salaisons/ventreches", "salaisons"],
@@ -321,7 +321,7 @@ const SALAISONS: ProductSeed[] = [
       },
     ],
     details: {
-      aging_months: 6,
+      aging_months: 3,
       origin: "Pays Basque",
       breed: "Duroc",
       allergens: [],
@@ -331,7 +331,7 @@ const SALAISONS: ProductSeed[] = [
       ingredients: "Poitrine de porc Duroc, sel de Salies-de-Béarn, poivre.",
       seo_title: "Ventrêche roulée sans nitrite | Lehena",
       seo_description:
-        "Ventrêche de porc Duroc séchée et roulée 6 mois. Sans nitrite. Format entier, demi ou tranches.",
+        "Ventrêche de porc Duroc séchée et roulée 3 mois minimum. Sans nitrite. Format entier, demi ou tranches.",
       og_image_url: null,
       noindex: false,
     },
@@ -412,13 +412,13 @@ const SALAISONS: ProductSeed[] = [
   },
 ]
 
-// ─── Patxaran & spiritueux (2 produits) ──────────────────────────────
+// ─── Patxaran & spiritueux (1 produit) ───────────────────────────────
 
 const PATXARAN: ProductSeed[] = [
   {
-    handle: "patxaran-traditionnel-50cl",
+    handle: "patxaran-traditionnel-75cl",
     image_filename: "patxaran.jpg",
-    title: "Patxaran des Laminak 50cl",
+    title: "Patxaran des Laminak 75cl",
     subtitle: "Recette traditionnelle basque",
     description:
       "Notre patxaran maison, infusé avec prunelles sauvages cueillies au pied des Pyrénées et anis vert. Mûri 6 mois en bonbonne. À déguster glacé en digestif ou en spritz.",
@@ -427,11 +427,11 @@ const PATXARAN: ProductSeed[] = [
     category_handles: ["patxaran-spiritueux"],
     variants: [
       {
-        title: "Bouteille 50cl",
-        sku: "PATX-TRAD-50",
+        title: "Bouteille 75cl",
+        sku: "PATX-TRAD-75",
         price_eur: 26,
-        weight_grams: 850,
-        format: "bouteille_500ml",
+        weight_grams: 1150,
+        format: "bouteille_750ml",
         initial_stock: 80,
       },
     ],
@@ -443,43 +443,9 @@ const PATXARAN: ProductSeed[] = [
       ddm_days: 730,
       ingredients: "Eau-de-vie d'anis (50%), prunelles sauvages, sucre.",
       pairings_tags: ["chorizo-doux", "fromage-brebis"],
-      seo_title: "Patxaran traditionnel 50cl maison | Lehena",
+      seo_title: "Patxaran traditionnel 75cl maison | Lehena",
       seo_description:
-        "Patxaran maison Lehena, prunelles sauvages et anis, recette traditionnelle des Laminak. Bouteille 50cl.",
-      og_image_url: null,
-      noindex: false,
-    },
-  },
-  {
-    handle: "patxaran-reserve-70cl",
-    image_filename: "patxaran.jpg",
-    title: "Patxaran Réserve 70cl",
-    subtitle: "Vieillissement long",
-    description:
-      "Cuvée spéciale, vieillie 18 mois pour plus de rondeur et de notes confites. Format 70cl, idéal en cadeau.",
-    product_type: "alimentaire",
-    shipping_kind: "ambient",
-    category_handles: ["patxaran-spiritueux"],
-    variants: [
-      {
-        title: "Bouteille 70cl",
-        sku: "PATX-RESERVE-70",
-        price_eur: 42,
-        weight_grams: 1200,
-        format: "bouteille_700ml",
-        initial_stock: 40,
-      },
-    ],
-    details: {
-      origin: "Pays Basque",
-      allergens: [],
-      nitrite_free: false,
-      conservation_temp: "ambient",
-      ddm_days: 1095,
-      ingredients: "Eau-de-vie d'anis, prunelles sauvages, sucre.",
-      seo_title: "Patxaran Réserve 70cl 18 mois | Lehena",
-      seo_description:
-        "Cuvée Réserve du patxaran Lehena, vieillie 18 mois, format 70cl. Notes confites, rondeur. Idéal cadeau.",
+        "Patxaran maison Lehena, prunelles sauvages et anis, recette traditionnelle des Laminak. Bouteille 75cl.",
       og_image_url: null,
       noindex: false,
     },
