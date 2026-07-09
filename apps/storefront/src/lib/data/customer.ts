@@ -198,18 +198,32 @@ export async function resetPassword(token: string, password: string) {
 }
 
 /**
- * Requests a magic-link login. The backend logs the URL (Phase 6 stub) and
- * always returns success regardless of whether the email is on file — we
- * don't leak account existence.
+ * Requests a magic-link.
+ *
+ * Two flows via un seul endpoint :
+ *   - **Login existant** : appelle avec `(email)` seul. Le backend renvoie
+ *     un 200 constant-time quel que soit le résultat pour ne pas révéler
+ *     l'existence du compte (anti-énumération).
+ *   - **Signup passwordless** : appelle avec `(email, { first_name, last_name })`.
+ *     Le backend crée le customer + l'auth identity avant d'émettre l'event
+ *     magic-link. Si l'email existait déjà, on retombe silencieusement sur
+ *     le comportement login.
  */
-export async function requestMagicLink(email: string) {
+export async function requestMagicLink(
+  email: string,
+  meta?: { first_name?: string; last_name?: string }
+) {
   if (!email || !email.includes("@")) {
     return { success: false, error: "Email invalide." }
   }
   try {
     await sdk.client.fetch<{ success: boolean }>("/store/auth/magic-link", {
       method: "POST",
-      body: { email },
+      body: {
+        email,
+        ...(meta?.first_name ? { first_name: meta.first_name } : {}),
+        ...(meta?.last_name ? { last_name: meta.last_name } : {}),
+      },
     })
   } catch {
     // Swallow — we report success either way.

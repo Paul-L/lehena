@@ -66,7 +66,14 @@ const LoginTemplate = () => {
   const sendMagicLink = () => {
     setMagicErr(null)
     startMagic(async () => {
-      const res = await requestMagicLink(email)
+      // En mode Register on transmet prénom/nom : le backend crée alors
+      // le customer + auth identity avant d'émettre le magic-link. En mode
+      // login classique, `meta` reste undefined → comportement historique
+      // constant-time anti-énumération.
+      const meta = isRegister
+        ? { first_name: firstName, last_name: lastName }
+        : undefined
+      const res = await requestMagicLink(email, meta)
       if (res.success) {
         setSent(true)
       } else {
