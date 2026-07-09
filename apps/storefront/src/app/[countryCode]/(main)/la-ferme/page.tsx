@@ -1,6 +1,9 @@
 import { buildMetadata } from "@lib/seo/metadata"
 import { LhArrow } from "@modules/common/components/lehena/icons"
-import { Photo } from "@modules/common/components/lehena/primitives"
+import {
+  Photo,
+  Placeholder,
+} from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import RevealInit from "@modules/home/components/lehena/reveal-init"
 
@@ -24,13 +27,23 @@ const partners = [
     tags: ["Race Duroc", "Sans OGM", "Plein air", "Glands & châtaignes"],
   },
   {
+    kicker: "Engraissement Duroc",
+    ferme: "Ferme Luchilo",
+    lieu: "Sainte-Engrâce · Haute-Soule",
+    eleveur: "Bénat Petit",
+    img: "/images/ferme-ainty.webp",
+    alt: "Pentes de la ferme familiale Luchilo à Sainte-Engrâce, où les porcs Duroc sont engraissés",
+    body: "À Sainte-Engrâce, les porcs nés à la Ferme Iratzia sont engraissés sur les pentes de la ferme familiale.",
+    tags: ["Race Duroc", "Engraissement", "Ferme familiale"],
+  },
+  {
     kicker: "Brebis Manech Bü Beltza",
     ferme: "Ferme Ainty",
     lieu: "Sunharette · vallée d'Orhi",
-    eleveur: "Belle-famille Petit",
-    img: "/images/ferme-ainty.webp",
-    alt: "Pâturage de la Ferme Ainty dans la vallée d'Orhi, Pays Basque",
-    body: "Un petit troupeau de brebis Manech Tête Noire (Bü Beltza), race ovine originaire des montagnes du Pays Basque. Le troupeau est transhumant — l'été, elles sont au cayolar d'Ibarrondua au pied du pic d'Orhi. Les agneaux sont nourris exclusivement au lait de brebis, par tétée au pis.",
+    eleveur: "Belle-famille Erreçaret",
+    img: null,
+    alt: "Brebis Manech Tête Noire (Bü Beltza) de la Ferme Ainty, vallée d'Orhi, Pays Basque",
+    body: "Avec mon beau-père Marcel, nous élevons un petit troupeau de brebis Manech Tête Noire (Bü Beltza), race ovine originaire des montagnes du Pays Basque. Le troupeau est transhumant — l'été, elles sont au cayolar d'Ibarrondua au pied du pic d'Orhi. Les agneaux sont nourris exclusivement au lait de brebis, par tétée au pis.",
     tags: [
       "Manech Tête Noire",
       "Transhumance",
@@ -41,7 +54,6 @@ const partners = [
 ] as const
 
 const timeline = [
-  ["2010", "Reprise de la gérance de HOBERENA"],
   ["2016 → 2018", "Médaillé · Concours Général Agricole de Paris"],
   ["2020", "Prix d'Excellence du Concours Général"],
   ["2025", "Médaillé · Pâté Basque & Terrine Campagnarde Bazkaïa"],
@@ -265,12 +277,11 @@ export default function LaFerme() {
               cuisine. »
             </p>
             <p style={{ margin: 0 }}>
-              Je fais de la charcuterie en conserves au sein de la société{" "}
-              <strong style={{ fontWeight: 500 }}>HOBERENA</strong>, dont j'ai
-              repris la gérance en 2010, après y avoir travaillé pendant treize
-              ans. À partir des porcs de Julien, j'ai travaillé de nouvelles
-              recettes de pâtés et terrines que je présente au Concours Général
-              Agricole de Paris.
+              J'ai commencé à faire de la charcuterie au sein de la société{" "}
+              <strong style={{ fontWeight: 500 }}>HOBERENA</strong> en 1997 et
+              jusqu'en 2026. À partir des porcs de Julien, j'ai travaillé de
+              nouvelles recettes de pâtés et terrines que je présente au
+              Concours Général Agricole de Paris.
             </p>
             <p style={{ margin: 0 }}>
               Ma démarche se veut naturelle : sans colorant, exhausteur de goût
@@ -555,7 +566,7 @@ export default function LaFerme() {
                   margin: 0,
                 }}
               >
-                Deux fermes,
+                Trois fermes,
                 <br />
                 <em style={{ fontStyle: "italic", color: "var(--rouge)" }}>
                   une même exigence.
@@ -571,13 +582,17 @@ export default function LaFerme() {
                 lineHeight: 1.55,
               }}
             >
-              Toute la matière première vient de deux exploitations partenaires
-              que nous connaissons depuis l'origine.
+              Toute la matière première vient de trois exploitations que nous
+              connaissons depuis l'origine.
             </p>
           </div>
 
           <div
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48 }}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 32,
+            }}
           >
             {partners.map((f) => (
               <article
@@ -589,12 +604,21 @@ export default function LaFerme() {
                 }}
               >
                 <div style={{ marginBottom: 24, height: 280 }}>
-                  <Photo
-                    src={f.img}
-                    alt={f.alt}
-                    sizes="(max-width: 768px) 100vw, 45vw"
-                    style={{ width: "100%", height: "100%" }}
-                  />
+                  {f.img ? (
+                    <Photo
+                      src={f.img}
+                      alt={f.alt}
+                      sizes="(max-width: 768px) 100vw, 45vw"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  ) : (
+                    <Placeholder
+                      label="Photo à venir"
+                      aspect="auto"
+                      tone="olive"
+                      style={{ width: "100%", height: "100%" }}
+                    />
+                  )}
                 </div>
                 <div
                   className="eyebrow"
