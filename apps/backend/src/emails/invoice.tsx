@@ -1,6 +1,8 @@
 import { Text } from "@react-email/components"
 import React from "react"
 
+import { siretTvaFooterLine } from "../lib/company"
+
 import { EmailLayout, styles } from "./layout"
 
 export interface InvoiceEmailProps {
@@ -26,9 +28,7 @@ export default function InvoiceEmail({
         <strong>#{order_display_id}</strong>. Conservez-la pour vos archives —
         elle est également accessible à tout moment depuis votre espace client.
       </Text>
-      <Text style={styles.small}>
-        Maison Lehena SAS — RCS Bayonne 123 456 789 — TVA FR12345678901.
-      </Text>
+      <Text style={styles.small}>LEHENA · {siretTvaFooterLine()}.</Text>
     </EmailLayout>
   )
 }
