@@ -10,7 +10,8 @@ export function organizationSchema() {
     "@type": "Organization",
     "@id": `${baseUrl}/#organization`,
     name: SITE_NAME,
-    legalName: "Maison Lehena",
+    alternateName: "LEHENA",
+    legalName: "LEHENA SAS",
     url: baseUrl,
     logo: {
       "@type": "ImageObject",
@@ -18,14 +19,26 @@ export function organizationSchema() {
     },
     foundingDate: "2019",
     founder: { "@type": "Person", name: "Bénat Petit" },
+    // NAP aligné sur apps/backend/src/lib/company.ts (source de vérité légale).
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Bourg",
-      addressLocality: "Laguinge",
+      streetAddress: "Le Bourg",
+      addressLocality: "Laguinge-Restoue",
       postalCode: "64470",
       addressRegion: "Pyrénées-Atlantiques",
       addressCountry: "FR",
     },
+    vatID: "FR29849613435",
+    areaServed: { "@type": "Country", name: "France" },
+    knowsAbout: [
+      "Charcuterie artisanale",
+      "Jambon sans nitrite",
+      "Race Duroc",
+      "Affinage long",
+      "Pays Basque",
+      "Salaisons",
+      "Patxaran",
+    ],
     contactPoint: [
       {
         "@type": "ContactPoint",
