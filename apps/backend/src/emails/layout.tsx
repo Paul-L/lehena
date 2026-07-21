@@ -12,6 +12,8 @@ import {
 } from "@react-email/components"
 import React from "react"
 
+import { COMPANY, addressLine, siretTvaFooterLine } from "../lib/company"
+
 interface Props {
   /** Pre-header text shown in inbox previews. Keep under 90 chars. */
   preview: string
@@ -29,8 +31,13 @@ const BRAND = {
   paperElevated: "#f5efe1",
   inkMute: "#6b6157",
   line: "#e7e1d5",
-  logoUrl:
-    process.env.LEHENA_EMAIL_LOGO_URL ?? "https://lehena.fr/logo-email.png",
+  /**
+   * URL du logo email. Doit être un PNG hébergé publiquement (les SVG inline
+   * ou embarqués sont mal supportés par Outlook / anciens clients).
+   * Si absent, on retombe sur un wordmark texte élégant en fallback pour
+   * éviter les images 404 dans les boîtes des destinataires.
+   */
+  logoUrl: process.env.LEHENA_EMAIL_LOGO_URL ?? null,
 }
 
 /**
@@ -75,14 +82,32 @@ export function EmailLayout({
           }}
         >
           <Section style={{ paddingBottom: 24 }}>
-            <Link href="https://lehena.fr">
-              <Img
-                src={BRAND.logoUrl}
-                alt="Maison Lehena"
-                width={120}
-                height={40}
-                style={{ display: "block" }}
-              />
+            <Link
+              href="https://lehena.fr"
+              style={{ textDecoration: "none", color: BRAND.ink }}
+            >
+              {BRAND.logoUrl ? (
+                <Img
+                  src={BRAND.logoUrl}
+                  alt="Maison Lehena"
+                  width={120}
+                  height={40}
+                  style={{ display: "block" }}
+                />
+              ) : (
+                <Text
+                  style={{
+                    fontFamily: 'Georgia, "Times New Roman", serif',
+                    fontSize: 22,
+                    letterSpacing: "0.05em",
+                    color: BRAND.ink,
+                    margin: 0,
+                    fontWeight: 500,
+                  }}
+                >
+                  Maison <em style={{ color: BRAND.rouge }}>Lehena</em>
+                </Text>
+              )}
             </Link>
           </Section>
 
@@ -106,7 +131,9 @@ export function EmailLayout({
                 margin: 0,
               }}
             >
-              Maison Lehena SAS · 1 rue du Marché · 64200 Biarritz · France
+              {addressLine()}
+              <br />
+              {siretTvaFooterLine()}
               <br />
               <Link
                 href="https://lehena.fr"
@@ -116,10 +143,10 @@ export function EmailLayout({
               </Link>{" "}
               ·{" "}
               <Link
-                href="mailto:contact@lehena.fr"
+                href={`mailto:${COMPANY.email}`}
                 style={{ color: BRAND.inkMute, textDecoration: "underline" }}
               >
-                contact@lehena.fr
+                {COMPANY.email}
               </Link>
             </Text>
             {marketing && unsubscribeUrl ? (
