@@ -13,13 +13,17 @@ interface BuildMetadataInput {
   canonical?: string
   /** Block search engines from indexing this page. */
   noindex?: boolean
-  /** Override the `og:type`. Default `website`; use `article` for editorial pages. */
-  ogType?: "website" | "article"
+  /** Override the `og:type`. Default `website`; use `article` for editorial pages, `product` for PDPs. */
+  ogType?: "website" | "article" | "product"
   /** Language code for og:locale (ISO 639-1, e.g. `fr_FR`). Default `fr_FR`. */
   ogLocale?: string
 }
 
 export const SITE_NAME = "Maison Lehena"
+/** Twitter/X handle used for both `twitter:site` and `twitter:creator`. */
+export const SITE_TWITTER = "@maisonlehena"
+/** Brand red — surfaced as the `theme-color` meta tag. */
+export const BRAND_COLOR = "#a83925"
 export const SITE_TAGLINE = "Maître artisan charcutier au Pays Basque"
 export const DEFAULT_TITLE = `${SITE_NAME} · ${SITE_TAGLINE}`
 export const DEFAULT_DESCRIPTION =
@@ -54,33 +58,49 @@ export function buildMetadata(input: BuildMetadataInput = {}): Metadata {
       : `${baseUrl}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`
     : undefined
 
+  // Default indexing directives. `noindex` overrides `index`/`follow` while
+  // keeping the rich-preview hints so Google still renders large snippets.
+  const robots: Metadata["robots"] = {
+    index: !input.noindex,
+    follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
+  }
+
   const metadata: Metadata = {
     title,
     description,
     openGraph: {
-      type: input.ogType ?? "website",
+      // Next types `og:type` as a discriminated union that doesn't include
+      // "product" and rejects a union-typed discriminant. Pin the compile-time
+      // type to a single literal; the real value (incl. "product") is emitted.
+      type: (input.ogType ?? "website") as "website",
       siteName: SITE_NAME,
       title,
       description,
       locale: input.ogLocale ?? "fr_FR",
+      ...(input.canonical ? { url: input.canonical } : {}),
       ...(ogImageAbsolute
         ? { images: [{ url: ogImageAbsolute, alt: title }] }
         : {}),
     },
     twitter: {
       card: "summary_large_image",
+      site: SITE_TWITTER,
+      creator: SITE_TWITTER,
       title,
       description,
       ...(ogImageAbsolute ? { images: [ogImageAbsolute] } : {}),
+    },
+    robots,
+    other: {
+      "theme-color": BRAND_COLOR,
     },
   }
 
   if (input.canonical) {
     metadata.alternates = { canonical: input.canonical }
-  }
-
-  if (input.noindex) {
-    metadata.robots = { index: false, follow: true }
   }
 
   return metadata
