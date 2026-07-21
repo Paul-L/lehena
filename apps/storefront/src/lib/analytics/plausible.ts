@@ -26,6 +26,23 @@ declare global {
   }
 }
 
+/**
+ * Send an arbitrary custom event. Used for machine-generated event names
+ * (e.g. `WebVital:LCP`) that don't fit the curated e-commerce goal union
+ * of {@link trackEvent}. Same graceful degradation: no-op on the server
+ * and when Plausible isn't loaded, never throws.
+ */
+export function trackCustom(event: string, props?: PlausibleProps) {
+  if (typeof window === "undefined") return
+  const fn = window.plausible
+  if (!fn) return
+  try {
+    fn(event, { props })
+  } catch {
+    /* never propagate analytics errors */
+  }
+}
+
 export function trackEvent(
   event:
     | "view_item"

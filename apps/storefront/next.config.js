@@ -43,6 +43,14 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    // AVIF first (best compression), WebP fallback for older browsers.
+    formats: ["image/avif", "image/webp"],
+    // Breakpoints for `sizes`-driven responsive images (full-width to card).
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    // Fixed-size images (thumbnails, icons, avatars).
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // 1 year: /static assets are content-addressed / immutable.
+    minimumCacheTTL: 31536000,
     remotePatterns: [
       {
         protocol: "http",

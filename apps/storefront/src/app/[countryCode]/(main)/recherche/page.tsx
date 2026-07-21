@@ -3,6 +3,7 @@ import { buildMetadata } from "@lib/seo/metadata"
 import { LhArrow, LhSearch } from "@modules/common/components/lehena/icons"
 import { Placeholder } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import Image from "next/image"
 
 import type { Metadata } from "next"
 
@@ -156,16 +157,12 @@ export default async function SearchPage(props: Props) {
                     }}
                   >
                     {hit.thumbnail ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <Image
                         src={hit.thumbnail}
                         alt={hit.title}
-                        loading="lazy"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
+                        fill
+                        sizes="(min-width: 1024px) 380px, 33vw"
+                        style={{ objectFit: "cover" }}
                       />
                     ) : (
                       <Placeholder label={hit.title} aspect="4/5" tone={tone} />
