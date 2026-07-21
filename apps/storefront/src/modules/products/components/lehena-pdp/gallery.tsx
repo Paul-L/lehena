@@ -41,17 +41,8 @@ export default function LehenaPDPGallery({
   const current = slots[active] ?? slots[0]
 
   return (
-    <div
-      style={{
-        position: "sticky",
-        top: 100,
-        display: "grid",
-        gridTemplateColumns: "80px 1fr",
-        gap: 16,
-        alignItems: "start",
-      }}
-    >
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    <div className="lh-pdp-gallery">
+      <div className="lh-pdp-thumbs">
         {slots.map((s, i) => (
           <button
             key={i}
@@ -90,7 +81,7 @@ export default function LehenaPDPGallery({
           </button>
         ))}
       </div>
-      <div style={{ position: "relative" }}>
+      <div className="lh-pdp-main">
         {current.image ? (
           <Zoom zoomMargin={32} classDialog="lh-zoom-dialog">
             <div
