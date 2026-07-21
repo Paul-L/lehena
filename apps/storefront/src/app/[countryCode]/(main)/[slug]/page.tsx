@@ -9,6 +9,7 @@ import {
 } from "@lib/i18n/locale-map"
 import { JsonLd } from "@lib/seo/json-ld"
 import { articleSchema } from "@lib/seo/schemas/article"
+import { breadcrumbSchema } from "@lib/seo/schemas/breadcrumb"
 import {
   LEHENA_WORKSHOP,
   localBusinessSchema,
@@ -156,6 +157,13 @@ export default async function StorefrontPage(props: Props) {
 
   return (
     <>
+      <JsonLd
+        id="lehena-breadcrumb"
+        schema={breadcrumbSchema([
+          { name: "Accueil", url: `/${countryCode}` },
+          { name: page.title },
+        ])}
+      />
       {isAtelier ? (
         <JsonLd
           id="lehena-localbusiness"

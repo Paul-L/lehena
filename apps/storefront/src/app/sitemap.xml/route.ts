@@ -14,6 +14,7 @@ export async function GET() {
     { loc: `${baseUrl}/sitemap-articles.xml`, lastmod },
     { loc: `${baseUrl}/sitemap-products.xml`, lastmod },
     { loc: `${baseUrl}/sitemap-categories.xml`, lastmod },
+    { loc: `${baseUrl}/sitemap-collections.xml`, lastmod },
   ]
   return new Response(renderSitemapIndex(sitemaps), {
     headers: SITEMAP_HEADERS,

@@ -1,6 +1,9 @@
 import { getCollectionByHandle, listCollections } from "@lib/data/collections"
 import { listRegions } from "@lib/data/regions"
+import { JsonLd } from "@lib/seo/json-ld"
 import { buildMetadata } from "@lib/seo/metadata"
+import { breadcrumbSchema } from "@lib/seo/schemas/breadcrumb"
+import { getBaseURL } from "@lib/util/env"
 import { type StoreCollection, type StoreRegion } from "@medusajs/types"
 import CollectionTemplate from "@modules/collections/templates"
 import { type SortOptions } from "@modules/store/components/refinement-list/sort-products"
@@ -76,10 +79,14 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   // Paginated/sorted variants are noindex to avoid duplicate-content crawl.
   const isFiltered = Boolean(searchParams?.page || searchParams?.sortBy)
+  const baseUrl = getBaseURL().replace(/\/$/, "")
 
   return buildMetadata({
     title: collection.title,
-    description: `Découvrez la sélection « ${collection.title} » de la Maison Lehena — charcuterie artisanale du Pays Basque.`,
+    description:
+      (collection.metadata?.description as string | undefined) ??
+      `Découvrez la sélection « ${collection.title} » de la Maison Lehena — charcuterie artisanale du Pays Basque.`,
+    canonical: `${baseUrl}/${params.countryCode}/collections/${params.handle}`,
     noindex: isFiltered,
   })
 }
@@ -97,12 +104,21 @@ export default async function CollectionPage(props: Props) {
     notFound()
   }
 
+  const breadcrumb = breadcrumbSchema([
+    { name: "Maison", url: `/${params.countryCode}` },
+    { name: "Boutique", url: `/${params.countryCode}/store` },
+    { name: collection.title },
+  ])
+
   return (
-    <CollectionTemplate
-      collection={collection}
-      page={page}
-      sortBy={sortBy}
-      countryCode={params.countryCode}
-    />
+    <>
+      <JsonLd id="lehena-breadcrumb" schema={breadcrumb} />
+      <CollectionTemplate
+        collection={collection}
+        page={page}
+        sortBy={sortBy}
+        countryCode={params.countryCode}
+      />
+    </>
   )
 }
