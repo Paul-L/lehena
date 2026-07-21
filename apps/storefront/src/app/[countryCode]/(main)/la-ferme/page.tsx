@@ -41,7 +41,7 @@ const partners = [
     ferme: "Ferme Ainty",
     lieu: "Sunharette · vallée d'Orhi",
     eleveur: "Belle-famille Erreçaret",
-    img: null,
+    img: "/images/ferme-ainty-brebis.webp",
     alt: "Brebis Manech Tête Noire (Bü Beltza) de la Ferme Ainty, vallée d'Orhi, Pays Basque",
     body: "Avec mon beau-père Marcel, nous élevons un petit troupeau de brebis Manech Tête Noire (Bü Beltza), race ovine originaire des montagnes du Pays Basque. Le troupeau est transhumant — l'été, elles sont au cayolar d'Ibarrondua au pied du pic d'Orhi. Les agneaux sont nourris exclusivement au lait de brebis, par tétée au pis.",
     tags: [
