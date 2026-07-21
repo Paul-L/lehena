@@ -2,6 +2,7 @@ import { getProductPrice } from "@lib/util/get-product-price"
 import { type HttpTypes } from "@medusajs/types"
 import { Placeholder } from "@modules/common/components/lehena/primitives"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import StarRating from "@modules/common/components/star-rating"
 import Image from "next/image"
 
 import type { ProductDetailsCatalog } from "@lib/data/product-details"
@@ -10,9 +11,14 @@ interface LehenaProductCardProps {
   /**
    * Accepts either a plain StoreProduct (legacy callers) or the EnrichedProduct
    * shape returned by /store/products-faceted (with product_details merged).
+   * `avg_rating` / `review_count` are only present when the caller passes a
+   * product from the faceted endpoint — the card renders without stars
+   * otherwise (no per-card fetch).
    */
   product: HttpTypes.StoreProduct & {
     product_details?: ProductDetailsCatalog | null
+    avg_rating?: number
+    review_count?: number
   }
   size?: "comfort" | "compact" | "spacious"
 }
@@ -62,6 +68,8 @@ export default function LehenaProductCard({
   const titleSize = isCompact ? 18 : size === "spacious" ? 26 : 22
   const badges = buildBadges(product)
   const hasMultipleVariants = (product.variants?.length ?? 0) > 1
+  const reviewCount = product.review_count ?? 0
+  const avgRating = product.avg_rating ?? 0
 
   return (
     <article style={{ position: "relative" }} data-testid="product-wrapper">
@@ -159,12 +167,17 @@ export default function LehenaProductCard({
             style={{
               fontSize: 13,
               color: "var(--ink-mute)",
-              marginBottom: 12,
+              marginBottom: reviewCount > 0 ? 8 : 12,
             }}
           >
             {subtitle}
           </p>
         )}
+        {reviewCount > 0 ? (
+          <div style={{ marginBottom: 12 }}>
+            <StarRating value={avgRating} count={reviewCount} size={14} />
+          </div>
+        ) : null}
         <div
           style={{
             display: "flex",

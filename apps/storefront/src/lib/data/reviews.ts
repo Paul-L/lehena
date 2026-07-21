@@ -20,6 +20,12 @@ export interface ReviewAggregate {
   count: number
 }
 
+export interface ProductReviewStats {
+  average_rating: number
+  review_count: number
+  distribution: Record<string, number>
+}
+
 /**
  * Lists approved reviews for a product. Server-side cached via the
  * Medusa SDK helpers — invalidated by the review.approved event
@@ -52,6 +58,29 @@ export async function listProductReviews(
       reviews: [],
       aggregate: { average: null, count: 0 },
       pagination: { count: 0, limit: opts?.limit ?? 10, offset: 0 },
+    }
+  }
+}
+
+/**
+ * Aggregate stats for a product (average, count, per-star distribution)
+ * from the backend `/store/products/:id/reviews-stats` endpoint. Shares
+ * the `reviews-<id>` cache tag so it is invalidated on new approvals.
+ */
+export async function getProductReviewsStats(
+  productId: string
+): Promise<ProductReviewStats> {
+  const next = await getCacheOptions(`reviews-${productId}`)
+  try {
+    return await sdk.client.fetch<ProductReviewStats>(
+      `/store/products/${productId}/reviews-stats`,
+      { next, cache: "force-cache" }
+    )
+  } catch {
+    return {
+      average_rating: 0,
+      review_count: 0,
+      distribution: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 },
     }
   }
 }
