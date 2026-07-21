@@ -1,4 +1,8 @@
+import { JsonLd } from "@lib/seo/json-ld"
 import { buildMetadata } from "@lib/seo/metadata"
+import { breadcrumbSchema } from "@lib/seo/schemas/breadcrumb"
+import { personSchema } from "@lib/seo/schemas/person"
+import { getBaseURL } from "@lib/util/env"
 import { LhArrow } from "@modules/common/components/lehena/icons"
 import {
   Photo,
@@ -9,10 +13,14 @@ import RevealInit from "@modules/home/components/lehena/reveal-init"
 
 import type { Metadata } from "next"
 
+const BASE_URL = getBaseURL().replace(/\/$/, "")
+const CANONICAL = `${BASE_URL}/fr/la-ferme`
+
 export const metadata: Metadata = buildMetadata({
-  title: "La ferme — De la ferme à l'assiette",
+  title: "La ferme — Élevage de porc Duroc au Pays Basque",
   description:
-    "Bénat Petit, Maître Artisan Charcutier, élève ses porcs Duroc en Pays Basque. Sans nitrite, sans additif — du bon, avec du local.",
+    "Bénat Petit, Maître Artisan Charcutier en Soule, élève ses porcs Duroc en plein air au Pays Basque pour une charcuterie fermière sans nitrite ni additif.",
+  canonical: CANONICAL,
 })
 
 const partners = [
@@ -37,13 +45,13 @@ const partners = [
     tags: ["Race Duroc", "Engraissement", "Ferme familiale"],
   },
   {
-    kicker: "Brebis Manech Bü Beltza",
+    kicker: "Brebis Manech Bürü Beltza",
     ferme: "Ferme Ainty",
     lieu: "Sunharette · vallée d'Orhi",
     eleveur: "Belle-famille Erreçaret",
     img: "/images/ferme-ainty-brebis.webp",
-    alt: "Brebis Manech Tête Noire (Bü Beltza) de la Ferme Ainty, vallée d'Orhi, Pays Basque",
-    body: "Avec mon beau-père Marcel, nous élevons un petit troupeau de brebis Manech Tête Noire (Bü Beltza), race ovine originaire des montagnes du Pays Basque. Le troupeau est transhumant — l'été, elles sont au cayolar d'Ibarrondua au pied du pic d'Orhi. Les agneaux sont nourris exclusivement au lait de brebis, par tétée au pis.",
+    alt: "Brebis Manech Tête Noire (Bürü Beltza) de la Ferme Ainty, vallée d'Orhi, Pays Basque",
+    body: "Avec mon beau-père Marcel, nous élevons un petit troupeau de brebis Manech Tête Noire (Bürü Beltza), race ovine originaire des montagnes du Pays Basque. Le troupeau est transhumant — l'été, elles sont au cayolar d'Ibarrondua au pied du pic d'Orhi. Les agneaux sont nourris exclusivement au lait de brebis, par tétée au pis.",
     tags: [
       "Manech Tête Noire",
       "Transhumance",
@@ -93,6 +101,23 @@ export default function LaFerme() {
   return (
     <main className="lh">
       <RevealInit />
+      <JsonLd
+        id="la-ferme-breadcrumb"
+        schema={breadcrumbSchema([
+          { name: "Accueil", url: "/fr" },
+          { name: "La ferme" },
+        ])}
+      />
+      <JsonLd
+        id="la-ferme-person"
+        schema={personSchema({
+          name: "Bénat Petit",
+          url: CANONICAL,
+          image: `${BASE_URL}/images/home-artisan-portrait.webp`,
+          description:
+            "Maître Artisan Charcutier et fondateur de la Maison Lehena. Il élève ses porcs Duroc en plein air au Pays Basque et façonne sa charcuterie sans nitrite ni additif.",
+        })}
+      />
 
       {/* HERO — éditorial split */}
       <section
@@ -158,13 +183,13 @@ export default function LaFerme() {
                 paddingBottom: 12,
               }}
             >
-              Nichée au cœur du Sud-Ouest, la Maison Lehena regorge de trésors
-              culinaires aux saveurs incomparables. L'aventure a démarré pour{" "}
-              <em>Bénat Petit</em> en avril 2019. Lassé par la filière de la
-              viande centrée sur les profits et l'opacité sur les méthodes de
-              production, Bénat décide de lancer sa propre exploitation :{" "}
-              <em>Lehena</em>, qui signifie « le Premier » en basque, voit le
-              jour.
+              Nichée au cœur du Pays Basque, la Maison Lehena façonne une
+              charcuterie fermière — jambons, salaisons et pâtés aux saveurs
+              incomparables. L'aventure a démarré pour <em>Bénat Petit</em> en
+              avril 2019. Lassé par la filière de la viande centrée sur les
+              profits et l'opacité sur les méthodes de production, Bénat décide
+              de lancer sa propre exploitation : <em>Lehena</em>, qui signifie «
+              le Premier » en basque, voit le jour.
             </p>
           </div>
         </div>
