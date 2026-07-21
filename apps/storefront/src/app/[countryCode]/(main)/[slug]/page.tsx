@@ -38,8 +38,12 @@ interface Props {
   searchParams: Promise<SearchParams>
 }
 
-export const revalidate = 3600
-export const dynamicParams = true
+// Rendered dynamically: the page reads `searchParams.preview`, which is
+// incompatible with a static `revalidate` directive (Next 15 throws
+// DYNAMIC_SERVER_USAGE, 500-ing every CMS slug). The per-request cost stays
+// low because the underlying SDK fetches keep their own `revalidate`+tags,
+// so backend page data is still cached for an hour.
+export const dynamic = "force-dynamic"
 
 export async function generateStaticParams(): Promise<Params[]> {
   try {

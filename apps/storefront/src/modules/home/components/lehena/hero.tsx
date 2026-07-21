@@ -108,7 +108,7 @@ export default function LehenaHero() {
               <LocalizedClientLink href="/store" className="btn btn-rouge">
                 Découvrir nos produits <LhArrow />
               </LocalizedClientLink>
-              <LocalizedClientLink href="/notre-histoire" className="btn btn-ghost">
+              <LocalizedClientLink href="/la-ferme" className="btn btn-ghost">
                 Notre histoire
               </LocalizedClientLink>
             </div>

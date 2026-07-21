@@ -15,7 +15,7 @@ const FOOTER_COLS: {
   {
     title: "Maison",
     links: [
-      { label: "Notre histoire", href: "/notre-histoire" },
+      { label: "Notre histoire", href: "/la-ferme" },
       { label: "De la ferme à l'assiette", href: "/la-ferme" },
       { label: "L'atelier", href: "/atelier" },
       { label: "À propos", href: "/a-propos" },

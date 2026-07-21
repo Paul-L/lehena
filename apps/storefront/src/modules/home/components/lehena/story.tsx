@@ -83,8 +83,8 @@ export default function LehenaStory() {
                 color: "var(--ink-soft)",
               }}
             >
-              Lehena, c'est l'histoire d'une passion qui nous anime depuis
-              le premier jour. L'envie de vous faire découvrir des produits
+              Lehena, c'est l'histoire d'une passion qui nous anime depuis le
+              premier jour. L'envie de vous faire découvrir des produits
               d'exception au goût incomparable du terroir du Sud-Ouest.
             </p>
             <p
@@ -100,7 +100,7 @@ export default function LehenaStory() {
               dans le respect du bien-être animal et de l'environnement.
             </p>
           </div>
-          <LocalizedClientLink href="/notre-histoire" className="btn">
+          <LocalizedClientLink href="/la-ferme" className="btn">
             Découvrir Lehena <LhArrow />
           </LocalizedClientLink>
         </div>
