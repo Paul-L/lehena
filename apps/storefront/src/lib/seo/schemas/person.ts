@@ -10,6 +10,8 @@ export interface PersonSchemaInput {
   image?: string | null
   /** One-line bio. */
   description?: string | null
+  /** Professional title, e.g. "Maître Artisan Charcutier". */
+  jobTitle?: string | null
   /** External social profile URLs (Instagram, LinkedIn, etc.). */
   sameAs?: string[]
 }
@@ -22,6 +24,7 @@ export function personSchema(input: PersonSchemaInput) {
     url: input.url,
     image: input.image ?? undefined,
     description: input.description ?? undefined,
+    jobTitle: input.jobTitle ?? undefined,
     sameAs: input.sameAs && input.sameAs.length > 0 ? input.sameAs : undefined,
   }
 }
