@@ -14,7 +14,10 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
+        // Explicitly allow the Merchant feed so it is never caught by a
+        // future query-param / path disallow — the Merchant crawler must
+        // always be able to fetch it.
+        allow: ["/", "/feed/"],
         disallow: [
           "/api/",
           "/*/account/",
