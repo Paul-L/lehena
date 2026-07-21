@@ -116,12 +116,13 @@ export default async function ProductPage(props: Props) {
         null)
       : null
 
-  // Real aggregateRating from the reviews module (Phase 10). When no
-  // reviews are approved yet, we omit the field entirely so we don't
+  // Real aggregateRating + top reviews from the reviews module (Phase 10).
+  // One request gives both the full-set aggregate and the top 3 items — we
+  // reuse them for the schema instead of firing a separate limit:0 call.
+  // When no reviews are approved yet, both blocks are omitted so we don't
   // pollute the schema with a 0/0 placeholder.
-  const { aggregate: reviewsAggregate } = await listProductReviews(product.id, {
-    limit: 0,
-  })
+  const { aggregate: reviewsAggregate, reviews: topReviews } =
+    await listProductReviews(product.id, { limit: 3 })
 
   return (
     <>
@@ -136,6 +137,15 @@ export default async function ProductPage(props: Props) {
                   ratingValue: reviewsAggregate.average,
                   reviewCount: reviewsAggregate.count,
                 }
+              : undefined,
+          reviews:
+            reviewsAggregate.count > 0
+              ? topReviews.map((r) => ({
+                  authorName: r.customer_name ?? "Client Lehena",
+                  date: r.approved_at,
+                  rating: r.rating,
+                  body: r.body,
+                }))
               : undefined,
         })}
       />
