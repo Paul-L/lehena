@@ -1,4 +1,10 @@
+import { JsonLd } from "@lib/seo/json-ld"
 import { buildMetadata } from "@lib/seo/metadata"
+import {
+  LEHENA_WORKSHOP,
+  localBusinessSchema,
+} from "@lib/seo/schemas/local-business"
+import { getBaseURL } from "@lib/util/env"
 import LehenaBestSellers from "@modules/home/components/lehena/best-sellers"
 import LehenaCoffrets from "@modules/home/components/lehena/coffrets"
 import LehenaEditorialBlocks from "@modules/home/components/lehena/editorial-blocks"
@@ -14,14 +20,21 @@ import RevealInit from "@modules/home/components/lehena/reveal-init"
 import LehenaStory from "@modules/home/components/lehena/story"
 import { type Metadata } from "next"
 
-export const metadata: Metadata = buildMetadata({
-  // Home: the default title (with the brand) is exactly what we want — no override.
-  description:
-    "Maître Artisan Charcutier au Pays Basque. Jambons affinés 15 mois minimum, salaisons sans nitrite, patxaran et épicerie fine du Sud-Ouest.",
-})
-
 interface HomeProps {
   params: Promise<{ countryCode: string }>
+}
+
+export async function generateMetadata({
+  params,
+}: HomeProps): Promise<Metadata> {
+  const { countryCode } = await params
+  const baseUrl = getBaseURL().replace(/\/$/, "")
+  return buildMetadata({
+    // Home: the default title (with the brand) is exactly what we want — no override.
+    description:
+      "Maître Artisan Charcutier au Pays Basque. Jambons affinés 15 mois minimum, salaisons sans nitrite, patxaran et épicerie fine du Sud-Ouest.",
+    canonical: `${baseUrl}/${countryCode}`,
+  })
 }
 
 export default async function Home({ params }: HomeProps) {
@@ -29,6 +42,10 @@ export default async function Home({ params }: HomeProps) {
 
   return (
     <>
+      <JsonLd
+        id="lehena-localbusiness"
+        schema={localBusinessSchema(LEHENA_WORKSHOP)}
+      />
       <RevealInit />
       <LehenaHero />
       <LehenaReassuranceBar />

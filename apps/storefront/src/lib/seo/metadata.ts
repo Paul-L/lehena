@@ -43,10 +43,16 @@ export function buildMetadata(input: BuildMetadataInput = {}): Metadata {
       : `${rawTitle} · ${SITE_NAME}`
     : DEFAULT_TITLE
   const description = input.description ?? DEFAULT_DESCRIPTION
-  const ogImage = input.ogImage ?? DEFAULT_OG_IMAGE
-  const ogImageAbsolute = ogImage.startsWith("http")
-    ? ogImage
-    : `${baseUrl}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`
+  // When no OG image is passed, omit `images` so Next's file-based
+  // `opengraph-image.jpg` / `twitter-image.jpg` conventions supply the default.
+  // (DEFAULT_OG_IMAGE pointed at /og/lehena-default.jpg, which 404s and
+  // overrode the working convention on every page.)
+  const ogImage = input.ogImage
+  const ogImageAbsolute = ogImage
+    ? ogImage.startsWith("http")
+      ? ogImage
+      : `${baseUrl}${ogImage.startsWith("/") ? "" : "/"}${ogImage}`
+    : undefined
 
   const metadata: Metadata = {
     title,
@@ -57,13 +63,15 @@ export function buildMetadata(input: BuildMetadataInput = {}): Metadata {
       title,
       description,
       locale: input.ogLocale ?? "fr_FR",
-      images: [{ url: ogImageAbsolute, alt: title }],
+      ...(ogImageAbsolute
+        ? { images: [{ url: ogImageAbsolute, alt: title }] }
+        : {}),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [ogImageAbsolute],
+      ...(ogImageAbsolute ? { images: [ogImageAbsolute] } : {}),
     },
   }
 

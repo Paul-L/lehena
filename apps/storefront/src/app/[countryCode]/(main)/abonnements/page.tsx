@@ -1,20 +1,27 @@
 import { retrieveCustomer } from "@lib/data/customer"
 import { listSubscriptionPlans } from "@lib/data/subscriptions"
+import { buildMetadata } from "@lib/seo/metadata"
+import { getBaseURL } from "@lib/util/env"
 import SubscriptionPlansGrid from "@modules/subscriptions/plans-grid"
 
 import type { Metadata } from "next"
 
-export const metadata: Metadata = {
-  title: "Box mensuelle — Maison Lehena",
-  description:
-    "Recevez chaque mois une sélection Lehena : charcuterie sans nitrite affinée à l'atelier. Suspendez, modifiez ou annulez en un clic.",
-  openGraph: {
-    title: "Box mensuelle — Maison Lehena",
-    type: "website",
-  },
-}
-
 export const revalidate = 3600
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ countryCode: string }>
+}): Promise<Metadata> {
+  const { countryCode } = await params
+  const baseUrl = getBaseURL().replace(/\/$/, "")
+  return buildMetadata({
+    title: "Box mensuelle",
+    description:
+      "Recevez chaque mois une sélection Lehena : charcuterie sans nitrite affinée à l'atelier. Suspendez, modifiez ou annulez en un clic.",
+    canonical: `${baseUrl}/${countryCode}/abonnements`,
+  })
+}
 
 export default async function AbonnementsPage() {
   const [plans, customer] = await Promise.all([

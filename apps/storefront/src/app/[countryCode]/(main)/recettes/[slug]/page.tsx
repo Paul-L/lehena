@@ -2,6 +2,7 @@ import { getLiveProductsByHandle } from "@lib/data/live-products-by-handle"
 import { getPageBySlug } from "@lib/data/pages"
 import { localeForCountry } from "@lib/i18n/locale-map"
 import { JsonLd } from "@lib/seo/json-ld"
+import { breadcrumbSchema } from "@lib/seo/schemas/breadcrumb"
 import { recipeSchema } from "@lib/seo/schemas/recipe"
 import {
   extractProductEmbedHandles,
@@ -92,6 +93,13 @@ export default async function RecipePage(props: Props) {
 
   return (
     <>
+      <JsonLd
+        id="lehena-breadcrumb"
+        schema={breadcrumbSchema([
+          { name: "Accueil", url: `/${countryCode}` },
+          { name: page.title },
+        ])}
+      />
       <JsonLd
         id="lehena-recipe"
         schema={recipeSchema({

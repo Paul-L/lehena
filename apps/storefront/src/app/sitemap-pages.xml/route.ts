@@ -36,6 +36,28 @@ export async function GET() {
   }
 
   const entries: SitemapEntry[] = []
+
+  // Hardcoded file-route landing/commercial pages (not CMS entries, so they
+  // never appear in getAllPublishedPages). FR-first; served at /fr/<path>.
+  const STATIC_ROUTES: {
+    path: string
+    changefreq: SitemapEntry["changefreq"]
+    priority: number
+  }[] = [
+    { path: "", changefreq: "weekly", priority: 1.0 },
+    { path: "/store", changefreq: "daily", priority: 0.9 },
+    { path: "/la-ferme", changefreq: "monthly", priority: 0.8 },
+    { path: "/abonnements", changefreq: "monthly", priority: 0.7 },
+    { path: "/contact", changefreq: "yearly", priority: 0.5 },
+  ]
+  for (const r of STATIC_ROUTES) {
+    entries.push({
+      loc: `${baseUrl}/fr${r.path}`,
+      changefreq: r.changefreq,
+      priority: r.priority,
+    })
+  }
+
   groups.forEach((siblings) => {
     const languages: Record<string, string> = {}
     for (const s of siblings) {

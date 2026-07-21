@@ -14,7 +14,7 @@ export function organizationSchema() {
     url: baseUrl,
     logo: {
       "@type": "ImageObject",
-      url: `${baseUrl}/logo-lehena.svg`,
+      url: `${baseUrl}/assets/logo-lehena.png`,
     },
     foundingDate: "2019",
     founder: { "@type": "Person", name: "Bénat Petit" },
