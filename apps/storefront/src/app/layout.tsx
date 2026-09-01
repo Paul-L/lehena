@@ -2,17 +2,23 @@ import { JsonLd } from "@lib/seo/json-ld"
 import { organizationSchema } from "@lib/seo/schemas/organization"
 import { websiteSchema } from "@lib/seo/schemas/website"
 import { getBaseURL } from "@lib/util/env"
-import { type Metadata } from "next"
+import WebVitalsReporter from "@modules/common/components/web-vitals-reporter"
+import { type Metadata, type Viewport } from "next"
 import Script from "next/script"
 import "styles/globals.css"
 
 const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN
+const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
   title: "Maison Lehena · Maître artisan charcutier au Pays Basque",
   description:
     "Maître Artisan Charcutier au Pays Basque. Jambons affinés 15 mois minimum, salaisons sans nitrite, patxaran, épicerie fine du Sud-Ouest.",
+}
+
+export const viewport: Viewport = {
+  themeColor: "#a83925",
 }
 
 export default function RootLayout(props: { children: React.ReactNode }) {
@@ -25,6 +31,22 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        {/* Speed up the first backend/static-image fetch (images produits). */}
+        {BACKEND_URL ? (
+          <link rel="preconnect" href={BACKEND_URL} crossOrigin="anonymous" />
+        ) : null}
+        {PLAUSIBLE_DOMAIN ? (
+          <link rel="dns-prefetch" href="https://plausible.io" />
+        ) : null}
+        {/* Discovery des données structurées et fichiers de crawl IA (GEO). */}
+        <link
+          rel="alternate"
+          type="application/xml"
+          title="Google Merchant Feed"
+          href="/feed/google-merchant.xml"
+        />
+        <link rel="ai" type="text/plain" href="/ai.txt" />
+        <link rel="llm" type="text/markdown" href="/llms.txt" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
@@ -53,6 +75,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
       </head>
       <body className="lh">
         <main className="relative">{props.children}</main>
+        <WebVitalsReporter />
       </body>
     </html>
   )

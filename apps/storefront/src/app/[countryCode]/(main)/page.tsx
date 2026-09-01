@@ -1,9 +1,4 @@
-import { JsonLd } from "@lib/seo/json-ld"
 import { buildMetadata } from "@lib/seo/metadata"
-import {
-  LEHENA_WORKSHOP,
-  localBusinessSchema,
-} from "@lib/seo/schemas/local-business"
 import { getBaseURL } from "@lib/util/env"
 import LehenaBestSellers from "@modules/home/components/lehena/best-sellers"
 import LehenaCoffrets from "@modules/home/components/lehena/coffrets"
@@ -42,10 +37,9 @@ export default async function Home({ params }: HomeProps) {
 
   return (
     <>
-      <JsonLd
-        id="lehena-localbusiness"
-        schema={localBusinessSchema(LEHENA_WORKSHOP)}
-      />
+      {/* LocalBusiness (FoodStore) is injected ONCE, on /atelier only — see
+          app/[countryCode]/(main)/[slug]/page.tsx. Keeping a second node here
+          would confuse Google's local graph. */}
       <RevealInit />
       <LehenaHero />
       <LehenaReassuranceBar />

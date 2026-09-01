@@ -1,5 +1,6 @@
 "use client"
 
+import { COMPANY } from "@lib/company"
 import { setAddresses } from "@lib/data/cart"
 import compareAddresses from "@lib/util/compare-addresses"
 import { type HttpTypes } from "@medusajs/types"
@@ -41,6 +42,10 @@ const Addresses = ({
 
   const done = !isOpen && Boolean(cart?.shipping_address)
 
+  // `COMPANY` est `as const` : sans élargissement, TS réduit le littéral "" à
+  // `never` dans la branche truthy ci-dessous.
+  const contactPhone: string = COMPANY.phone
+
   return (
     <section style={{ borderTop: "1px solid var(--line)", paddingTop: 24 }}>
       <StepHeading
@@ -69,10 +74,42 @@ const Addresses = ({
                 <BillingAddress cart={cart} />
               </div>
             )}
-            <SubmitButton
-              className="mt-6"
-              data-testid="submit-address-button"
+            <div
+              style={{
+                marginTop: 32,
+                padding: "16px 18px",
+                border: "1px solid var(--line)",
+                background: "var(--paper-soft, transparent)",
+                fontFamily: "var(--serif)",
+                fontSize: 14,
+                lineHeight: 1.6,
+                color: "var(--ink-soft)",
+              }}
+              data-testid="pickup-point-notice"
             >
+              <div className="eyebrow" style={{ marginBottom: 8 }}>
+                Point relais ou point retrait
+              </div>
+              <p style={{ margin: 0 }}>
+                Si vous souhaitez être livré en point retrait ou en point
+                relais, pour les produits ne nécessitant pas le respect de la
+                chaîne du froid, merci de prendre directement contact avec nous
+                par téléphone ou par e-mail après validation de votre commande.
+              </p>
+              <p style={{ margin: "8px 0 0" }}>
+                <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
+                {contactPhone ? (
+                  <>
+                    {" · "}
+                    <a href={`tel:${contactPhone.replace(/\s/g, "")}`}>
+                      {contactPhone}
+                    </a>
+                  </>
+                ) : null}
+              </p>
+            </div>
+
+            <SubmitButton className="mt-6" data-testid="submit-address-button">
               Continuer vers la livraison
             </SubmitButton>
             <ErrorMessage error={message} data-testid="address-error-message" />

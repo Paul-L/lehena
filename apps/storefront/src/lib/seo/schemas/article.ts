@@ -12,7 +12,14 @@ export interface ArticleSchemaInput {
   date_modified?: string | null
   author?: {
     name: string
+    /** Absolute URL of the author's profile page. */
     url: string
+    /** schema:Person jobTitle (e.g. "Maître Artisan Charcutier"). */
+    jobTitle?: string | null
+    /** Portrait URL. */
+    image?: string | null
+    /** External social profile URLs. */
+    sameAs?: string[] | null
   } | null
   /** Optional pillar / category tag for breadcrumb context. */
   section?: string | null
@@ -29,6 +36,15 @@ const PUBLISHER = {
   },
 }
 
+/** Origin of an absolute URL, for building the Organization `@id`. */
+function originOf(url: string): string {
+  try {
+    return new URL(url).origin
+  } catch {
+    return ""
+  }
+}
+
 export function articleSchema(input: ArticleSchemaInput) {
   return {
     "@context": "https://schema.org",
@@ -42,8 +58,16 @@ export function articleSchema(input: ArticleSchemaInput) {
     author: input.author
       ? {
           "@type": "Person",
+          "@id": `${input.author.url}#person`,
           name: input.author.name,
           url: input.author.url,
+          image: input.author.image ?? undefined,
+          jobTitle: input.author.jobTitle ?? undefined,
+          worksFor: { "@id": `${originOf(input.author.url)}/#organization` },
+          sameAs:
+            input.author.sameAs && input.author.sameAs.length > 0
+              ? input.author.sameAs
+              : undefined,
         }
       : undefined,
     publisher: PUBLISHER,

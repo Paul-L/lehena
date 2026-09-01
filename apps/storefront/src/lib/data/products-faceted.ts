@@ -25,8 +25,17 @@ export interface FacetParams {
   format?: string[]
 }
 
+/**
+ * Product shape returned by /store/products-faceted — a StoreProduct
+ * enriched with light review stats (batched server-side, no per-card fetch).
+ */
+export type FacetedProduct = HttpTypes.StoreProduct & {
+  avg_rating?: number
+  review_count?: number
+}
+
 interface FacetedResponse {
-  products: HttpTypes.StoreProduct[]
+  products: FacetedProduct[]
   count: number
   limit: number
   offset: number

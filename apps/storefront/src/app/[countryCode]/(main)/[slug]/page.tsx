@@ -1,3 +1,4 @@
+import { getAuthorById } from "@lib/data/authors"
 import { getLiveProductsByHandle } from "@lib/data/live-products-by-handle"
 import { getAllPublishedPages, getPageBySlug } from "@lib/data/pages"
 import {
@@ -10,6 +11,7 @@ import {
 import { JsonLd } from "@lib/seo/json-ld"
 import { articleSchema } from "@lib/seo/schemas/article"
 import { breadcrumbSchema } from "@lib/seo/schemas/breadcrumb"
+import { faqPageSchema, filterValidFaqItems } from "@lib/seo/schemas/faq"
 import {
   LEHENA_WORKSHOP,
   localBusinessSchema,
@@ -20,6 +22,8 @@ import {
   type JSONContent,
 } from "@lib/tiptap-renderer"
 import { getBaseURL } from "@lib/util/env"
+import ArticleByline from "@modules/common/components/article-byline"
+import FaqAccordion from "@modules/common/components/faq-accordion"
 import { notFound } from "next/navigation"
 
 import { PreviewBanner } from "../../../../components/preview-banner"
@@ -155,6 +159,31 @@ export default async function StorefrontPage(props: Props) {
   const isAtelier = page.slug === "atelier"
   const isArticle = (page.type ?? "page") !== "page"
 
+  // Author byline (EEAT) — only for editorial types carrying an author_id.
+  // The store route resolves an author by id as well as slug.
+  const authorResult =
+    isArticle && page.author_id
+      ? await getAuthorById(page.author_id, { locale })
+      : null
+  const author = authorResult?.author ?? null
+  const authorUrl = author
+    ? `${baseUrl}/${countryCode}/auteurs/${author.slug}`
+    : null
+
+  // Real dates, clamped so dateModified is never before datePublished
+  // (Google warns otherwise).
+  const publishedAt =
+    page.published_at ?? page.updated_at ?? new Date(0).toISOString()
+  const rawModified = page.updated_at ?? publishedAt
+  const dateModified =
+    new Date(rawModified).getTime() >= new Date(publishedAt).getTime()
+      ? rawModified
+      : publishedAt
+
+  // Visible FAQ + FAQPage schema — placeholder/empty answers are dropped so
+  // the schema is only emitted when at least one real Q&A survives.
+  const faqItems = filterValidFaqItems(page.faq)
+
   return (
     <>
       <JsonLd
@@ -178,11 +207,25 @@ export default async function StorefrontPage(props: Props) {
             headline: page.title,
             description: page.meta_description ?? page.excerpt ?? null,
             image: page.og_image_url ?? null,
-            date_published: page.published_at ?? new Date(0).toISOString(),
+            date_published: publishedAt,
+            date_modified: dateModified,
+            author:
+              author && authorUrl
+                ? {
+                    name: author.name,
+                    url: authorUrl,
+                    jobTitle: author.role_title,
+                    image: author.photo_url,
+                    sameAs: author.social_links?.map((s) => s.url) ?? null,
+                  }
+                : null,
             section: page.tags?.[0] ?? null,
             keywords: page.tags ?? [],
           })}
         />
+      ) : null}
+      {faqItems.length > 0 ? (
+        <JsonLd id="lehena-faq" schema={faqPageSchema(faqItems)} />
       ) : null}
       {isPreview && <PreviewBanner isDraft={isDraft} />}
       <article className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -190,15 +233,27 @@ export default async function StorefrontPage(props: Props) {
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
             {page.title}
           </h1>
-          {page.published_at && (
-            <p className="mt-3 text-sm text-ink-mute">
-              Publié le{" "}
-              {new Date(page.published_at).toLocaleDateString("fr-FR", {
-                day: "2-digit",
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
+          {author ? (
+            <ArticleByline
+              name={author.name}
+              slug={author.slug}
+              countryCode={countryCode}
+              roleTitle={author.role_title}
+              photoUrl={author.photo_url}
+              publishedAt={page.published_at}
+              updatedAt={page.updated_at}
+            />
+          ) : (
+            page.published_at && (
+              <p className="mt-3 text-sm text-ink-mute">
+                Publié le{" "}
+                {new Date(page.published_at).toLocaleDateString("fr-FR", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </p>
+            )
           )}
         </header>
         <TiptapContent
@@ -207,6 +262,7 @@ export default async function StorefrontPage(props: Props) {
           countryCode={countryCode}
         />
       </article>
+      {faqItems.length > 0 ? <FaqAccordion items={faqItems} /> : null}
     </>
   )
 }

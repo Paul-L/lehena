@@ -30,6 +30,13 @@ const Page = model.define("page", {
    * pages themselves carry their own slug here for hub-and-spoke discovery.
    */
   pillar_slug: model.text().nullable(),
+  /**
+   * JSON array of `{ question: string, answer: string }`. Rendered as a
+   * visible accordion on the storefront and mirrored into a FAQPage schema.
+   * Nullable — most pages carry no FAQ. Placeholder answers ("À rédiger…")
+   * are filtered out before the schema is emitted (cf. SEO 06).
+   */
+  faq: model.json().nullable(),
 })
 
 export default Page

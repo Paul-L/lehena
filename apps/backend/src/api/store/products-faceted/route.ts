@@ -7,6 +7,11 @@ import {
   QueryContext,
 } from "@medusajs/framework/utils"
 
+import {
+  REVIEW_MODULE,
+  type ReviewModuleService,
+} from "../../../modules/review"
+
 import type { ListFacetedProductsQuerySchema } from "./validators"
 
 /**
@@ -32,9 +37,11 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   // ─── 0. Resolve pricing context ────────────────────────────────────
   // `variants.calculated_price` requires a currency_code in the query
   // context. We derive it from the region the storefront sends along.
-  let pricingContext:
-    | { region_id: string; currency_code: string; country_code?: string }
-    | null = null
+  let pricingContext: {
+    region_id: string
+    currency_code: string
+    country_code?: string
+  } | null = null
   if (params.region_id) {
     const { data: regions } = await query.graph({
       entity: "region",
@@ -247,8 +254,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     })
   }
 
+  // ─── 5. Enrich with light review stats (batched, 1 query) ──────────
+  // Avoids an N+1 fetch-per-card on the storefront grid. Products without
+  // an approved review get avg_rating: 0 / review_count: 0 so the card can
+  // decide whether to render stars.
+  const productIds = (products as { id: string }[]).map((p) => p.id)
+  const reviewService = req.scope.resolve<ReviewModuleService>(REVIEW_MODULE)
+  const statsByProduct = await reviewService.getProductsStats(productIds)
+  const enriched = (products as Record<string, unknown>[]).map((p) => {
+    const stats = statsByProduct[p.id as string]
+    return {
+      ...p,
+      avg_rating: stats?.avg_rating ?? 0,
+      review_count: stats?.review_count ?? 0,
+    }
+  })
+
   return res.json({
-    products,
+    products: enriched,
     count: metadata?.count ?? products.length,
     limit: params.limit,
     offset: params.offset,

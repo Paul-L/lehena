@@ -23,6 +23,8 @@ export interface Page {
   author_id?: string | null
   tags?: string[] | null
   pillar_slug?: string | null
+  /** Editorial FAQ — visible accordion + FAQPage schema (SEO 06). */
+  faq?: { question: string; answer: string }[] | null
   created_at: string
   updated_at: string
   deleted_at: string | null

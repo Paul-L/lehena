@@ -16,6 +16,18 @@ const Author = model.define("author", {
   photo_url: model.text().nullable(),
   /** JSON array of { platform: "instagram" | "twitter" | "linkedin", url }. */
   social_links: model.json().nullable(),
+  /**
+   * Professional title surfaced in the byline and schema:Person `jobTitle`
+   * (e.g. "Maître Artisan Charcutier"). EEAT signal for YMYL content.
+   */
+  role_title: model.text().nullable(),
+  /**
+   * JSON array of strings — formations, diplomas, awards. Surfaced on the
+   * author page to establish expertise (EEAT).
+   */
+  credentials: model.json().nullable(),
+  /** Contact email. Usually omitted from public output to avoid spam. */
+  email: model.text().nullable(),
   /** Two-letter locale guiding the schema:Person language attribute. */
   locale: model.text().default("fr"),
 })
