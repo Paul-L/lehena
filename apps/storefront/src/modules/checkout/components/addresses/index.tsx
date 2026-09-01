@@ -42,6 +42,10 @@ const Addresses = ({
 
   const done = !isOpen && Boolean(cart?.shipping_address)
 
+  // `COMPANY` est `as const` : sans élargissement, TS réduit le littéral "" à
+  // `never` dans la branche truthy ci-dessous.
+  const contactPhone: string = COMPANY.phone
+
   return (
     <section style={{ borderTop: "1px solid var(--line)", paddingTop: 24 }}>
       <StepHeading
@@ -94,11 +98,11 @@ const Addresses = ({
               </p>
               <p style={{ margin: "8px 0 0" }}>
                 <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
-                {COMPANY.phone ? (
+                {contactPhone ? (
                   <>
                     {" · "}
-                    <a href={`tel:${COMPANY.phone.replace(/\s/g, "")}`}>
-                      {COMPANY.phone}
+                    <a href={`tel:${contactPhone.replace(/\s/g, "")}`}>
+                      {contactPhone}
                     </a>
                   </>
                 ) : null}
